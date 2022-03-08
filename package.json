@@ -12,7 +12,10 @@
       "clean": "rm -rf */dist */tsconfig.tsbuildinfo",
       "test": "lerna run test",
       "watch": "tsc -b -w",
-      "build-and-publish-all": "yarn build && lerna publish"
+      "build-and-publish-all": "yarn build && lerna publish",
+      "dev-version": "yarn lerna version --exact --no-push --force-publish --yes",
+      "dev-publish": "yarn build-and-publish-all from-package --yes --no-git-reset --npm-tag next",
+      "publish": "yarn build-and-publish-all from-package --yes --no-git-reset"
     },
     "devDependencies": {
       "@journeyapps/domparser": "^0.3.0",
