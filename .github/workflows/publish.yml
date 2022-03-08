@@ -19,7 +19,7 @@ jobs:
       - name: Build
         run: yarn run build
       - name: publish
-        run: yarn run dev-publish
+        run: yarn run publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
       
