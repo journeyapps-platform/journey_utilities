@@ -16,8 +16,13 @@ jobs:
         run: nvm install
       - name: Install Dependencies
         run: yarn install
-      - name: Build
-        run: yarn run build
+      - name: Authenticate
+        run: |
+          echo "registry=http://registry.npmjs.org/" >> .npmrc
+          echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> .npmrc
+          npm whoami
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: publish
         run: yarn run dev-publish
         env:
