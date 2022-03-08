@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@master
+        uses: actions/checkout@release
       - name: Set the correct Node version using nvm
         shell: bash -l {0} 
         run: nvm install
