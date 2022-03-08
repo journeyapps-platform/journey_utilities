@@ -11,8 +11,6 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@master
-      - name: Select release branch
-        run: git checkout release
       - name: Set the correct Node version using nvm
         shell: bash -l {0} 
         run: nvm install
@@ -21,7 +19,7 @@ jobs:
       - name: Build
         run: yarn run build
       - name: publish
-        run: yarn run publish-dev
+        run: yarn run dev-publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
       
