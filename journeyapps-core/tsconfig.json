@@ -1,0 +1,16 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "declarationDir": "dist/@types",
+    "declaration": true,
+    "outDir": "dist"
+  },
+  "references": [
+    {
+      "path": "../journeyapps-parser-schema",
+      "path": "../journeyapps-parser-common",
+      "path": "../journeyapps-evaluator",
+      "path": "../journeyapps-core-xml"
+    }
+  ]
+}

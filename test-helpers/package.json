@@ -1,0 +1,6 @@
+{
+  "name": "@journeyapps/core-test-helpers",
+  "main": "./src/helpers.js",
+  "version": "4.1.0",
+  "private": true
+}

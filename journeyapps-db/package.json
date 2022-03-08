@@ -1,0 +1,33 @@
+{
+  "name": "@journeyapps/db",
+  "version": "7.2.1",
+  "description": "Journey JS library",
+  "main": "./dist/index.js",
+  "browser": "./dist/browser.js",
+  "typings": "./dist/index",
+  "appTypings": "./dist/app",
+  "scripts": {
+    "build": "../node_modules/.bin/tsc --build",
+    "test": "yarn tsc -b test && yarn test:node && yarn test:browser",
+    "clean": "tsc -b --clean && tsc -b --clean test && rm -rf dist test/dist",
+    "test:browser": "karma start karma.conf.js --single-run",
+    "test:node": "jasmine test/dist/all.js"
+  },
+  "dependencies": {
+    "@journeyapps/core-date": "^5.2.0",
+    "@journeyapps/core-xml": "^5.0.0",
+    "@journeyapps/evaluator": "^6.2.1",
+    "@journeyapps/parser-schema": "^7.2.1",
+    "@types/node-fetch": "^2.5.7",
+    "isomorphic-fetch": "^2.2.1",
+    "moment": "^2.24.0",
+    "uuid": "^3.3.3",
+    "xmldom": "^0.1.27"
+  },
+  "devDependencies": {
+    "@types/uuid": "^3.4.5"
+  },
+  "files": [
+    "dist"
+  ]
+}

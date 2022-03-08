@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sync>
+  <user type="worker">
+    <relationship has_many="assets" condition="condition &lt;= 5">
+      <relationship has_many="parts" />
+    </relationship>
+
+    <relationship belongs_to="branch" />
+
+    <object type="category" />
+
+    <object type="responsible_personnel" condition="archived != true" />
+  </user>
+
+  <user type="worker" condition="branch != null">
+    <object type="category" />
+  </user>
+</sync>

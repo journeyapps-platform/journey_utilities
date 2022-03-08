@@ -1,0 +1,25 @@
+{
+  "name": "@journeyapps/core-xml",
+  "version": "5.0.0",
+  "description": "Journey JS library",
+  "main": "./dist/src/node.js",
+  "browser": "./dist/src/index.js",
+  "typings": "./dist/@types/src/index",
+  "scripts": {
+    "build": "../node_modules/.bin/tsc --build",
+    "test": "yarn build && yarn test:node && yarn test:browser",
+    "test:browser": "karma start karma.conf.js --single-run",
+    "test:node": "jasmine dist/test/unit/all.js"
+  },
+  "dependencies": {
+    "@journeyapps/domparser": "^0.3.0"
+  },
+  "devDependencies": {
+    "@journeyapps/core-test-helpers": "^4.1.0"
+  },
+  "files": [
+    "dist/src",
+    "dist/@types",
+    "domparser.js"
+  ]
+}

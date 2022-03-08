@@ -1,0 +1,17 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "declaration": true,
+    "outDir": "lib",
+    "rootDir": "./src"
+  },
+  "references": [
+    {
+      "path": "../journeyapps-core",
+      "path": "../journeyapps-core-date",
+      "path": "../journeyapps-db",
+      "path": "../journeyapps-parser-common",
+      "path": "../journeyapps-parser-schema"
+    }
+  ]
+}

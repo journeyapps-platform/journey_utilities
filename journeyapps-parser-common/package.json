@@ -1,0 +1,23 @@
+{
+  "name": "@journeyapps/parser-common",
+  "version": "7.2.1",
+  "description": "Journey JS library",
+  "main": "./dist/src/index.js",
+  "typings": "./dist/@types/src/index",
+  "scripts": {
+    "build": "../node_modules/.bin/tsc --build",
+    "test": "yarn build && yarn test:node && yarn test:browser",
+    "test:browser": "karma start karma.conf.js --single-run",
+    "test:node": "jasmine dist/test/unit/all.js"
+  },
+  "dependencies": {
+    "@journeyapps/core-xml": "^5.0.0",
+    "@journeyapps/domparser": "^0.3.0",
+    "@journeyapps/evaluator": "^6.2.1",
+    "io-ts": "^1.8.6"
+  },
+  "files": [
+    "dist/src",
+    "dist/@types"
+  ]
+}

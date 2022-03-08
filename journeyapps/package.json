@@ -1,0 +1,16 @@
+{
+  "name": "journeyapps",
+  "version": "7.2.1",
+  "description": "Journey JS library",
+  "main": "./lib/index.js",
+  "scripts": {
+    "build": "../node_modules/.bin/tsc --build"
+  },
+  "dependencies": {
+    "@journeyapps/core": "^7.2.1",
+    "@journeyapps/core-date": "^5.2.0",
+    "@journeyapps/db": "^7.2.1",
+    "@journeyapps/parser-common": "^7.2.1",
+    "@journeyapps/parser-schema": "^7.2.1"
+  }
+}

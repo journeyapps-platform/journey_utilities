@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+      "target": "es2017",
+      "lib": ["dom", "esnext"],
+      "composite": true,
+      "moduleResolution": "node",
+      "module": "commonjs",
+      "sourceMap": true,
+      "stripInternal": true,
+      "incremental": true,
+      "inlineSources": true
+    }
+  }
+  

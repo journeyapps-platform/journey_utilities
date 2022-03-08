@@ -1,0 +1,46 @@
+{
+    "parser": "babel-eslint",
+    "root": true,
+    "env": {
+      "browser": true,
+      "amd": true,
+      "node": true  // For Gruntfile.js
+    },
+    "globals": {
+      "domparser": true,
+      // TODO: remove these from the lib
+      "JSHINT": true,
+      "_": true,
+    },
+    "parserOptions": {
+      "sourceType": "module"
+    },
+    "rules": {
+      // 0 means ignore - no intention to fix those
+      // 1 means warning - we should fix at some point, then change to make it an error
+      "eqeqeq": 0,
+      "quotes": 0,
+      "strict": 0,
+      "camelcase": [1, {"properties": "never"}],
+      "no-unused-vars": 1,
+      "no-multi-spaces": 1,
+      "no-shadow": 1,
+      "comma-dangle": 1,
+      "comma-spacing": 1,
+      "no-underscore-dangle": 0,
+      "new-cap": 1,
+      "no-console": 1,
+      "space-infix-ops": 1,
+      "no-constant-condition": 1,
+      "eol-last": 1,
+      "dot-notation": 1,
+      "key-spacing": 1,
+      "space-before-blocks": 2,
+      "quote-props": 0,
+  
+      // These do not play well with babel-eslint
+      "no-empty": 0,
+      "no-use-before-define": 0
+    }
+  }
+  

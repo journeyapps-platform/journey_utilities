@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+      "incremental": true
+    },
+    "files": [],
+    "references": [
+      {"path": "./journeyapps"},
+      {"path": "./journeyapps-core-date"},
+      {"path": "./journeyapps-core-xml"},
+      {"path": "./journeyapps-db"},
+      {"path": "./journeyapps-evaluator"},
+      {"path": "./journeyapps-parser-common"},
+      {"path": "./journeyapps-parser-schema"},
+    ]
+  }
+  

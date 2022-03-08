@@ -1,0 +1,13 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "unit"
+  },
+  "include": ["unit/**/*.ts"],
+  "references": [
+    {
+      "path": ".."
+    }
+  ]
+}
