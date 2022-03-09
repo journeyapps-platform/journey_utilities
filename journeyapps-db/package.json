@@ -25,7 +25,9 @@
     "xmldom": "^0.1.27"
   },
   "devDependencies": {
-    "@types/uuid": "^3.4.5"
+    "@types/uuid": "^3.4.5",
+    "fetch-mock": "^5.9.4",
+    "websql": "^2.0.3"
   },
   "files": [
     "dist"
