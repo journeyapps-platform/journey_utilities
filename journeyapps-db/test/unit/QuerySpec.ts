@@ -1,4 +1,4 @@
-import { query } from '@journeyapps/db';
+import { query } from '../../dist';
 import * as schema from '@journeyapps/parser-schema';
 import { Day } from '@journeyapps/core-date';
 

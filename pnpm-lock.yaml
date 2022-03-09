@@ -17,7 +17,7 @@ importers:
       karma-mocha-reporter: ^2.2.5
       karma-script-launcher: ^1.0.0
       karma-sourcemap-loader: ^0.3.7
-      karma-webpack: ^4.0.2
+      karma-webpack: ^5.0.0
       lerna: ^3.20.2
       node-libs-browser: ^2.0.0
       raw-loader: ^3.1.0
@@ -44,7 +44,7 @@ importers:
       karma-mocha-reporter: 2.2.5_karma@4.4.1
       karma-script-launcher: 1.0.0_karma@4.4.1
       karma-sourcemap-loader: 0.3.8
-      karma-webpack: 4.0.2_webpack@4.46.0
+      karma-webpack: 5.0.0_webpack@4.46.0
       lerna: 3.22.1
       node-libs-browser: 2.2.1
       raw-loader: 3.1.0_webpack@4.46.0
@@ -4670,19 +4670,16 @@ packages:
       graceful-fs: 4.2.9
     dev: true
 
-  /karma-webpack/4.0.2_webpack@4.46.0:
-    resolution: {integrity: sha512-970/okAsdUOmiMOCY8sb17A2I8neS25Ad9uhyK3GHgmRSIFJbDcNEFE8dqqUhNe9OHiCC9k3DMrSmtd/0ymP1A==}
-    engines: {node: '>= 8.9.0'}
+  /karma-webpack/5.0.0_webpack@4.46.0:
+    resolution: {integrity: sha512-+54i/cd3/piZuP3dr54+NcFeKOPnys5QeM1IY+0SPASwrtHsliXUiCL50iW+K9WWA7RvamC4macvvQ86l3KtaA==}
+    engines: {node: '>= 6'}
     peerDependencies:
-      webpack: ^4.0.0
+      webpack: ^5.0.0
     dependencies:
-      clone-deep: 4.0.1
-      loader-utils: 1.4.0
-      neo-async: 2.6.2
-      schema-utils: 1.0.0
-      source-map: 0.7.3
+      glob: 7.2.0
+      minimatch: 3.1.2
       webpack: 4.46.0_webpack-cli@3.3.12
-      webpack-dev-middleware: 3.7.3_webpack@4.46.0
+      webpack-merge: 4.2.2
     dev: true
 
   /karma/4.4.1:
@@ -7142,11 +7139,6 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: true
 
-  /source-map/0.7.3:
-    resolution: {integrity: sha512-CkCj6giN3S+n9qrYiBTX5gystlENnRW5jZeNLHpe6aue+SrHcG5VYwujhW9s4dY31mEGsxBDrHR6oI69fTXsaQ==}
-    engines: {node: '>= 8'}
-    dev: true
-
   /sparkles/1.0.1:
     resolution: {integrity: sha512-dSO0DDYUahUt/0/pD/Is3VIm5TGJjludZ0HVymmhYF6eNA53PVLhnUk0znSYbH8IYBuJdCE+1luR22jNLMaQdw==}
     engines: {node: '>= 0.10'}
@@ -8112,6 +8104,12 @@ packages:
     dependencies:
       ansi-colors: 3.2.4
       uuid: 3.4.0
+    dev: true
+
+  /webpack-merge/4.2.2:
+    resolution: {integrity: sha512-TUE1UGoTX2Cd42j3krGYqObZbOD+xF7u28WB7tfUordytSjbWTIjK/8V0amkBfTYN4/pB/GIDlJZZ657BGG19g==}
+    dependencies:
+      lodash: 4.17.21
     dev: true
 
   /webpack-node-externals/1.7.2:

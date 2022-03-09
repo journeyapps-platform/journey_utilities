@@ -31,7 +31,7 @@
       "karma-mocha-reporter": "^2.2.5",
       "karma-script-launcher": "^1.0.0",
       "karma-sourcemap-loader": "^0.3.7",
-      "karma-webpack": "^4.0.2",
+      "karma-webpack": "^5.0.0",
       "lerna": "^3.20.2",
       "node-libs-browser": "^2.0.0",
       "raw-loader": "^3.1.0",
