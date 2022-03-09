@@ -8,7 +8,7 @@
   "appTypings": "./dist/app",
   "scripts": {
     "build": "../node_modules/.bin/tsc --build",
-    "test": "yarn tsc -b test && yarn test:node && yarn test:browser",
+    "test": "pnpm tsc -b test && pnpm test:node && pnpm test:browser",
     "clean": "tsc -b --clean && tsc -b --clean test && rm -rf dist test/dist",
     "test:browser": "karma start karma.conf.js --single-run",
     "test:node": "jasmine test/dist/all.js"
@@ -17,6 +17,7 @@
     "@journeyapps/core-date": "^5.2.0",
     "@journeyapps/core-xml": "^5.0.0",
     "@journeyapps/evaluator": "^6.2.1",
+    "@journeyapps/parser-common": "^7.2.1",
     "@journeyapps/parser-schema": "^7.2.1",
     "@types/node-fetch": "^2.5.7",
     "isomorphic-fetch": "^2.2.1",

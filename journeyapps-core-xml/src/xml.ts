@@ -439,7 +439,9 @@ export function getParser(): ConfiguredParser {
 function loadDefaultParser() {
   if (typeof document != 'undefined' && typeof document.implementation != 'undefined') {
     configureParser({
-      implementation: document.implementation as DOMImplementation,
+      //@ts-ignore
+      implementation: document.implementation as DOMImplementation, 
+      //@ts-ignore
       parser: new DOMParser() as XMLDOMParser,
       serializer: new XMLSerializer()
     });
