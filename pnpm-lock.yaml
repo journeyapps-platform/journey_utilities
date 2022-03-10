@@ -96,6 +96,7 @@ importers:
       '@types/uuid': ^3.4.5
       fetch-mock: ^5.9.4
       isomorphic-fetch: ^2.2.1
+      lodash: ^4.17.21
       moment: ^2.24.0
       uuid: ^3.3.3
       websql: ^2.0.3
@@ -108,6 +109,7 @@ importers:
       '@journeyapps/parser-schema': link:../journeyapps-parser-schema
       '@types/node-fetch': 2.6.1
       isomorphic-fetch: 2.2.1
+      lodash: 4.17.21
       moment: 2.29.1
       uuid: 3.4.0
       xmldom: 0.1.31
@@ -4975,7 +4977,6 @@ packages:
 
   /lodash/4.17.21:
     resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
-    dev: true
 
   /log-symbols/2.2.0:
     resolution: {integrity: sha512-VeIAFslyIerEJLXHziedo2basKbMKtTw3vfn5IzG0XTjhAVEJyNHnL2p7vc+wBDSdQuUpNw3M2u6xb9QsAY5Eg==}
