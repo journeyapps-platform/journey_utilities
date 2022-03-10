@@ -15,16 +15,19 @@ jobs:
         shell: bash -l {0} 
         run: nvm install
       - name: Install Dependencies
-        run: yarn install
+        run: pnpm install
+      - uses: pnpm/action-setup@v2.1.0
+        with:
+          version: 6.0.2
       - name: Authenticate
         run: |
           echo "registry=http://registry.npmjs.org/" >> .npmrc
           echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> .npmrc
-          npm whoami
+          pnpm whoami
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: publish
-        run: yarn run publish
+        run: pnpm run publish
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       
