@@ -9,3 +9,5 @@ test-dist
 
 .idea/
 tsconfig.tsbuildinfo
+
+.pnpm-debug.log
