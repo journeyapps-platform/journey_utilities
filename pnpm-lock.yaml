@@ -88,6 +88,7 @@ importers:
   journeyapps-db:
     specifiers:
       '@journeyapps/core-date': ^5.2.0
+      '@journeyapps/core-test-helpers': ^2.30.1-dev.814c88b.5338451
       '@journeyapps/core-xml': ^5.0.0
       '@journeyapps/evaluator': ^6.2.1
       '@journeyapps/parser-common': ^7.2.1
@@ -114,6 +115,7 @@ importers:
       uuid: 3.4.0
       xmldom: 0.1.31
     devDependencies:
+      '@journeyapps/core-test-helpers': 2.30.1-dev.814c88b.5338451
       '@types/uuid': 3.4.10
       fetch-mock: 5.13.1
       websql: 2.0.3
