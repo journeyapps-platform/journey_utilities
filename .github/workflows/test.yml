@@ -30,6 +30,9 @@ jobs:
       - uses: browser-actions/setup-chrome@latest
       - name: Check Chrome
         run: chrome --version
+      - uses: browser-actions/setup-firefox@latest
+      - name: Check Firefox
+        run: firefox --version
       - name: Run headless test
         uses: GabrielBB/xvfb-action@v1
         with:
