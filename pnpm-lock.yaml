@@ -127,6 +127,7 @@ importers:
 
   journeyapps-parser-common:
     specifiers:
+      '@journeyapps/core-test-helpers': ^2.30.1-dev.814c88b.5338451
       '@journeyapps/core-xml': ^5.0.0
       '@journeyapps/domparser': ^0.3.0
       '@journeyapps/evaluator': ^6.2.1
@@ -136,6 +137,8 @@ importers:
       '@journeyapps/domparser': 0.3.0
       '@journeyapps/evaluator': link:../journeyapps-evaluator
       io-ts: 1.10.4
+    devDependencies:
+      '@journeyapps/core-test-helpers': 2.30.1-dev.814c88b.5338451
 
   journeyapps-parser-schema:
     specifiers:
