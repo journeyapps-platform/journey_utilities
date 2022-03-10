@@ -44,6 +44,11 @@
       "webpack-cli": "^3.3.9",
       "webpack-dev-server": "^3.8.1",
       "webpack-node-externals": "^1.7.2"
+    },
+    "pnpm": {
+      "overrides": {
+        "@journeyapps/core-test-helpers": "link:./test-helpers"
+      }
     }
   }
   

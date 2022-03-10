@@ -27,12 +27,17 @@
     "xmldom": "^0.1.27"
   },
   "devDependencies": {
-    "@journeyapps/core-test-helpers": "^2.30.1-dev.814c88b.5338451",
+    "@journeyapps/core-test-helpers": "^4.1.0",
     "@types/uuid": "^3.4.5",
     "fetch-mock": "^5.9.4",
     "websql": "^2.0.3"
   },
   "files": [
     "dist"
-  ]
+  ],
+  "pnpm": {
+    "overrides": {
+      "@journeyapps/core-test-helpers": "link:../test-helpers"
+    }
+  }
 }

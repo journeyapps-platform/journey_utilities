@@ -1,5 +1,8 @@
 lockfileVersion: 5.3
 
+overrides:
+  '@journeyapps/core-test-helpers': link:./test-helpers
+
 importers:
 
   .:
@@ -68,27 +71,27 @@ importers:
 
   journeyapps-core-date:
     specifiers:
-      '@journeyapps/core-test-helpers': ^2.30.1-dev.814c88b.5338451
+      '@journeyapps/core-test-helpers': link:../test-helpers
       moment: ^2.29.1
     devDependencies:
-      '@journeyapps/core-test-helpers': 2.30.1-dev.814c88b.5338451
+      '@journeyapps/core-test-helpers': link:../test-helpers
       moment: 2.29.1
 
   journeyapps-core-xml:
     specifiers:
-      '@journeyapps/core-test-helpers': ^2.30.1-dev.814c88b.5338451
+      '@journeyapps/core-test-helpers': link:../test-helpers
       '@journeyapps/domparser': ^0.3.0
       xmldom: ^0.6.0
     dependencies:
       '@journeyapps/domparser': 0.3.0
       xmldom: 0.6.0
     devDependencies:
-      '@journeyapps/core-test-helpers': 2.30.1-dev.814c88b.5338451
+      '@journeyapps/core-test-helpers': link:../test-helpers
 
   journeyapps-db:
     specifiers:
       '@journeyapps/core-date': ^5.2.0
-      '@journeyapps/core-test-helpers': ^2.30.1-dev.814c88b.5338451
+      '@journeyapps/core-test-helpers': link:../test-helpers
       '@journeyapps/core-xml': ^5.0.0
       '@journeyapps/evaluator': ^6.2.1
       '@journeyapps/parser-common': ^7.2.1
@@ -115,23 +118,23 @@ importers:
       uuid: 3.4.0
       xmldom: 0.1.31
     devDependencies:
-      '@journeyapps/core-test-helpers': 2.30.1-dev.814c88b.5338451
+      '@journeyapps/core-test-helpers': link:../test-helpers
       '@types/uuid': 3.4.10
       fetch-mock: 5.13.1
       websql: 2.0.3
 
   journeyapps-evaluator:
     specifiers:
-      '@journeyapps/core-test-helpers': ^2.30.1-dev.814c88b.5338451
+      '@journeyapps/core-test-helpers': link:../test-helpers
       '@journeyapps/core-xml': ^5.0.0
     dependencies:
       '@journeyapps/core-xml': link:../journeyapps-core-xml
     devDependencies:
-      '@journeyapps/core-test-helpers': 2.30.1-dev.814c88b.5338451
+      '@journeyapps/core-test-helpers': link:../test-helpers
 
   journeyapps-parser-common:
     specifiers:
-      '@journeyapps/core-test-helpers': ^2.30.1-dev.814c88b.5338451
+      '@journeyapps/core-test-helpers': link:../test-helpers
       '@journeyapps/core-xml': ^5.0.0
       '@journeyapps/domparser': ^0.3.0
       '@journeyapps/evaluator': ^6.2.1
@@ -142,11 +145,11 @@ importers:
       '@journeyapps/evaluator': link:../journeyapps-evaluator
       io-ts: 1.10.4
     devDependencies:
-      '@journeyapps/core-test-helpers': 2.30.1-dev.814c88b.5338451
+      '@journeyapps/core-test-helpers': link:../test-helpers
 
   journeyapps-parser-schema:
     specifiers:
-      '@journeyapps/core-test-helpers': ^2.30.1-dev.814c88b.5338451
+      '@journeyapps/core-test-helpers': link:../test-helpers
       '@journeyapps/core-xml': ^5.0.0
       '@journeyapps/domparser': ^0.3.0
       '@journeyapps/evaluator': ^6.2.1
@@ -156,7 +159,7 @@ importers:
       '@journeyapps/evaluator': link:../journeyapps-evaluator
       '@journeyapps/parser-common': link:../journeyapps-parser-common
     devDependencies:
-      '@journeyapps/core-test-helpers': 2.30.1-dev.814c88b.5338451
+      '@journeyapps/core-test-helpers': link:../test-helpers
       '@journeyapps/domparser': 0.3.0
 
 packages:
@@ -250,10 +253,6 @@ packages:
       tar: 4.4.19
       unique-filename: 1.1.1
       which: 1.3.1
-    dev: true
-
-  /@journeyapps/core-test-helpers/2.30.1-dev.814c88b.5338451:
-    resolution: {integrity: sha512-TJXVPzlbamBWaK70mGCFIaFjcaeheUQyZdhhlnwPmGUcD0KTf4qWZvlTKiQZS2SebrQDJR0zYyevN27FkfweFg==}
     dev: true
 
   /@journeyapps/domparser/0.3.0:

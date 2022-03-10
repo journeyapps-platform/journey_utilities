@@ -21,6 +21,11 @@
     "dist/@types"
   ],
   "devDependencies": {
-    "@journeyapps/core-test-helpers": "^2.30.1-dev.814c88b.5338451"
+    "@journeyapps/core-test-helpers": "^4.1.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "@journeyapps/core-test-helpers": "link:../test-helpers"
+    }
   }
 }
