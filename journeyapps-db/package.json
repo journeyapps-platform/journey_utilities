@@ -8,7 +8,7 @@
   "appTypings": "./dist/app",
   "scripts": {
     "build": "../node_modules/.bin/tsc --build",
-    "test": "pnpm tsc -b test && pnpm test:node && pnpm test:browser",
+    "test": "tsc -b test && pnpm test:node && pnpm test:browser",
     "clean": "tsc -b --clean && tsc -b --clean test && rm -rf dist test/dist",
     "test:browser": "karma start karma.conf.js --single-run",
     "test:node": "jasmine test/dist/all.js"
