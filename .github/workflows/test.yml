@@ -30,5 +30,7 @@ jobs:
       - uses: browser-actions/setup-chrome@latest
       - name: Check Chrome
         run: chrome --version
-      - name: Test
-        run: pnpm test
+      - name: Run headless test
+        uses: GabrielBB/xvfb-action@v1
+        with:
+          run: pnpm test
