@@ -63,8 +63,8 @@ importers:
 
   journeyapps:
     specifiers:
-      '@journeyapps/core-date': ^5.2.0
-      '@journeyapps/db': ^7.2.1
+      '@journeyapps/core-date': ^5.2.1
+      '@journeyapps/db': ^7.2.2
     dependencies:
       '@journeyapps/core-date': link:../journeyapps-core-date
       '@journeyapps/db': link:../journeyapps-db
@@ -90,12 +90,12 @@ importers:
 
   journeyapps-db:
     specifiers:
-      '@journeyapps/core-date': ^5.2.0
+      '@journeyapps/core-date': ^5.2.1
       '@journeyapps/core-test-helpers': link:../test-helpers
-      '@journeyapps/core-xml': ^5.0.0
-      '@journeyapps/evaluator': ^6.2.1
-      '@journeyapps/parser-common': ^7.2.1
-      '@journeyapps/parser-schema': ^7.2.1
+      '@journeyapps/core-xml': ^5.0.1
+      '@journeyapps/evaluator': ^6.2.2
+      '@journeyapps/parser-common': ^7.2.2
+      '@journeyapps/parser-schema': ^7.2.2
       '@types/node-fetch': ^2.5.7
       '@types/uuid': ^3.4.5
       fetch-mock: ^5.9.4
@@ -126,7 +126,7 @@ importers:
   journeyapps-evaluator:
     specifiers:
       '@journeyapps/core-test-helpers': link:../test-helpers
-      '@journeyapps/core-xml': ^5.0.0
+      '@journeyapps/core-xml': ^5.0.1
     dependencies:
       '@journeyapps/core-xml': link:../journeyapps-core-xml
     devDependencies:
@@ -135,9 +135,9 @@ importers:
   journeyapps-parser-common:
     specifiers:
       '@journeyapps/core-test-helpers': link:../test-helpers
-      '@journeyapps/core-xml': ^5.0.0
+      '@journeyapps/core-xml': ^5.0.1
       '@journeyapps/domparser': ^0.3.0
-      '@journeyapps/evaluator': ^6.2.1
+      '@journeyapps/evaluator': ^6.2.2
       io-ts: ^1.8.6
     dependencies:
       '@journeyapps/core-xml': link:../journeyapps-core-xml
@@ -150,10 +150,10 @@ importers:
   journeyapps-parser-schema:
     specifiers:
       '@journeyapps/core-test-helpers': link:../test-helpers
-      '@journeyapps/core-xml': ^5.0.0
+      '@journeyapps/core-xml': ^5.0.1
       '@journeyapps/domparser': ^0.3.0
-      '@journeyapps/evaluator': ^6.2.1
-      '@journeyapps/parser-common': ^7.2.1
+      '@journeyapps/evaluator': ^6.2.2
+      '@journeyapps/parser-common': ^7.2.2
     dependencies:
       '@journeyapps/core-xml': link:../journeyapps-core-xml
       '@journeyapps/evaluator': link:../journeyapps-evaluator
