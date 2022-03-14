@@ -93,7 +93,6 @@ importers:
       '@journeyapps/core-date': ^5.2.0
       '@journeyapps/core-test-helpers': link:../test-helpers
       '@journeyapps/core-xml': ^5.0.0
-      '@journeyapps/db': 7.2.1
       '@journeyapps/evaluator': ^6.2.1
       '@journeyapps/parser-common': ^7.2.1
       '@journeyapps/parser-schema': ^7.2.1
@@ -120,7 +119,6 @@ importers:
       xmldom: 0.1.31
     devDependencies:
       '@journeyapps/core-test-helpers': link:../test-helpers
-      '@journeyapps/db': 'link:'
       '@types/uuid': 3.4.10
       fetch-mock: 5.13.1
       websql: 2.0.3

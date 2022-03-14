@@ -28,7 +28,6 @@
   },
   "devDependencies": {
     "@journeyapps/core-test-helpers": "^4.1.0",
-    "@journeyapps/db": "7.2.1",
     "@types/uuid": "^3.4.5",
     "fetch-mock": "^5.9.4",
     "websql": "^2.0.3"
@@ -38,8 +37,7 @@
   ],
   "pnpm": {
     "overrides": {
-      "@journeyapps/core-test-helpers": "link:../test-helpers",
-      "@journeyapps/db": "link:./"
+      "@journeyapps/core-test-helpers": "link:../test-helpers"
     }
   }
 }
