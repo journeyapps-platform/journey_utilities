@@ -11,7 +11,8 @@
       "build": "lerna run build",
       "clean": "rm -rf */dist */tsconfig.tsbuildinfo",
       "test": "lerna run test",
-      "watch": "tsc -b -w"
+      "watch": "tsc -b -w",
+      "version": "pnpm install --ignore-scripts && git add pnpm-lock.yaml"
     },
     "devDependencies": {
       "@journeyapps/domparser": "^0.3.0",
