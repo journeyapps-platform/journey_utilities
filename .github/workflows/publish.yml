@@ -33,9 +33,10 @@ jobs:
         run: pnpm install
       - name: Build
         run: pnpm build
-      - name: NPM config
+      - name: Authenticate
         run: |
-          npm config set '//registry.npmjs.org/:_authToken' "${NPM_TOKEN}"
+          echo "registry=http://registry.npmjs.org/" >> $HOME/.npmrc
+          echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> $HOME/.npmrc
           npm whoami
       - name: Publish Dev Dependencies
         run: | 
