@@ -37,6 +37,8 @@ jobs:
         run: |
           echo "registry=https://registry.npmjs.org/" >> $HOME/.npmrc
           echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> $HOME/.npmrc
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Publish Dev Dependencies
         run: | 
           VERSION=0.0.0-dev.$(git rev-parse --short "$GITHUB_SHA")
