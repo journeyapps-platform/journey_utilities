@@ -7,6 +7,7 @@ import { DOMParser, DOMImplementation } from '@journeyapps/domparser';
 if (typeof document != 'undefined') {
   // Browser - use the native DOMImplementation for DOM nodes,
   // and @journeyapps/domparser for parsing.
+  //@ts-ignore
   const implementation = document.implementation as DOMImplementation;
   const parser = new DOMParser({ implementation });
   const serializer = new XMLSerializer();

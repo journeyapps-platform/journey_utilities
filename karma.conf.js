@@ -3,6 +3,14 @@ module.exports = function (basepath) {
   return function (config) {
     config.set({
       basePath: basepath,
+      plugins: [
+        'karma-webpack',
+        'karma-sourcemap-loader',
+        'karma-jasmine',
+        'karma-chrome-launcher',
+        'karma-firefox-launcher'
+      ],
+      frameworks: ['webpack', 'sourcemap', 'jasmine'],
       preprocessors: {
         // All the tests are loaded via this. We preprocess with webpack.
         'dist/test/unit/all.js': ['webpack', 'sourcemap'],

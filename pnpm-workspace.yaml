@@ -1,0 +1,9 @@
+packages:
+  - 'journeyapps'
+  - 'journeyapps-core-date'
+  - 'journeyapps-core-xml'
+  - 'journeyapps-db'
+  - 'journeyapps-evaluator'
+  - 'journeyapps-parser-common'
+  - 'journeyapps-parser-schema'
+  - 'test-helpers'

@@ -1,0 +1,39 @@
+
+name: Test
+
+on:
+  pull_request:
+    branches: [ master, release ]
+
+jobs:
+  build:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@master
+      - uses: dcodeIO/setup-node-nvm@master
+        with:
+          node-version: v12.17.0
+      - uses: pnpm/action-setup@v2.1.0
+        with:
+          version: 6.32.3
+      - name: Authenticate
+        run: |
+          echo "registry=http://registry.npmjs.org/" >> .npmrc
+          echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> .npmrc
+          pnpm whoami
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Install Dependencies
+        run: pnpm install
+      - uses: browser-actions/setup-chrome@latest
+      - name: Check Chrome
+        run: chrome --version
+      - uses: browser-actions/setup-firefox@latest
+      - name: Check Firefox
+        run: firefox --version
+      - name: Run headless test
+        uses: GabrielBB/xvfb-action@v1
+        with:
+          run: pnpm test

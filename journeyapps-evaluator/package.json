@@ -6,7 +6,7 @@
   "typings": "./dist/@types/src/index",
   "scripts": {
     "build": "../node_modules/.bin/tsc --build",
-    "test": "yarn build && yarn test:node && yarn test:browser",
+    "test": "pnpm build && pnpm test:node && pnpm test:browser",
     "test:browser": "karma start karma.conf.js --single-run",
     "test:node": "jasmine dist/test/unit/all.js"
   },
@@ -16,5 +16,13 @@
   "files": [
     "dist/src",
     "dist/@types"
-  ]
+  ],
+  "devDependencies": {
+    "@journeyapps/core-test-helpers": "^4.1.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "@journeyapps/core-test-helpers": "link:../test-helpers"
+    }
+  }
 }

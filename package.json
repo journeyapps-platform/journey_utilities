@@ -11,8 +11,7 @@
       "build": "lerna run build",
       "clean": "rm -rf */dist */tsconfig.tsbuildinfo",
       "test": "lerna run test",
-      "watch": "tsc -b -w",
-      "build-and-publish-all": "yarn build && lerna publish"
+      "watch": "tsc -b -w"
     },
     "devDependencies": {
       "@journeyapps/domparser": "^0.3.0",
@@ -28,7 +27,7 @@
       "karma-mocha-reporter": "^2.2.5",
       "karma-script-launcher": "^1.0.0",
       "karma-sourcemap-loader": "^0.3.7",
-      "karma-webpack": "^4.0.2",
+      "karma-webpack": "^5.0.0",
       "lerna": "^3.20.2",
       "node-libs-browser": "^2.0.0",
       "raw-loader": "^3.1.0",
@@ -41,6 +40,11 @@
       "webpack-cli": "^3.3.9",
       "webpack-dev-server": "^3.8.1",
       "webpack-node-externals": "^1.7.2"
+    },
+    "pnpm": {
+      "overrides": {
+        "@journeyapps/core-test-helpers": "link:./test-helpers"
+      }
     }
   }
   
