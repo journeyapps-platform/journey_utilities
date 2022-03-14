@@ -1,6 +1,6 @@
 {
   "name": "@journeyapps/core-date",
-  "version": "5.2.0",
+  "version": "5.2.1",
   "description": "Journey JS library",
   "main": "./dist/src/index.js",
   "typings": "./dist/@types/src/index",
@@ -11,7 +11,7 @@
     "test:node": "jasmine dist/test/unit/all.js"
   },
   "devDependencies": {
-    "@journeyapps/core-test-helpers": "^4.1.0",
+    "@journeyapps/core-test-helpers": "^4.1.1",
     "moment": "^2.29.1"
   },
   "files": [

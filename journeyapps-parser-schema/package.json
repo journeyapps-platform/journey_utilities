@@ -1,6 +1,6 @@
 {
   "name": "@journeyapps/parser-schema",
-  "version": "7.2.1",
+  "version": "7.2.2",
   "description": "Journey JS library",
   "main": "./dist/src/index.js",
   "typings": "./dist/@types/src/index",
@@ -11,12 +11,12 @@
     "test:node": "jasmine dist/test/unit/all.bundle.js"
   },
   "dependencies": {
-    "@journeyapps/core-xml": "^5.0.0",
-    "@journeyapps/evaluator": "^6.2.1",
-    "@journeyapps/parser-common": "^7.2.1"
+    "@journeyapps/core-xml": "^5.0.1",
+    "@journeyapps/evaluator": "^6.2.2",
+    "@journeyapps/parser-common": "^7.2.2"
   },
   "devDependencies": {
-    "@journeyapps/core-test-helpers": "^4.1.0",
+    "@journeyapps/core-test-helpers": "^4.1.1",
     "@journeyapps/domparser": "^0.3.0"
   },
   "files": [
