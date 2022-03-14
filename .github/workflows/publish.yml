@@ -28,7 +28,9 @@ jobs:
         with:
           version: 6.32.3
       - name: Install Dependencies
-        run: pnpm install
+        uses: ./.github/ci/actions/npm-install
+        with:
+          client: pnpm
       - name: Build
         run: pnpm build
       - name: Publish Dependencies
