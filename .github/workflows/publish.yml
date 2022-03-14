@@ -5,6 +5,9 @@ on:
     branches:
       - master
 
+env:
+  SECRETS: ${{ toJSON(secrets) }}
+
 jobs:
   build:
     name: Publish
