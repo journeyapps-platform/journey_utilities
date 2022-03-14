@@ -38,8 +38,16 @@ jobs:
         run: pnpm install
       - name: Build
         run: pnpm build
+      - name: Publish Dev Dependencies
+        run: | 
+          GIT_HASH=$(git rev-parse --short "$GITHUB_SHA")
+          lerna version 0.0.0-dev.$GIT_HASH --no-private --exact --force-publish --no-push --no-git-tag-version --yes
+          lerna publish from-package --yes --npm-tag next --no-git-reset --ignore-scripts --no-verify-access
+        if: ${{ github.ref != 'refs/heads/master' }}
       - name: Publish Dependencies
-        uses: ./.github/ci/actions/lerna-publish
-        with:
-          dev: ${{ github.ref != 'refs/heads/master' }}
+        run: lerna publish from-package --yes --ignore-scripts --no-verify-access
+        if: ${{ github.ref == 'refs/heads/master' }}
+
+
+         
       
