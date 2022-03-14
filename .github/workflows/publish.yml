@@ -34,7 +34,9 @@ jobs:
       - name: Build
         run: pnpm build
       - name: NPM config
-        run: npm config set '//registry.npmjs.org/:_authToken' "${NPM_TOKEN}"
+        run: |
+          npm config set '//registry.npmjs.org/:_authToken' "${NPM_TOKEN}"
+          npm whoami
       - name: Publish Dev Dependencies
         run: | 
           VERSION=0.0.0-dev.$(git rev-parse --short "$GITHUB_SHA")
