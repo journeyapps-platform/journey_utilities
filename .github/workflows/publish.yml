@@ -40,8 +40,10 @@ jobs:
         run: pnpm build
       - name: Publish Dev Dependencies
         run: | 
-          GIT_HASH=$(git rev-parse --short "$GITHUB_SHA")
-          lerna version 0.0.0-dev.$GIT_HASH --no-private --exact --force-publish --no-push --no-git-tag-version --yes
+          VERSION=0.0.0-dev.$(git rev-parse --short "$GITHUB_SHA")
+          rm -rf .git
+          echo "Publishing "$VERSION
+          lerna version $VERSION --no-private --exact --force-publish --no-push --no-git-tag-version --yes
           lerna publish from-package --yes --npm-tag next --no-git-reset --ignore-scripts --no-verify-access
         if: ${{ github.ref != 'refs/heads/master' }}
       - name: Publish Dependencies
