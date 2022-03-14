@@ -11,3 +11,5 @@ test-dist
 tsconfig.tsbuildinfo
 
 .pnpm-debug.log
+
+.github/ci
