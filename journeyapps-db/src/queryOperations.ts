@@ -88,10 +88,16 @@ export class Operation implements Expression {
       if (compareDiff !== null) {
         return compareDiff === 0;
       }
+      if (Array.isArray(attributeValue) && !Array.isArray(this.value)) {
+        return false;
+      }
       return attributeValue == this.value;
     } else if (this.operator == '!=') {
       if (compareDiff !== null) {
         return compareDiff !== 0;
+      }
+      if (Array.isArray(attributeValue) && !Array.isArray(this.value)) {
+        return true;
       }
       return attributeValue != this.value;
     } else if (this.operator == '>') {

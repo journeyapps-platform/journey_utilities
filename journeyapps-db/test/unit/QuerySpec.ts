@@ -343,6 +343,12 @@ describe('Queries', function () {
       expect(eq7.evaluate({ attributes: { colours: ['red'] } })).toBe(false);
       expect(eq7.evaluate({ attributes: { colours: [] } })).toBe(false);
       expect(eq7.evaluate({ attributes: { } })).toBe(false);
+
+      const eq8 = new query.Operation(colours, '=', 'red');
+      expect(eq8.evaluate({ attributes: { colours: ['red'] } })).toBe(false);
+      expect(eq8.evaluate({ attributes: { colours: [] } })).toBe(false);
+      expect(eq8.evaluate({ attributes: { colours: ['red', 'green'] } })).toBe(false);
+      expect(eq8.evaluate({ attributes: { } })).toBe(false);
     });
 
     it('Day = Day', function() {
