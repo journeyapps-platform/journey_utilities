@@ -117,6 +117,15 @@ export class Operation implements Expression {
     } else if (this.operator == 'contains') {
       if (typeof attributeValue == 'string' && typeof this.value == 'string') {
         return attributeValue.toLowerCase().indexOf(this.value.toLowerCase()) >= 0;
+      } else if (Array.isArray(attributeValue) && Array.isArray(this.value)) {
+        for (let child of this.value) {
+          if (attributeValue!.indexOf(child) < 0) {
+            return false;
+          }
+        }
+        return true;
+      } else if (Array.isArray(attributeValue)) {
+        return attributeValue!.indexOf(this.value) >= 0;
       } else {
         return false;
       }
@@ -128,23 +137,40 @@ export class Operation implements Expression {
       }
     } else if (this.operator == 'in') {
       if (Array.isArray(this.value)) {
-        return (
-          this.value.findIndex((value) => {
-            const compared = compare(attributeValue, value);
-            return compared == 0 || (compared == null && value == attributeValue);
-          }) >= 0
-        );
+        if (Array.isArray(attributeValue)) {
+          return (
+            this.value.findIndex((value) => {
+              return attributeValue.indexOf(value) >= 0;
+            }) >= 0
+          );
+        } else {
+          return (
+            this.value.findIndex((value) => {
+              const compared = compare(attributeValue, value);
+              return compared == 0 || (compared == null && value == attributeValue);
+            }) >= 0
+          );
+        }
+
       } else {
         throw new Error("Array value is required for 'in' operator");
       }
     } else if (this.operator == 'not in') {
       if (Array.isArray(this.value)) {
-        return (
-          this.value.findIndex((value) => {
-            const compared = compare(attributeValue, value);
-            return compared == 0 || (compared == null && value == attributeValue);
-          }) == -1
-        );
+        if (Array.isArray(attributeValue)) {
+          return (
+            this.value.findIndex((value) => {
+              return attributeValue.indexOf(value) >= 0;
+            }) == -1
+          );
+        } else {
+          return (
+            this.value.findIndex((value) => {
+              const compared = compare(attributeValue, value);
+              return compared == 0 || (compared == null && value == attributeValue);
+            }) == -1
+          );
+        }
       } else {
         throw new Error("Array value is required for 'not in' operator");
       }
@@ -191,6 +217,17 @@ function compare(a: any, b: any) {
     } catch (err) {
       compareDiff = null;
     }
+  } else if (Array.isArray(a) && Array.isArray(b)) {
+    if (a.length != b.length) {
+      return null;
+    }
+    for (let i = 0; i < a.length && i < b.length; i++) {
+      const child = compare(a[i], b[i]);
+      if (child != 0) {
+        return null;
+      }
+    }
+    return 0;
   }
   return compareDiff;
 }
