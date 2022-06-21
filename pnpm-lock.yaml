@@ -64,7 +64,7 @@ importers:
   journeyapps:
     specifiers:
       '@journeyapps/core-date': ^5.2.1
-      '@journeyapps/db': ^7.2.2
+      '@journeyapps/db': ^7.3.0
     dependencies:
       '@journeyapps/core-date': link:../journeyapps-core-date
       '@journeyapps/db': link:../journeyapps-db

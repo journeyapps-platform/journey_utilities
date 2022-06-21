@@ -17,6 +17,10 @@ describe('Queries', function () {
   const peterId = 'b0b278a4-beea-11e3-b97a-e0db55d54387';
 
   const colour = new schema.Variable('colour', schema.primitive('text'));
+  const colours = new schema.Variable('colours', schema.primitive('multiple-choice'));
+  colours.type.addOption('red', 'Red', 0);
+  colours.type.addOption('green', 'Green', 1);
+  colours.type.addOption('blue', 'Blue', 2);
   const number = new schema.Variable('number', schema.primitive('integer'));
   const date = new schema.Variable('date', schema.primitive('date'));
   const day = new schema.Variable('day', schema.primitive('date'));
@@ -40,6 +44,7 @@ describe('Queries', function () {
     scope.addAttribute(colour);
     scope.addAttribute(owner);
     scope.addAttribute(ownerId);
+    scope.addAttribute(colours);
   });
 
   describe('Expression parsing', function() {
@@ -325,6 +330,25 @@ describe('Queries', function () {
       expect(eq5.evaluate({ attributes: { owner: peterId }, belongs_to: {} })).toBe(false);
       expect(eq5.evaluate({ attributes: {}, belongs_to: { owner: '12345' } })).toBe(false);
       expect(eq5.evaluate({ attributes: {}, belongs_to: { owner: null } })).toBe(false);
+
+      const eq6 = new query.Operation(colours, '=', ['red']);
+      expect(eq6.evaluate({ attributes: { colours: ['red'] } })).toBe(true);
+      expect(eq6.evaluate({ attributes: { colours: [] } })).toBe(false);
+      expect(eq6.evaluate({ attributes: { colours: ['red', 'green'] } })).toBe(false);
+      expect(eq6.evaluate({ attributes: { } })).toBe(false);
+
+      const eq7 = new query.Operation(colours, '=', ['red', 'green']);
+      expect(eq7.evaluate({ attributes: { colours: ['red', 'green'] } })).toBe(true);
+      expect(eq7.evaluate({ attributes: { colours: ['green', 'red'] } })).toBe(false);
+      expect(eq7.evaluate({ attributes: { colours: ['red'] } })).toBe(false);
+      expect(eq7.evaluate({ attributes: { colours: [] } })).toBe(false);
+      expect(eq7.evaluate({ attributes: { } })).toBe(false);
+
+      const eq8 = new query.Operation(colours, '=', 'red');
+      expect(eq8.evaluate({ attributes: { colours: ['red'] } })).toBe(false);
+      expect(eq8.evaluate({ attributes: { colours: [] } })).toBe(false);
+      expect(eq8.evaluate({ attributes: { colours: ['red', 'green'] } })).toBe(false);
+      expect(eq8.evaluate({ attributes: { } })).toBe(false);
     });
 
     it('Day = Day', function() {
@@ -392,6 +416,12 @@ describe('Queries', function () {
       expect(eq4.evaluate({ attributes: { owner: peterId }, belongs_to: {} })).toBe(true);
       expect(eq4.evaluate({ attributes: {}, belongs_to: { owner: '12345' } })).toBe(true);
       expect(eq4.evaluate({ attributes: {}, belongs_to: { owner: null } })).toBe(true);
+
+      const eq5 = new query.Operation(colours, '!=', ['red']);
+      expect(eq5.evaluate({ attributes: { colours: ['red'] } })).toBe(false);
+      expect(eq5.evaluate({ attributes: { colours: [] } })).toBe(true);
+      expect(eq5.evaluate({ attributes: { colours: ['red', 'green'] } })).toBe(true);
+      expect(eq5.evaluate({ attributes: { } })).toBe(true);
     });
 
     it('>', function() {
@@ -444,7 +474,13 @@ describe('Queries', function () {
       expect(eq3.evaluate({ attributes: { date: tuesday.toISOString() } })).toBe(true);
       expect(eq3.evaluate({ attributes: { date: monday.toISOString() } })).toBe(false);
       expect(eq3.evaluate({ attributes: { date: wednesday.toISOString() } })).toBe(true);
-      expect(eq2.evaluate({ attributes: {} })).toBe(false);
+      expect(eq3.evaluate({ attributes: {} })).toBe(false);
+
+      const eq4 = new query.Operation(colours, '>', ['red']);
+      expect(eq4.evaluate({ attributes: { colours: ['red'] } })).toBe(false);
+      expect(eq4.evaluate({ attributes: { colours: [] } })).toBe(false);
+      expect(eq4.evaluate({ attributes: { colours: ['red', 'green'] } })).toBe(false);
+      expect(eq4.evaluate({ attributes: { } })).toBe(false);
     });
 
     it('<', function() {
@@ -511,7 +547,68 @@ describe('Queries', function () {
       expect(eq2.evaluate({ attributes: { number: 1 } })).toBe(false);
       expect(eq2.evaluate({ attributes: { number: '1' } })).toBe(false);
       expect(eq2.evaluate({ attributes: {} })).toBe(false);
+
+      const eq3 = new query.Operation(colours, 'contains', 'red');
+      expect(eq3.evaluate({ attributes: { colours: ['red'] } })).toBe(true);
+      expect(eq3.evaluate({ attributes: { colours: [] } })).toBe(false);
+      expect(eq3.evaluate({ attributes: { colours: ['red', 'green'] } })).toBe(true);
+      expect(eq3.evaluate({ attributes: { colours: ['green', 'red'] } })).toBe(true);
+      expect(eq3.evaluate({ attributes: { } })).toBe(false);
+
+      const eq4 = new query.Operation(colours, 'contains', ['red', 'green']);
+      expect(eq4.evaluate({ attributes: { colours: ['red'] } })).toBe(false);
+      expect(eq4.evaluate({ attributes: { colours: [] } })).toBe(false);
+      expect(eq4.evaluate({ attributes: { colours: ['red', 'green'] } })).toBe(true);
+      expect(eq4.evaluate({ attributes: { colours: ['green', 'red'] } })).toBe(true);
+      expect(eq4.evaluate({ attributes: { colours: ['green', 'red', 'blue'] } })).toBe(true);
+      expect(eq4.evaluate({ attributes: { } })).toBe(false);
     });
+
+    it('in', function() {
+      const eq = new query.Operation(colour, 'in', [blue]);
+      expect(eq.evaluate({ attributes: { colour: 'blue' } })).toBe(true);
+      expect(eq.evaluate({ attributes: { colour: 'red' } })).toBe(false);
+      expect(eq.evaluate({ attributes: { colour: 1 } })).toBe(false);
+      expect(eq.evaluate({ attributes: {} })).toBe(false);
+
+      const eq2 = new query.Operation(colour, 'in', [blue, 'red']);
+      expect(eq2.evaluate({ attributes: { colour: 'blue' } })).toBe(true);
+      expect(eq2.evaluate({ attributes: { colour: 'red' } })).toBe(true);
+      expect(eq2.evaluate({ attributes: { colour: 1 } })).toBe(false);
+      expect(eq2.evaluate({ attributes: {} })).toBe(false);
+
+      const eq3 = new query.Operation(colours, 'in', [blue, 'red']);
+      expect(eq3.evaluate({ attributes: { colours: ['blue'] } })).toBe(true);
+      expect(eq3.evaluate({ attributes: { colours: ['red'] } })).toBe(true);
+      expect(eq3.evaluate({ attributes: { colours: ['red', 'green'] } })).toBe(true);
+      expect(eq3.evaluate({ attributes: { colours: ['green'] } })).toBe(false);
+      expect(eq3.evaluate({ attributes: { colours: ['bluer'] } })).toBe(false);
+      expect(eq3.evaluate({ attributes: { colours: [] } })).toBe(false);
+      expect(eq3.evaluate({ attributes: {} })).toBe(false);
+    });
+
+    it('not in', function() {
+      const eq = new query.Operation(colour, 'not in', [blue]);
+      expect(eq.evaluate({ attributes: { colour: 'blue' } })).toBe(false);
+      expect(eq.evaluate({ attributes: { colour: 'red' } })).toBe(true);
+      expect(eq.evaluate({ attributes: { colour: 1 } })).toBe(true);
+      expect(eq.evaluate({ attributes: {} })).toBe(true);
+
+      const eq2 = new query.Operation(colour, 'not in', [blue, 'red']);
+      expect(eq2.evaluate({ attributes: { colour: 'blue' } })).toBe(false);
+      expect(eq2.evaluate({ attributes: { colour: 'red' } })).toBe(false);
+      expect(eq2.evaluate({ attributes: { colour: 'green' } })).toBe(true);
+
+      const eq3 = new query.Operation(colours, 'not in', [blue, 'red']);
+      expect(eq3.evaluate({ attributes: { colours: ['blue'] } })).toBe(false);
+      expect(eq3.evaluate({ attributes: { colours: ['red'] } })).toBe(false);
+      expect(eq3.evaluate({ attributes: { colours: ['red', 'green'] } })).toBe(false);
+      expect(eq3.evaluate({ attributes: { colours: ['green'] } })).toBe(true);
+      expect(eq3.evaluate({ attributes: { colours: ['bluer'] } })).toBe(true);
+      expect(eq3.evaluate({ attributes: { colours: [] } })).toBe(true);
+      expect(eq3.evaluate({ attributes: {} })).toBe(true);
+    });
+
 
     it('starts with', function() {
       const eq = new query.Operation(colour, 'starts with', blue);

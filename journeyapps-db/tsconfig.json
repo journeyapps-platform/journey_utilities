@@ -9,8 +9,8 @@
     "./src/**/*.ts"
   ],
   "references": [
-    {
-      "path": "../journeyapps-evaluator"
-    }
+    { "path": "../journeyapps-evaluator" },
+    { "path": "../journeyapps-core-date" },
+    { "path": "../journeyapps-parser-schema" }
   ]
 }
