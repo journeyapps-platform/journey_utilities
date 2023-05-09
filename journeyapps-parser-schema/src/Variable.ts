@@ -29,7 +29,7 @@ export class Variable<T extends Type | TypeInterface = Type> {
   }
 
   toJSON() {
-    var result: VariableJsonType = {
+    const result: VariableJsonType = {
       name: this.name,
       type: undefined
     };

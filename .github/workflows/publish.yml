@@ -31,9 +31,6 @@ jobs:
       - name: PNPM install
         run: pnpm install --frozen-lockfile
 
-      - name: Build
-        run: pnpm build
-
       - name: Authenticate
         run: |
           echo "registry=https://registry.npmjs.org/" >> $HOME/.npmrc
@@ -41,8 +38,32 @@ jobs:
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Publish Dev Dependencies
-        if: ${{ github.ref != 'refs/heads/master' }
+      - id: is_dev
+        run: |
+          IS_DEV=${{ github.ref != 'refs/heads/master' && github.ref != 'refs/heads/changeset-release/master' }}
+          echo "value=$IS_DEV" >> $GITHUB_OUTPUT
+
+      - name: Has changesets
+        uses: actions/github-script@v6
+        id: changesetsCheck
+        with:
+          script: |
+            const script = async ({ core, require }) => {
+            const getChangesets = require('@changesets/read').default;
+              try {
+                const results = await getChangesets(process.cwd());
+                core.setOutput('hasChangesets', results.length === 0 ? 'false' : 'true');
+              } catch (e) {
+                core.setFailed(`Action failed with error ${e}`);
+              }
+            };
+            await script({ core, require });
+
+      - name: Build
+        run: pnpm build
+
+      - name: Publish dev packages
+        if: ${{ steps.changesetsCheck.outputs.hasChangesets == 'true' && steps.is_dev.outputs.value == 'true' }}
         run: |
           pnpm changeset version --no-git-tag --snapshot dev
           pnpm changeset publish --tag next
