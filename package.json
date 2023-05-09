@@ -8,11 +8,12 @@
       "test-helpers"
     ],
     "scripts": {
-      "build": "lerna run build",
+      "build": "pnpm -r build",
       "clean": "rm -rf */dist */tsconfig.tsbuildinfo",
-      "test": "lerna run test",
+      "test": "pnpm -r test",
       "watch": "tsc -b -w",
-      "version": "./scripts/postVersion.js"
+      "ci:publish": "changeset publish && git push --follow-tags",
+      "ci:version": "changeset version && pnpm install --no-frozen-lockfile"
     },
     "devDependencies": {
       "@journeyapps/domparser": "^0.3.0",
@@ -29,7 +30,6 @@
       "karma-script-launcher": "^1.0.0",
       "karma-sourcemap-loader": "^0.3.7",
       "karma-webpack": "^5.0.0",
-      "lerna": "^3.20.2",
       "node-libs-browser": "^2.0.0",
       "raw-loader": "^3.1.0",
       "run-sequence": "^1.2.2",

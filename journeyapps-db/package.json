@@ -1,7 +1,7 @@
 {
   "name": "@journeyapps/db",
   "version": "7.3.0",
-  "description": "Journey JS library",
+  "description": "Journey DB library",
   "main": "./dist/index.js",
   "browser": "./dist/browser.js",
   "typings": "./dist/index",
