@@ -21,13 +21,6 @@ jobs:
           ref: ${{github.event.pull_request.head.sha}}
           fetch-depth: 0
 
-      - uses: actions/checkout@v2
-        with:
-          repository: journeyapps-platform/ci-actions
-          token: ${{ secrets.GH_SHARED_TOKEN_2 }}
-          path: .github/ci
-          ref: v1
-
       - name: Setup NodeJS
         uses: actions/setup-node@v2
         with:
