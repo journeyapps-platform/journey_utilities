@@ -9,6 +9,7 @@ on:
 
 env:
   SECRETS: ${{ toJSON(secrets) }}
+  GITHUB_TOKEN: ${{ secrets.GH_SHARED_TOKEN_2 }}
 
 jobs:
   build:
@@ -17,14 +18,14 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          token: ${{ secrets.SHARED_GH_TOKEN_2 }}
+          token: ${{ secrets.GH_SHARED_TOKEN_2 }}
           ref: ${{github.event.pull_request.head.sha}}
           fetch-depth: 0
 
       - uses: actions/checkout@v3
         with:
           repository: journeyapps-platform/ci-actions
-          token: ${{ secrets.SHARED_GH_TOKEN_2 }}
+          token: ${{ secrets.GH_SHARED_TOKEN_2 }}
           path: .github/ci
           ref: v1
 
@@ -86,7 +87,7 @@ jobs:
           commit: "chore: update versions"
           title: "[Chore] update versions"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_SHARED_TOKEN_2 }}
 
       - name: Publish production packages.
         if: ${{ github.ref == 'refs/heads/master' && steps.changesets.outputs.hasChangesets == 'false' && success() }}

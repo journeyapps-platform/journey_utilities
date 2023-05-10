@@ -5,13 +5,20 @@ on:
   pull_request:
     branches: [ master, release ]
 
+env:
+  SECRETS: ${{ toJSON(secrets) }}
+  GITHUB_TOKEN: ${{ secrets.GH_SHARED_TOKEN_2 }}
+
 jobs:
   build:
     name: Test
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GH_SHARED_TOKEN_2 }}
+          ref: ${{github.event.pull_request.head.sha}}
+          fetch-depth: 0
 
       - name: Setup NodeJS
         uses: actions/setup-node@v2
