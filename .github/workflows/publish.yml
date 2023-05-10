@@ -15,11 +15,16 @@ jobs:
     name: Publish
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.SHARED_GH_TOKEN_2 }}
+          ref: ${{github.event.pull_request.head.sha}}
+          fetch-depth: 0
+
+      - uses: actions/checkout@v3
         with:
           repository: journeyapps-platform/ci-actions
-          token: ${{ secrets.GH_SHARED_TOKEN_2 }}
+          token: ${{ secrets.SHARED_GH_TOKEN_2 }}
           path: .github/ci
           ref: v1
 
