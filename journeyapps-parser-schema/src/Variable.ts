@@ -7,7 +7,7 @@ export interface VariableJsonType {
   name: string;
   type: string;
   label?: string;
-  [index: string]: any;
+  [key: string]: any;
 }
 
 // Variable constructor. A variable is simply a name and a type.
