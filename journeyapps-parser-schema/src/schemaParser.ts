@@ -111,9 +111,20 @@ const v3VariableDef = {
     ATTACHMENT_MEDIA_TYPES,
     "media must be 'any', or one of the specific allowed mime types."
   ),
-  _required: ['name', 'type'],
   minValue: deprecationWarning,
-  maxValue: deprecationWarning
+  maxValue: deprecationWarning,
+  _required: ['name', 'type']
+};
+
+const v3ParameterDef = {
+  name: xml.attribute.name,
+  type: xml.attribute.notBlank,
+  media: xml.attribute.optionList(
+    ATTACHMENT_MEDIA_TYPES,
+    "media must be 'any', or one of the specific allowed mime types."
+  ),
+  required: xml.attribute.optionList(['true', 'false']),
+  _required: ['name', 'type']
 };
 
 const v2PrimitiveMapping: { [index: string]: string } = {
@@ -184,6 +195,7 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
   const v3 = version.v3 === true;
   const v3p1 = version.v3_1 === true;
   const variableDef = v3 ? v3VariableDef : v2VariableDef;
+  const parameterDef = v3ParameterDef;
   const attributeDef = v3 ? v3AttributeDef : v2AttributeDef;
 
   let optionDef: {
@@ -834,7 +846,7 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
         element,
         {
           var: variableDef,
-          param: variableDef
+          param: parameterDef
         },
         errorHandler
       );
