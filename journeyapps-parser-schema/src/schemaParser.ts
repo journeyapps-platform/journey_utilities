@@ -3,6 +3,7 @@
 
 import { FormatString } from '@journeyapps/evaluator';
 import * as xml from '@journeyapps/core-xml';
+import { Parameter } from './Parameter';
 import { Schema } from './Schema';
 import { ObjectType } from './ObjectType';
 import { Type } from './Type';
@@ -838,7 +839,10 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
   }
 
   function parseField(element: XMLElement, isVariable: boolean) {
-    const variable = schema.variable<Type>();
+    const isParam = element.tagName == 'param';
+
+    let variable: Variable | Parameter = isParam ? schema.parameter<Type>() : schema.variable<Type>();
+
     recordSource(variable, element);
 
     if (isVariable) {
@@ -863,10 +867,15 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
 
     variable.name = getAttribute(element, 'name');
     variable.label = getAttribute(element, 'label');
-    var originalTypeName = getAttribute(element, 'type');
+    if (isParam) {
+      (variable as Parameter).required = getAttribute(element, 'required') === 'true';
+      (variable as Parameter).provideValue = getAttribute(element, 'provide-value');
+    }
+
+    const originalTypeName = getAttribute(element, 'type');
     variable.sourceTypeName = originalTypeName; // Useful for debugging info
 
-    var typeName = originalTypeName;
+    let typeName = originalTypeName;
     var subType = null;
 
     if (originalTypeName != null) {
@@ -1022,42 +1031,7 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
   };
 }
 
-export function parseJsonVariable(schema: Schema, attributeName: string, attributeData: any) {
-  if (attributeData.type == 'query') {
-    return schema.queryVariable(attributeName, attributeData.object);
-  } else if (attributeData.type == 'array') {
-    return schema.arrayVariable(attributeName, attributeData.object);
-  } else {
-    var variable = schema.variable(attributeName, attributeData.type);
-    variable.label = attributeData.label;
-
-    if (attributeData.spec) {
-      variable.type.spec = attributeData.spec;
-    }
-
-    if (attributeData.subType) {
-      variable.type.subType = attributeData.subType;
-    }
-
-    if (attributeData.type == 'date') {
-      variable.type.isDay = !!attributeData.isDay;
-    }
-
-    if (attributeData.options) {
-      for (let optionData of attributeData.options) {
-        variable.type.addOption(optionData.value, optionData.label, optionData.index);
-      }
-    }
-
-    return variable;
-  }
-}
-
-// Schema-free variable parsing
-// Used for indexes
-export function parseJsonField(attributeData: any) {
-  var type = primitive(attributeData.type);
-  var variable = new Variable(attributeData.name, type);
+function partialParseJsonVariable<V extends Variable = Variable>(variable: V, attributeData: any) {
   variable.label = attributeData.label;
 
   if (attributeData.spec) {
@@ -1077,13 +1051,41 @@ export function parseJsonField(attributeData: any) {
       variable.type.addOption(optionData.value, optionData.label, optionData.index);
     }
   }
+  return variable;
+}
 
+export function parseJsonVariable(schema: Schema, attributeName: string, attributeData: any) {
+  if (attributeData.type == 'query') {
+    return schema.queryVariable(attributeName, attributeData.object);
+  } else if (attributeData.type == 'array') {
+    return schema.arrayVariable(attributeName, attributeData.object);
+  } else {
+    const variable = schema.variable(attributeName, attributeData.type);
+    return partialParseJsonVariable(variable, attributeData);
+  }
+}
+
+export function parseJsonParameter(schema: Schema, parameterName: string, attributeData: any) {
+  const param = schema.parameter(parameterName, attributeData.type);
+  if (attributeData.required != null) {
+    param.required = attributeData.required;
+  }
+  if (attributeData.provideValue != null) {
+    param.provideValue = attributeData.provideValue;
+  }
+  return partialParseJsonVariable(param, attributeData);
+}
+
+// Schema-free variable parsing
+// Used for indexes
+export function parseJsonField(attributeData: any) {
+  var type = primitive(attributeData.type);
+  let variable = new Variable(attributeData.name, type);
   if (attributeData.relationship) {
     variable.relationship = attributeData.relationship;
     variable.isRelationshipId = attributeData.isRelationshipId;
   }
-
-  return variable;
+  return partialParseJsonVariable(variable, attributeData);
 }
 
 export function jsonParser(schema: Schema) {
