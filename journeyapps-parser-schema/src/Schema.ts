@@ -2,7 +2,6 @@
 // This module contains the logic for parsing and representing a schema in memory.
 
 import { Version, DEFAULT as DEFAULT_VERSION } from '@journeyapps/parser-common';
-import { Parameter } from './Parameter';
 import * as parser from './schemaParser';
 import { Variable } from './Variable';
 import { QueryType } from './QueryType';
@@ -50,16 +49,6 @@ export class Schema {
       return new Variable<T>(name, this.getType(type));
     } else {
       return new Variable<T>(name, type);
-    }
-  }
-
-  parameter<T extends TypeInterface = Type>(name?: string, type?: string): Parameter<T>;
-  parameter<T extends TypeInterface = Type>(name?: string, type?: T): Parameter<T>;
-  parameter<T extends TypeInterface = Type>(name?: string, type?: T | string): Parameter<T> {
-    if (typeof type === 'string') {
-      return new Parameter<T>(name, this.getType(type));
-    } else {
-      return new Parameter<T>(name, type);
     }
   }
 

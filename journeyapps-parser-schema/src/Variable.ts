@@ -22,6 +22,10 @@ export class Variable<T extends Type | TypeInterface = Type> {
   sourceTypeName?: string;
   sourceElement: XMLElement;
 
+  // Param specific attributes
+  required?: boolean;
+  provideValue?: string;
+
   constructor(name: string, type: T) {
     this.name = name;
     this.type = type;
@@ -48,6 +52,13 @@ export class Variable<T extends Type | TypeInterface = Type> {
     if (this.relationship != null) {
       result.relationship = this.relationship;
       result.isRelationshipId = this.isRelationshipId;
+    }
+
+    if (this.required != null) {
+      result.required = this.required;
+    }
+    if (this.provideValue != null) {
+      result.provideValue = this.provideValue;
     }
 
     return result;

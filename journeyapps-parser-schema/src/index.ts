@@ -9,5 +9,4 @@ export * from './Schema';
 export * from './schemaParser';
 export * from './schemaSerializer';
 export * from './Type';
-export * from './Parameter';
 export * from './Variable';

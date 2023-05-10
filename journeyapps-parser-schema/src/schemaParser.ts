@@ -3,7 +3,6 @@
 
 import { FormatString } from '@journeyapps/evaluator';
 import * as xml from '@journeyapps/core-xml';
-import { Parameter } from './Parameter';
 import { Schema } from './Schema';
 import { ObjectType } from './ObjectType';
 import { Type } from './Type';
@@ -841,7 +840,7 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
   function parseField(element: XMLElement, isVariable: boolean) {
     const isParam = element.tagName == 'param';
 
-    let variable: Variable | Parameter = isParam ? schema.parameter<Type>() : schema.variable<Type>();
+    const variable = schema.variable<Type>();
 
     recordSource(variable, element);
 
@@ -867,9 +866,10 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
 
     variable.name = getAttribute(element, 'name');
     variable.label = getAttribute(element, 'label');
+
     if (isParam) {
-      (variable as Parameter).required = getAttribute(element, 'required') === 'true';
-      (variable as Parameter).provideValue = getAttribute(element, 'provide-value');
+      variable.required = getAttribute(element, 'required') === 'true';
+      variable.provideValue = getAttribute(element, 'provide-value');
     }
 
     const originalTypeName = getAttribute(element, 'type');
@@ -1061,19 +1061,14 @@ export function parseJsonVariable(schema: Schema, attributeName: string, attribu
     return schema.arrayVariable(attributeName, attributeData.object);
   } else {
     const variable = schema.variable(attributeName, attributeData.type);
+    if (attributeData.required != null) {
+      variable.required = attributeData.required;
+    }
+    if (attributeData.provideValue != null) {
+      variable.provideValue = attributeData.provideValue;
+    }
     return partialParseJsonVariable(variable, attributeData);
   }
-}
-
-export function parseJsonParameter(schema: Schema, parameterName: string, attributeData: any) {
-  const param = schema.parameter(parameterName, attributeData.type);
-  if (attributeData.required != null) {
-    param.required = attributeData.required;
-  }
-  if (attributeData.provideValue != null) {
-    param.provideValue = attributeData.provideValue;
-  }
-  return partialParseJsonVariable(param, attributeData);
 }
 
 // Schema-free variable parsing
