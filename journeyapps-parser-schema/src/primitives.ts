@@ -1,6 +1,6 @@
-import { Variable } from './Variable';
-import { Type } from './Type';
-import { EnumOption } from './EnumOption';
+import { Variable } from './schema/Variable';
+import { Type } from './types/Type';
+import { EnumOption } from './schema/EnumOption';
 import { TypeInterface } from '@journeyapps/evaluator';
 
 export interface ChoicePrimitive extends TypeInterface {

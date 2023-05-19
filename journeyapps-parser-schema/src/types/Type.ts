@@ -1,5 +1,5 @@
-import { Variable } from './Variable';
-import { EnumOption } from './EnumOption';
+import { Variable } from '../schema/Variable';
+import { EnumOption } from '../schema/EnumOption';
 import { TypeInterface } from '@journeyapps/evaluator';
 
 // Base class for any type (attribute type, object type or view definition).

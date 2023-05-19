@@ -1,4 +1,4 @@
-import { ObjectType } from './ObjectType';
+import { ObjectType } from '../types/ObjectType';
 
 export class Relationship {
   /** one-to-many, many-to-many, one-to-one */

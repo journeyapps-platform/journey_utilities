@@ -1,5 +1,5 @@
-import { Type } from './Type';
-import { ObjectType } from './ObjectType';
+import { Type } from '../types/Type';
+import { ObjectType } from '../types/ObjectType';
 import { XMLElement } from '@journeyapps/domparser/types';
 import { TypeInterface } from '@journeyapps/evaluator';
 

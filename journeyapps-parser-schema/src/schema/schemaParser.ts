@@ -4,13 +4,13 @@
 import { FormatString } from '@journeyapps/evaluator';
 import * as xml from '@journeyapps/core-xml';
 import { Schema } from './Schema';
-import { ObjectType } from './ObjectType';
-import { Type } from './Type';
-import { primitive } from './primitives';
+import { ObjectType } from '../types/ObjectType';
+import { Type } from '../types/Type';
+import { primitive } from '../primitives';
 import { Variable } from './Variable';
 import { ParseErrors } from '@journeyapps/parser-common';
 import { XMLDocument, XMLElement } from '@journeyapps/domparser/types';
-import { validateFieldName, validateModelName } from './reservedNames';
+import { validateFieldName, validateModelName } from '../reservedNames';
 import { IndexDatabase, IndexDirection, ModelIndex, ModelIndexKey } from './ModelIndex';
 
 function parseElement(element: XMLElement, definitions: any, errorHandler: ParseErrors) {
