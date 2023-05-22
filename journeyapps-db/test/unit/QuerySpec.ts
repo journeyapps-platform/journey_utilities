@@ -7,7 +7,7 @@ import {
   DBIntegerType,
   DBMultipleChoiceType,
   DBTextType
-} from '../../src/types/primitives';
+} from '../../dist/types/primitives';
 import { Day } from '@journeyapps/core-date';
 import { Variable } from '@journeyapps/parser-schema';
 
