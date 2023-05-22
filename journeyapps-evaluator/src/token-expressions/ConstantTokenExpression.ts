@@ -2,7 +2,7 @@
  * Constant token expression.
  */
 import { TokenExpression } from './TokenExpression';
-import { FormatStringScope } from '../FormatStringScope';
+import { FormatStringScope } from '../format-string/FormatStringScope';
 
 export class ConstantTokenExpression extends TokenExpression {
   constructor(expression: string, start?: number) {

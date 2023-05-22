@@ -3,7 +3,7 @@
  */
 import { ShorthandTokenExpression } from './ShorthandTokenExpression';
 import { TokenExpression } from './TokenExpression';
-import { FormatStringScope } from '../FormatStringScope';
+import { FormatStringScope } from '../format-string/FormatStringScope';
 import { formatValueAsync } from '../tools';
 
 export class FormatShorthandTokenExpression extends TokenExpression {

@@ -3,7 +3,7 @@
  */
 import { TokenExpression } from './TokenExpression';
 import { ConstantTokenExpression } from './ConstantTokenExpression';
-import { FormatStringScope } from '../FormatStringScope';
+import { FormatStringScope } from '../format-string/FormatStringScope';
 
 export class LegacyFunctionTokenExpression extends TokenExpression {
   constructor(expression: string, start?: number) {

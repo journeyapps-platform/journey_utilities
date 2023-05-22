@@ -1,37 +1,18 @@
 import { Variable } from '../schema/Variable';
-import { EnumOption } from '../schema/EnumOption';
-import { TypeInterface } from '@journeyapps/evaluator';
+import { IVariable, TypeInterface } from '@journeyapps/evaluator';
 
 // Base class for any type (attribute type, object type or view definition).
 export class Type implements TypeInterface {
   name: string;
   attributes: { [index: string]: Variable };
   isPrimitiveType: boolean;
-
+  isObject: boolean;
   isCollection?: boolean;
-  isObject?: boolean;
-  isDay?: boolean;
-
-  // TODO: create proper subclasses to represent these
-  spec?: string;
-  subType?: string;
-  /** For attachments */
-  media?: string;
-  /** For attachments */
-  autoDownload?: boolean;
-
-  options: { [key: string]: EnumOption };
-  hasOptions?: boolean;
-  multipleOptions?: boolean;
 
   constructor(name: string, isPrimitive?: boolean) {
     this.name = name;
     this.attributes = {}; // Default value
     this.isPrimitiveType = isPrimitive || false;
-  }
-
-  stringify(): string {
-    return this.name;
   }
 
   // Given a variable, add it as an attribute to this type.
@@ -40,8 +21,8 @@ export class Type implements TypeInterface {
     this.attributes[attribute.name] = attribute;
   }
 
-  getType(expression: string): Type | null {
-    const variable = this.getVariable(expression);
+  getType<T extends TypeInterface = Type>(expression: string): T | null {
+    const variable = this.getVariable<T>(expression);
     if (variable == null) {
       return null;
     } else {
@@ -63,7 +44,7 @@ export class Type implements TypeInterface {
         isPrimitiveType: boolean;
         name: string;
       }[] = [];
-      for (var i = 0; i < arrayOfVariables.length; i++) {
+      for (let i = 0; i < arrayOfVariables.length; i++) {
         const variable = arrayOfVariables[i];
         if (variable == null) {
           arrayOfTypes.push(null);
@@ -85,25 +66,22 @@ export class Type implements TypeInterface {
     return this.attributes;
   }
 
-  // Given a value of this type and an optional format specifier, return a string version formatted according to
-  // the specifier. Subclasses should override this to implement their specific formatting.
-  format(value: any, format: string): string {
-    return value.toString();
-  }
-
-  getAttribute<T extends Type = Type>(name: string): Variable<T> | null {
-    return this.attributes[name] as Variable<T>;
+  getAttribute<T extends TypeInterface = TypeInterface, V extends IVariable<T> = Variable<T>>(name: string): V | null {
+    if (name in this.attributes) {
+      return this.attributes[name] as unknown as V;
+    }
+    return null;
   }
 
   // Given an expression, return an attribute/variable defined by the expression.
   // The expression should be dot-separated, such as `person` or `person.name`.
-  getVariable(expression: string): Variable {
+  getVariable<T extends TypeInterface = TypeInterface, V extends IVariable<T> = Variable<T>>(expression: string): V {
     if (expression == null || expression == 'null') {
       return null;
     }
     const dot = expression.indexOf('.');
     if (dot < 0) {
-      return this.getAttribute(expression);
+      return this.getAttribute(expression) as unknown as V;
     } else {
       const head = expression.substring(0, dot); // The first part of the expression
       const tail = expression.substring(dot + 1); // The rest of the expression
@@ -111,7 +89,7 @@ export class Type implements TypeInterface {
       if (child == null || child.type == null) {
         return null;
       } else {
-        return child.type.getVariable(tail);
+        return child.type.getVariable(tail) as unknown as V;
       }
     }
   }
@@ -136,7 +114,7 @@ export class Type implements TypeInterface {
       } else {
         const head = expression.substring(0, dot); // The first part of the expression
         const tail = expression.substring(dot + 1); // The rest of the expression
-        const child = mainObject.getAttribute(head);
+        const child = mainObject.getAttribute<Type>(head);
         if (child && child.type) {
           arrayOfVariables.push(child);
           mainObject = child.type;
@@ -159,35 +137,22 @@ export class Type implements TypeInterface {
     return arrayOfVariables.slice(n - 2);
   }
 
+  stringify(): string {
+    return this.name;
+  }
+
+  // Given a value of this type and an optional format specifier, return a string version formatted according to
+  // the specifier. Subclasses should override this to implement their specific formatting.
+  format(value: any, format: string): string {
+    return value.toString();
+  }
+
   valueOf() {
     return this.name;
   }
 
   toJSON(): any {
     return {};
-  }
-
-  // TODO: move to a subclass
-  addOption(value: any, label: string, index: number): EnumOption {
-    throw new Error('addOption is only for choice types');
-  }
-
-  // Implemented elsewhere
-
-  valueFromJSON(data: any): any {
-    throw new Error('Not implemented');
-  }
-
-  cast(value: any): any {
-    throw new Error('Not implemented');
-  }
-
-  clone(value: any): any {
-    throw new Error('Not implemented');
-  }
-
-  valueToJSON(value: any, options?: ValueSerializeOptions): any {
-    throw new Error('Not implemented');
   }
 }
 

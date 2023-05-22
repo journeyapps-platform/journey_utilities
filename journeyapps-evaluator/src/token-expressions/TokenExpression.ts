@@ -1,7 +1,7 @@
 /**
  * Abstract base token expression class.
  */
-import { FormatStringScope } from '../FormatStringScope';
+import { FormatStringScope } from '../format-string/FormatStringScope';
 
 export abstract class TokenExpression {
   expression: string;

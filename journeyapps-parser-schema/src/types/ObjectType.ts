@@ -1,11 +1,11 @@
 import { Type } from './Type';
-import { FormatString } from '@journeyapps/evaluator';
+import { FormatString, IVariable, TypeInterface } from '@journeyapps/evaluator';
 import { Variable } from '../schema/Variable';
 import { Relationship } from '../schema/Relationship';
 import { Schema } from '../schema/Schema';
 import { XMLElement } from '@journeyapps/domparser/types';
-import { primitive } from '../primitives';
 import { ModelIndex } from '../schema/ModelIndex';
+import { TextType } from './primitives';
 
 export class ObjectType extends Type {
   displayFormat: FormatString | null;
@@ -18,7 +18,7 @@ export class ObjectType extends Type {
   belongsToVars: { [index: string]: Variable };
   belongsToIdVars: { [index: string]: Variable };
   hasManyVars: { [index: string]: Variable };
-  idVar = new Variable('id', primitive('text'));
+  idVar: Variable<TextType>;
 
   /**
    * App and Cloud indexes.
@@ -50,23 +50,24 @@ export class ObjectType extends Type {
 
     this.notifyUsers = [];
 
+    this.idVar = new Variable('id', new TextType());
     this.isObject = true;
   }
 
   /**
    * Attribute or relationship variable.
    */
-  getAttribute<T extends Type = Type>(name: string): Variable<T> | null {
+  getAttribute<T extends TypeInterface = TypeInterface, V extends IVariable<T> = Variable<T>>(name: string): V | null {
     if (name in this.attributes) {
-      return this.attributes[name] as Variable<T>;
+      return super.getAttribute<T, V>(name);
     } else if (name in this.belongsToVars) {
-      return this.belongsToVars[name] as Variable<T>;
+      return this.belongsToVars[name] as unknown as V;
     } else if (name in this.belongsToIdVars) {
-      return this.belongsToIdVars[name] as Variable<T>;
+      return this.belongsToIdVars[name] as unknown as V;
     } else if (name in this.hasManyVars) {
-      return this.hasManyVars[name] as Variable<T>;
+      return this.hasManyVars[name] as unknown as V;
     } else if (name == 'id') {
-      return this.idVar as Variable<T>;
+      return this.idVar as unknown as V;
     } else {
       return null;
     }
@@ -109,14 +110,14 @@ export class ObjectType extends Type {
   }
 
   addBelongsTo(options: { schema: Schema; type?: string; foreignName?: string; name: string }) {
-    var object = this;
-    var schema = options.schema;
-    var err;
-    var rel = new Relationship();
-    var typeName = options.type;
-    var foreignName = options.foreignName;
+    const object = this;
+    const schema = options.schema;
+    let err;
+    const rel = new Relationship();
+    const typeName = options.type;
+    const foreignName = options.foreignName;
     if (typeName != null) {
-      var name = options.name;
+      let name = options.name;
       if (name == null || name === '') {
         name = typeName;
       }
@@ -140,7 +141,7 @@ export class ObjectType extends Type {
         object.belongsToVars[name] = schema.variable(name, rel.foreignType);
         object.belongsToVars[name].relationship = name;
 
-        var idVar = schema.variable(name + '_id', 'text');
+        const idVar = schema.variable<ObjectType>(name + '_id', 'text');
         idVar.relationship = name;
         idVar.isBelongsToId = true;
         object.belongsToIdVars[idVar.name] = idVar;

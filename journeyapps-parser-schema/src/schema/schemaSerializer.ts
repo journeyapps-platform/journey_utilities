@@ -1,3 +1,4 @@
+import { AttachmentType, ChoiceType } from '../types/primitives';
 import { Schema } from './Schema';
 import { setAttributes, OrderedIncrementalUpdater } from '@journeyapps/core-xml';
 import { XMLElement, XMLDocument } from '@journeyapps/domparser/types';
@@ -30,8 +31,8 @@ export function toDOM(schema: Schema): XMLDocument {
             setAttributes(fieldElement, {
               name: attribute.name,
               label: attribute.label,
-              type: attribute.sourceTypeName || attribute.type.stringify(),
-              'auto-download': attribute.type.autoDownload ? 'true' : null
+              type: attribute.sourceTypeName || attribute.type?.stringify(),
+              'auto-download': (attribute.type as AttachmentType)?.autoDownload ? 'true' : null
             });
 
             // single-choice, single-choice-integer and boolean fields all may contain <option> children.
@@ -106,7 +107,7 @@ export function toDOM(schema: Schema): XMLDocument {
  * No-op for other fields.
  */
 export function updateOptions(fieldDiff: OrderedIncrementalUpdater, attribute: Variable) {
-  const options = attribute.type.options;
+  const options = ChoiceType.isInstanceOf(attribute.type) ? attribute.type.options : null;
   if (options == null) {
     return;
   }

@@ -1,22 +1,12 @@
-import { TypeInterface } from '@journeyapps/evaluator';
-
-export interface PrimitiveTypeOptions {}
+import { Type } from '../Type';
 
 // Create a base class for primitive types with a constructor creating a default instance of that type.
-export abstract class PrimitiveType implements TypeInterface {
-  name: string;
+export class PrimitiveType extends Type {
   isPrimitiveType: boolean;
-  objectType?: TypeInterface;
-  options: object;
+  subType?: string;
 
-  protected constructor(name: string) {
-    this.name = name;
+  constructor(name: string) {
+    super(name);
+    this.isPrimitiveType = true;
   }
-
-  abstract getType(expression: string): TypeInterface;
-  abstract getVariable(expression: string);
-  abstract getVariableTypeAndNameWithParent(expression: string);
-  abstract format(value: any, format?: string): string;
-  abstract toJSON(): any;
-  abstract stringify(): string;
 }

@@ -1,14 +1,12 @@
 // # schema module
 // This module contains the logic for parsing and representing a schema in memory.
-
 import { Version, DEFAULT as DEFAULT_VERSION } from '@journeyapps/parser-common';
 import * as parser from './schemaParser';
 import { Variable } from './Variable';
-import { QueryType } from '../types/QueryType';
-import { ArrayType } from '../types/ArrayType';
+import { QueryType } from '../types/collections/QueryType';
+import { ArrayType } from '../types/collections/ArrayType';
 import { ObjectType } from '../types/ObjectType';
-import { Type } from '../types/Type';
-import { primitives, primitive } from '../primitives';
+import { primitives, primitive, PrimitiveType } from '../types/primitives';
 import { Relationship } from './Relationship';
 import { ValidationError } from '@journeyapps/core-xml';
 import { XMLError, XMLElement } from '@journeyapps/domparser/types';
@@ -42,27 +40,27 @@ export class Schema {
   }
 
   /** Helper function to assist in creating variables */
-  variable<T extends TypeInterface = Type>(name?: string, type?: string): Variable<T>;
-  variable<T extends TypeInterface = Type>(name?: string, type?: T): Variable<T>;
-  variable<T extends TypeInterface = Type>(name?: string, type?: T | string): Variable<T> {
+  variable<T extends TypeInterface>(name?: string, type?: string): Variable<T>;
+  variable<T extends TypeInterface>(name?: string, type?: T): Variable<T>;
+  variable<T extends TypeInterface>(name?: string, type?: T | string): Variable<T> {
     if (typeof type === 'string') {
-      return new Variable<T>(name, this.getType(type));
+      return new Variable(name, this.getType(type) as unknown as T);
     } else {
-      return new Variable<T>(name, type);
+      return new Variable(name, type);
     }
   }
 
   /** Helper function to assist in creating query variables */
   queryVariable(name: string, typeName: string) {
-    var objectType = this.getType(typeName);
-    var queryType = new QueryType(objectType);
+    const objectType = this.getType(typeName) as ObjectType;
+    const queryType = new QueryType(objectType);
     return new Variable(name, queryType);
   }
 
   /** Helper function to assist in creating array variables */
   arrayVariable(name: string, typeName: string) {
-    var objectType = this.getType(typeName);
-    var arrayType = new ArrayType(objectType);
+    const objectType = this.getType(typeName) as ObjectType;
+    const arrayType = new ArrayType(objectType);
     return new Variable(name, arrayType);
   }
 
@@ -82,7 +80,7 @@ export class Schema {
       return this.objects[typeName];
     } else {
       // primitive
-      return new primitives[typeName]();
+      return primitive(typeName);
     }
   }
 
@@ -100,8 +98,8 @@ export class Schema {
     };
   }
 
-  primitive(name: string) {
-    return primitive(name);
+  primitive<T extends PrimitiveType = PrimitiveType>(name: string): T {
+    return primitive(name) as T;
   }
 }
 

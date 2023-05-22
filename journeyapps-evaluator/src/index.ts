@@ -6,9 +6,12 @@ export * from './token-expressions/PrimitiveConstantTokenExpression';
 export * from './token-expressions/ShorthandTokenExpression';
 export * from './token-expressions/TokenExpression';
 
-export * from './FormatString';
+export * from './definitions/ObjectRefInterface';
+export * from './definitions/TypeInterface';
+export * from './definitions/Variable';
+
+export * from './format-string/FormatString';
+export * from './format-string/FormatStringScope';
+export * from './format-string/VariableFormatStringScope';
+
 export * from './tools';
-export * from './TypeInterface';
-export * from './ObjectRefInterface';
-export * from './FormatStringScope';
-export * from './VariableFormatStringScope';

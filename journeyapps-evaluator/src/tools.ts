@@ -4,8 +4,8 @@ import { ConstantTokenExpression } from './token-expressions/ConstantTokenExpres
 import { FunctionTokenExpression } from './token-expressions/FunctionTokenExpression';
 import { ShorthandTokenExpression } from './token-expressions/ShorthandTokenExpression';
 import { FormatShorthandTokenExpression } from './token-expressions/FormatShorthandTokenExpression';
-import { FormatString } from './FormatString';
-import { TypeInterface } from './TypeInterface';
+import { FormatString } from './format-string/FormatString';
+import { TypeInterface } from './definitions/TypeInterface';
 import { LegacyFunctionTokenExpression } from './token-expressions/LegacyFunctionTokenExpression';
 
 export function unescape(s: string) {

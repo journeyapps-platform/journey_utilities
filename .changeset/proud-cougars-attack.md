@@ -2,4 +2,4 @@
 '@journeyapps/parser-schema': minor
 ---
 
-Impove schema defintions for view params and variables
+Improve schema definitions for view params and variables

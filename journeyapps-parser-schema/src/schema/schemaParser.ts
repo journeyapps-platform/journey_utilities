@@ -1,17 +1,25 @@
 // # schema module
 // Parser for v2 and v3 of the schema XML.
 
-import { FormatString } from '@journeyapps/evaluator';
 import * as xml from '@journeyapps/core-xml';
-import { Schema } from './Schema';
-import { ObjectType } from '../types/ObjectType';
-import { Type } from '../types/Type';
-import { primitive } from '../primitives';
-import { Variable } from './Variable';
-import { ParseErrors } from '@journeyapps/parser-common';
 import { XMLDocument, XMLElement } from '@journeyapps/domparser/types';
+import { FormatString } from '@journeyapps/evaluator';
+import { ParseErrors } from '@journeyapps/parser-common';
 import { validateFieldName, validateModelName } from '../reservedNames';
+import { ObjectType } from '../types/ObjectType';
+import {
+  AttachmentType,
+  BooleanType,
+  ChoiceType,
+  DateType,
+  primitive,
+  PrimitiveType,
+  TextType
+} from '../types/primitives';
+import { Type } from '../types/Type';
 import { IndexDatabase, IndexDirection, ModelIndex, ModelIndexKey } from './ModelIndex';
+import { Schema } from './Schema';
+import { Variable } from './Variable';
 
 function parseElement(element: XMLElement, definitions: any, errorHandler: ParseErrors) {
   const result = xml.parseElement(element, definitions);
@@ -281,7 +289,7 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
     schema.objects = {};
 
     // First pass - load the objects with attributes and display names
-    objects.forEach(function (element) {
+    objects.forEach((element) => {
       const object = parseObjectType(element);
       if (object.name != null) {
         if (object.name in schema.objects) {
@@ -297,18 +305,18 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
     });
 
     // Second pass - load the belongs_to relationships
-    objects.forEach(function (element) {
-      var name = getAttribute(element, 'name');
-      var object = schema.objects[name];
+    objects.forEach((element) => {
+      const name = getAttribute(element, 'name');
+      const object = schema.objects[name];
       if (object) {
         parseBelongsTo(object, element);
       }
     });
 
     // Third pass - load the has_many relationships and indexes
-    objects.forEach(function (element) {
-      var name = getAttribute(element, 'name');
-      var object = schema.objects[name];
+    objects.forEach((element) => {
+      const name = getAttribute(element, 'name');
+      const object = schema.objects[name];
       if (object) {
         parseHasMany(object, element);
         parseIndexes(object, element);
@@ -316,9 +324,9 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
     });
 
     // Fourth pass - display and webhooks
-    objects.forEach(function (element) {
-      var name = getAttribute(element, 'name');
-      var object = schema.objects[name];
+    objects.forEach((element) => {
+      const name = getAttribute(element, 'name');
+      const object = schema.objects[name];
       if (object) {
         parseDisplay(object, element);
         parseWebhooks(object, element);
@@ -328,7 +336,7 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
   }
 
   function parseObjectType(element: XMLElement) {
-    var object = schema.newObjectType();
+    const object = schema.newObjectType();
     recordSource(object, element);
 
     const modelDef = {
@@ -358,7 +366,7 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
     }
 
     // the ordering of the elements (elements can share a number and be interchangeable)
-    var allowedChildren = {
+    const allowedChildren = {
       [tag.field]: 1,
       [tag.belongsTo]: 2,
       [tag.hasMany]: 2,
@@ -376,7 +384,7 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
 
     // Processes model attributes
     const attributes = xml.children(element, tag.field);
-    attributes.forEach(function (attributeElement) {
+    attributes.forEach((attributeElement) => {
       const variable = parseField(attributeElement, false);
       if (object.attributes.hasOwnProperty(variable.name)) {
         const errorElement = xml.attributeNode(attributeElement, 'name') || attributeElement;
@@ -390,9 +398,9 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
   }
 
   function parseDisplay(object: ObjectType, element: XMLElement) {
-    var displayElements = xml.children(element, 'display');
+    const displayElements = xml.children(element, 'display');
     if (displayElements.length == 1) {
-      var displayElement = displayElements[0];
+      const displayElement = displayElements[0];
       parseElement(
         displayElement,
         {
@@ -402,8 +410,8 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
         },
         errorHandler
       );
-      var attribute = true;
-      var fmtString = getAttribute(displayElement, 'format');
+      let attribute = true;
+      let fmtString = getAttribute(displayElement, 'format');
       if (fmtString == null) {
         fmtString = displayElement.textContent;
         attribute = false;
@@ -412,8 +420,8 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
       if (options.recordSource) {
         object.displaySource = displayElement;
       }
-      var displayErrors = object.displayFormat.validate(object);
-      displayErrors.forEach(function (error) {
+      const displayErrors = object.displayFormat.validate(object);
+      displayErrors.forEach((error) => {
         if (attribute) {
           errorHandler.pushError(
             xml.attributeValuePosition(displayElement, 'format', error.start, error.end),
@@ -447,26 +455,26 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
       }
     };
 
-    xml.children(element, tag.belongsTo).forEach(function (e) {
+    xml.children(element, tag.belongsTo).forEach((e) => {
       parseElement(e, syntax, errorHandler);
 
       try {
-        var typeName = getAttribute(e, tag.relatedModel);
-        var name = getAttribute(e, 'name');
+        const typeName = getAttribute(e, tag.relatedModel);
+        let name = getAttribute(e, 'name');
         if (name == null || name === '') {
           name = typeName;
         }
         object.addBelongsTo({ name: name, type: typeName, schema: schema });
         recordSource(object.belongsToVars[name], e);
       } catch (err) {
-        var node = xml.attributeNode(e, err.attribute) || e;
+        const node = xml.attributeNode(e, err.attribute) || e;
         errorHandler.pushError(node, err.message);
       }
     });
   }
 
   function parseHasMany(object: ObjectType, element: XMLElement) {
-    var syntax = {
+    const syntax = {
       [tag.hasMany]: {
         name: xml.attribute.name,
         [tag.inverseOf]: xml.attribute.notBlank,
@@ -475,23 +483,23 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
       }
     };
 
-    xml.children(element, tag.hasMany).forEach(function (e) {
+    xml.children(element, tag.hasMany).forEach((e) => {
       parseElement(e, syntax, errorHandler);
 
-      var typeName = getAttribute(e, tag.relatedModel);
-      var name = getAttribute(e, 'name');
+      const typeName = getAttribute(e, tag.relatedModel);
+      const name = getAttribute(e, 'name');
 
-      var inverseOf = getAttribute(e, tag.inverseOf);
+      const inverseOf = getAttribute(e, tag.inverseOf);
 
       if (typeName != null) {
-        var objectType = schema.objects[typeName];
+        const objectType = schema.objects[typeName];
         if (objectType == null) {
           errorHandler.pushError(
             xml.attributeNode(e, tag.relatedModel) || e,
             "Object '" + typeName + "' is not defined"
           );
         } else {
-          var rel = null;
+          let rel = null;
           if (inverseOf != null) {
             rel = objectType.belongsTo[inverseOf];
             if (rel == null) {
@@ -501,10 +509,10 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
               );
             }
           } else {
-            var candidates = [];
-            for (var key in objectType.belongsTo) {
+            const candidates = [];
+            for (const key in objectType.belongsTo) {
               if (objectType.belongsTo.hasOwnProperty(key)) {
-                var r = objectType.belongsTo[key];
+                const r = objectType.belongsTo[key];
                 if (r.foreignType === object) {
                   candidates.push(r);
                 }
@@ -526,8 +534,8 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
                   "'"
               );
             } else {
-              var names = [];
-              for (var i = 0; i < candidates.length; i++) {
+              const names = [];
+              for (let i = 0; i < candidates.length; i++) {
                 names.push(candidates[i].name);
               }
               errorHandler.pushError(
@@ -580,7 +588,7 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
       }
     };
 
-    xml.children(element, 'webhook').forEach(function (webhookElement) {
+    xml.children(element, 'webhook').forEach((webhookElement) => {
       parseElement(webhookElement, syntax, errorHandler);
 
       let webhook = {
@@ -638,7 +646,7 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
       };
 
       // iterate through all fields in webhook
-      xml.children(webhookElement, 'field').forEach(function (fieldElement) {
+      xml.children(webhookElement, 'field').forEach((fieldElement) => {
         const fieldName = getAttribute(fieldElement, 'name');
         // TODO: validate 'name'
 
@@ -688,7 +696,7 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
   }
 
   function parseNotifications(object: ObjectType, element: XMLElement) {
-    var syntax = {
+    const syntax = {
       'notify-user': {
         message: xml.attribute.notBlank,
         'received-field': xml.attribute.notBlank,
@@ -698,7 +706,7 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
       _required: ['message', 'received-field', 'recipient-field']
     };
 
-    xml.children(element, 'notify-user').forEach(function (notificationElement) {
+    xml.children(element, 'notify-user').forEach((notificationElement) => {
       parseElement(notificationElement, syntax, errorHandler);
 
       const notifyUserObject = {
@@ -713,7 +721,7 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
   }
 
   function parseIndexes(object: ObjectType, element: XMLElement) {
-    var indexDef = {
+    const indexDef = {
       index: {
         name: xml.attribute.name,
         on: xml.attribute.notBlank,
@@ -722,7 +730,7 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
       }
     };
 
-    xml.children(element, 'index').forEach(function (e) {
+    xml.children(element, 'index').forEach((e) => {
       parseElement(e, indexDef, errorHandler);
 
       const onAttribute = getAttribute(e, 'on');
@@ -775,13 +783,17 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
   }
 
   function parseIntegerOptions(type: Type, element: XMLElement) {
-    var index = 0;
-    var largest = -1;
-    xml.children(element, 'option').forEach(function (e) {
+    if (!ChoiceType.isInstanceOf(type)) {
+      errorHandler.pushError(element, 'Type mismatched, expected type that extends ChoiceType got ' + type.name);
+      return;
+    }
+    let index = 0;
+    let largest = -1;
+    xml.children(element, 'option').forEach((e) => {
       parseElement(e, optionDef, errorHandler);
-      var valueText = getAttribute(e, tag.optionKey);
-      var value = valueText == null ? largest + 1 : parseInt(valueText, 10);
-      var label = e.textContent;
+      const valueText = getAttribute(e, tag.optionKey);
+      const value = valueText == null ? largest + 1 : parseInt(valueText, 10);
+      const label = e.textContent;
       try {
         let enumOption = type.addOption(value, label, index);
         recordSource(enumOption, e);
@@ -794,11 +806,15 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
   }
 
   function parseStringOptions(type: Type, element: XMLElement) {
-    var index = 0;
-    xml.children(element, 'option').forEach(function (e) {
+    if (!ChoiceType.isInstanceOf(type)) {
+      errorHandler.pushError(element, 'Type mismatched, expected type that extends ChoiceType got ' + type.name);
+      return;
+    }
+    let index = 0;
+    xml.children(element, 'option').forEach((e) => {
       parseElement(e, optionDef, errorHandler);
-      var value = getAttribute(e, tag.optionKey);
-      var label = e.textContent;
+      const value = getAttribute(e, tag.optionKey);
+      const label = e.textContent;
       try {
         let enumOption = type.addOption(value, label, index);
         recordSource(enumOption, e);
@@ -810,8 +826,12 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
   }
 
   function parseBooleanOptions(type: Type, element: XMLElement) {
+    if (!BooleanType.isInstanceOf(type)) {
+      errorHandler.pushError(element, 'Type mismatched, expected Boolean got ' + type.name);
+      return;
+    }
     let index = 0;
-    xml.children(element, 'option').forEach(function (e) {
+    xml.children(element, 'option').forEach((e) => {
       parseElement(e, optionDef, errorHandler);
       const valueText = getAttribute(e, tag.optionKey);
       const value = ({ true: true, false: false } as any)[valueText];
@@ -837,10 +857,10 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
     }
   }
 
-  function parseField(element: XMLElement, isVariable: boolean) {
+  function parseField<T extends Type = Type>(element: XMLElement, isVariable: boolean): Variable<T> {
     const isParam = element.tagName == 'param';
 
-    const variable = schema.variable<Type>();
+    const variable = schema.variable();
 
     recordSource(variable, element);
 
@@ -876,10 +896,10 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
     variable.sourceTypeName = originalTypeName; // Useful for debugging info
 
     let typeName = originalTypeName;
-    var subType = null;
+    let subType = null;
 
     if (originalTypeName != null) {
-      var colon = originalTypeName.indexOf(':');
+      const colon = originalTypeName.indexOf(':');
       if (colon >= 0 && v3) {
         typeName = originalTypeName.substring(0, colon);
         subType = originalTypeName.substring(colon + 1);
@@ -899,8 +919,8 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
       }
     }
 
-    var query = false;
-    var array = false;
+    let query = false;
+    let array = false;
 
     if (isVariable) {
       if (v3 && typeName == 'query') {
@@ -914,7 +934,7 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
       }
     }
 
-    var primitiveType = null;
+    let primitiveType = null;
 
     if (v3) {
       if (!v3p1 && typeName == 'decimal') {
@@ -943,14 +963,12 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
     }
 
     if (primitiveType == null && isVariable) {
-      var objectType = schema.getType(typeName);
+      const objectType = schema.getType(typeName) as ObjectType | null;
       if (objectType != null) {
         if (query) {
-          var queryType = schema.queryType(objectType);
-          variable.type = queryType;
+          variable.type = schema.queryType(objectType);
         } else if (array) {
-          var arrayType = schema.arrayType(objectType);
-          variable.type = arrayType;
+          variable.type = schema.arrayType(objectType);
         } else {
           variable.type = objectType;
         }
@@ -958,15 +976,15 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
     } else if (primitiveType != null) {
       variable.type = primitiveType;
       if (typeName == 'text') {
-        variable.type.spec = getAttribute(element, 'spec');
+        (variable.type as TextType).spec = getAttribute(element, 'spec');
 
         if (v3 && subType) {
-          variable.type.subType = subType;
+          (variable.type as TextType).subType = subType;
 
           // For backwards compatibility
-          variable.type.spec = v3SpecMapping[subType];
+          (variable.type as TextType).spec = v3SpecMapping[subType];
 
-          if (variable.type.spec == null) {
+          if ((variable.type as TextType).spec == null) {
             errorHandler.pushError(
               xml.attributeNode(element, 'type'),
               "'" + subType + "' is not a valid string format"
@@ -974,16 +992,16 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
           }
         }
       } else if (typeName == 'date') {
-        variable.type.isDay = v3p1 ? true : false;
+        (variable.type as DateType).isDay = v3p1;
       } else if (typeName == 'single-choice-integer' || typeName == 'multiple-choice-integer') {
-        parseIntegerOptions(variable.type, element);
+        parseIntegerOptions(variable.type as ChoiceType, element);
       } else if (typeName == 'single-choice' || typeName == 'multiple-choice') {
-        parseStringOptions(variable.type, element);
+        parseStringOptions(variable.type as ChoiceType, element);
       } else if (typeName == 'boolean') {
-        parseBooleanOptions(variable.type, element);
+        parseBooleanOptions(variable.type as ChoiceType, element);
       } else if (originalTypeName == 'attachment') {
-        variable.type.media = getAttribute(element, 'media');
-        if (variable.type.media == null) {
+        (variable.type as AttachmentType).media = getAttribute(element, 'media');
+        if ((variable.type as AttachmentType).media == null) {
           if (v3) {
             errorHandler.pushError(
               element,
@@ -998,7 +1016,7 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
     }
 
     if (variable.type != null && variable.type.name == 'attachment') {
-      variable.type.autoDownload = getAttribute(element, 'auto-download') == 'true';
+      (variable.type as AttachmentType).autoDownload = getAttribute(element, 'auto-download') == 'true';
     }
 
     if (variable.type == null) {
@@ -1009,7 +1027,7 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
       }
     }
 
-    return variable;
+    return variable as Variable<T>;
   }
 
   function reset() {
@@ -1031,22 +1049,22 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
   };
 }
 
-function partialParseJsonVariable<V extends Variable = Variable>(variable: V, attributeData: any) {
+function partialParseJsonVariable(variable: Variable, attributeData: any) {
   variable.label = attributeData.label;
 
   if (attributeData.spec) {
-    variable.type.spec = attributeData.spec;
+    (variable.type as TextType).spec = attributeData.spec;
   }
 
   if (attributeData.subType) {
-    variable.type.subType = attributeData.subType;
+    (variable.type as PrimitiveType).subType = attributeData.subType;
   }
 
   if (attributeData.type == 'date') {
-    variable.type.isDay = !!attributeData.isDay;
+    (variable.type as DateType).isDay = !!attributeData.isDay;
   }
 
-  if (attributeData.options) {
+  if (attributeData.options && ChoiceType.isInstanceOf(variable.type)) {
     for (let optionData of attributeData.options) {
       variable.type.addOption(optionData.value, optionData.label, optionData.index);
     }
@@ -1074,7 +1092,7 @@ export function parseJsonVariable(schema: Schema, attributeName: string, attribu
 // Schema-free variable parsing
 // Used for indexes
 export function parseJsonField(attributeData: any) {
-  var type = primitive(attributeData.type);
+  const type = primitive(attributeData.type);
   let variable = new Variable(attributeData.name, type);
   if (attributeData.relationship) {
     variable.relationship = attributeData.relationship;
@@ -1111,29 +1129,29 @@ export function jsonParser(schema: Schema) {
     schema.objects = {};
 
     // First pass - load the objects with attributes and display names
-    Object.keys(data.objects).forEach(function (name) {
-      var objectData = data.objects[name];
-      var object = schema.newObjectType();
+    Object.keys(data.objects).forEach((name) => {
+      const objectData = data.objects[name];
+      const object = schema.newObjectType();
       object.name = name;
       object.label = objectData.label;
       object.displayFormat = new FormatString(objectData.display);
 
-      Object.keys(objectData.attributes).forEach(function (attributeName) {
-        var attributeData = objectData.attributes[attributeName];
-        var variable = parseJsonVariable(schema, attributeName, attributeData);
+      Object.keys(objectData.attributes).forEach((attributeName) => {
+        const attributeData = objectData.attributes[attributeName];
+        const variable = parseJsonVariable(schema, attributeName, attributeData);
         object.addAttribute(variable);
       });
 
       schema.objects[object.name] = object;
     });
 
-    Object.keys(data.objects).forEach(function (name) {
-      var objectData = data.objects[name];
-      var object = schema.objects[name];
+    Object.keys(data.objects).forEach((name) => {
+      const objectData = data.objects[name];
+      const object = schema.objects[name];
 
-      Object.keys(objectData.belongsTo).forEach(function (relName) {
-        var relData = objectData.belongsTo[relName];
-        var rel = object.addBelongsTo({
+      Object.keys(objectData.belongsTo).forEach((relName) => {
+        const relData = objectData.belongsTo[relName];
+        const rel = object.addBelongsTo({
           name: relName,
           type: relData.type,
           schema: schema,
