@@ -151,11 +151,23 @@ export class Type implements TypeInterface {
     return this.name;
   }
 
+  valueToJSON(value: any, options?: any) {
+    return value;
+  }
+
+  valueFromJSON(value: any) {
+    return value;
+  }
+
+  clone(value: any) {
+    return value;
+  }
+
+  cast(value: any) {
+    return value;
+  }
+
   toJSON(): any {
     return {};
   }
-}
-
-export interface ValueSerializeOptions {
-  inlineAttachments?: boolean;
 }

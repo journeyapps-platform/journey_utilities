@@ -12,7 +12,6 @@ describe('JourneyAPIAdapter', function () {
     baseUrl: 'http://test.test/api/v4/testaccount',
     token: 'testtoken'
   });
-
   const v3 = new Version('3.1');
   const schema = new Schema().loadXml(schema3Xml, { apiVersion: v3 });
 
@@ -21,8 +20,8 @@ describe('JourneyAPIAdapter', function () {
   });
 
   it('should get an object', async function () {
-    var url = 'http://test.test/api/v4/testaccount/objects/asset/123.json';
-    var mockData = {
+    const url = 'http://test.test/api/v4/testaccount/objects/asset/123.json';
+    const mockData = {
       id: '123',
       foo: 'bar',
       updated_at: '2016-03-08T15:00:00Z',
@@ -37,7 +36,7 @@ describe('JourneyAPIAdapter', function () {
       }
     };
     fetchMock.once(url, { body: mockData });
-    var data = await adapter.get('asset', '123');
+    const data = await adapter.get('asset', '123');
     expect(fetchMock.called(url)).toBe(true);
     expect(data).toEqual(
       jasmine.objectContaining({

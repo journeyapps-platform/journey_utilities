@@ -1,7 +1,7 @@
-import { ValueSerializeOptions } from '@journeyapps/parser-schema';
 import { Query } from '../../query/Query';
 import { ObjectData } from '../ObjectData';
 import { ExecuteBatchOperation, ExecuteBatchResult } from '../Batch';
+import { ValueSerializeOptions } from '../../types/Type';
 
 export interface DatabaseAdapter {
   batchLimit: number;

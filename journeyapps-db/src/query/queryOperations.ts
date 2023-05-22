@@ -7,8 +7,7 @@ import { Variable, Type, ObjectType } from '@journeyapps/parser-schema';
 import { Day } from '@journeyapps/core-date';
 
 import { ObjectData } from '../database/ObjectData';
-import { DBType, DBTypeInterface } from '../types/primitives';
-import { TypeInterface } from '@journeyapps/evaluator';
+import { DBType } from '../types/primitives';
 
 // Build an expression from a hash such as {make: 'Nokia', model: '5800'}
 export function expressionFromHash(scopeType: Type, hash: any): Expression {
@@ -43,12 +42,12 @@ export interface Expression {
   toOriginalExpression(): any[];
 }
 
-export class Operation<T extends DBTypeInterface = DBTypeInterface> implements Expression {
-  attribute: Variable<T>;
+export class Operation implements Expression {
+  attribute: Variable;
   operator: string;
   value: any;
 
-  constructor(attribute: Variable<T>, operator: string, value: any) {
+  constructor(attribute: Variable, operator: string, value: any) {
     this.attribute = attribute;
     this.operator = operator;
     this.value = value;

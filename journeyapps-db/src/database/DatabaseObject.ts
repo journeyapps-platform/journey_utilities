@@ -1,14 +1,13 @@
-import { ObjectType, Variable } from '@journeyapps/parser-schema';
+import { ObjectType } from '@journeyapps/parser-schema';
 import { Query } from '../query/Query';
-import { DBTypeInterface } from '../types/primitives';
 import { Batch, CrudError } from './Batch';
 import { RelationMatch } from '../query/queryOperations';
 import * as uuid from 'uuid/v4';
 import { ObjectData } from './ObjectData';
 import { GenericObject } from './GenericObject';
 import { DatabaseAdapter } from './adapters/DatabaseAdapter';
-import { VariableFormatStringScope } from '@journeyapps/evaluator';
 import * as j from '../JourneyPromise';
+import { VariableFormatStringScope } from '@journeyapps/evaluator';
 
 // type is the type object, not the name
 export class DatabaseObject {
@@ -145,7 +144,7 @@ export class DatabaseObject {
       if (data != null) {
         const resolveAttributes = data.attributes || {};
         Object.keys(type.attributes).forEach((key) => {
-          const attribute = type.attributes[key] as Variable<DBTypeInterface>;
+          const attribute = type.attributes[key];
           const value = resolveAttributes[key];
 
           // We don't override any attributes that have already been set.
@@ -332,7 +331,7 @@ export class DatabaseObject {
 
       let jsonAttributes: { [key: string]: any } = {};
       Object.keys(type.attributes).forEach((name) => {
-        const attribute = type.attributes[name] as Variable<DBTypeInterface>;
+        const attribute = type.attributes[name];
         const value = attributes[name];
         if (patch) {
           if (attributesDirty[name]) {
@@ -361,7 +360,7 @@ export class DatabaseObject {
     const blacklist = ['save', 'id', '_database', 'reload'];
 
     function setAttribute(name: string, value: any) {
-      const attribute = type.attributes[name] as Variable<DBTypeInterface>;
+      const attribute = type.attributes[name];
       if (attribute == null) {
         return;
       }

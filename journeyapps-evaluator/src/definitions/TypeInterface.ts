@@ -11,7 +11,12 @@ export interface TypeInterface {
     expression: string
   ): V | null;
   getVariableTypeAndNameWithParent(expression: string);
+  // Subclasses should override this to validate the value type. If the value is not a valid type, an Error must be thrown.
+  // `value` must not be null or undefined.
+  cast(value: any): any;
   format(value: any, format?: string): string;
   stringify(): string;
+  valueToJSON(value: any, options?: any): any;
+  valueFromJSON(value: any): any;
   toJSON(): any;
 }
