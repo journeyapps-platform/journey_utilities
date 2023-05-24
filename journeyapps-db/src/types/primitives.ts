@@ -188,20 +188,30 @@ primitive[PrimitiveType.NUMBER].prototype.format = function (value: any, format:
   }
 };
 
-primitive[PrimitiveType.NUMBER].prototype.cast = (value: string) => {
-  try {
-    return parseFloat(value);
-  } catch (e) {
-    throw new Error(value + ' is not a number');
+primitive[PrimitiveType.NUMBER].prototype.cast = (value: any) => {
+  if (typeof value == 'number') {
+    return value;
+  } else if (typeof value == 'string') {
+    try {
+      return parseFloat(value);
+    } catch (e) {
+      // fall through
+    }
   }
+  throw new Error(value + ' is not a number');
 };
 
 primitive[PrimitiveType.INTEGER].prototype.cast = function (value: any) {
   if (typeof value == 'number') {
     return Math.floor(value);
-  } else {
-    throw new Error(value + ' is not a integer');
+  } else if (typeof value == 'string') {
+    try {
+      return parseInt(value);
+    } catch (e) {
+      // fall through
+    }
   }
+  throw new Error(value + ' is not a integer');
 };
 
 /**
