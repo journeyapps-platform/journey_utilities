@@ -2,7 +2,7 @@ import { ObjectType } from '@journeyapps/parser-schema';
 import { Query } from '../query/Query';
 import { Batch, CrudError } from './Batch';
 import { RelationMatch } from '../query/queryOperations';
-import * as uuid from 'uuid/v4';
+import * as uuid from 'uuid';
 import { ObjectData } from '../types/ObjectData';
 import { GenericObject } from '../types/GenericObject';
 import { DatabaseAdapter } from './adapters/DatabaseAdapter';
@@ -100,7 +100,7 @@ export class DatabaseObject {
 
     if (id == null) {
       // New object
-      id = uuid();
+      id = uuid.v4();
       persisted = false;
     } else {
       // Existing object that is already loaded

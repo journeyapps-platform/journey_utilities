@@ -117,19 +117,19 @@ importers:
   journeyapps-db:
     dependencies:
       '@journeyapps/core-date':
-        specifier: ^5.2.1
+        specifier: workspace:*
         version: link:../journeyapps-core-date
       '@journeyapps/core-xml':
-        specifier: ^5.0.1
+        specifier: workspace:*
         version: link:../journeyapps-core-xml
       '@journeyapps/evaluator':
-        specifier: ^6.2.2
+        specifier: workspace:*
         version: link:../journeyapps-evaluator
       '@journeyapps/parser-common':
-        specifier: ^7.2.2
+        specifier: workspace:*
         version: link:../journeyapps-parser-common
       '@journeyapps/parser-schema':
-        specifier: ^7.2.2
+        specifier: workspace:*
         version: link:../journeyapps-parser-schema
       '@types/node-fetch':
         specifier: ^2.5.7
@@ -144,8 +144,8 @@ importers:
         specifier: ^2.24.0
         version: 2.29.1
       uuid:
-        specifier: ^3.3.3
-        version: 3.4.0
+        specifier: ^8.3.2
+        version: 8.3.2
       xmldom:
         specifier: ^0.1.27
         version: 0.1.31
@@ -153,9 +153,6 @@ importers:
       '@journeyapps/core-test-helpers':
         specifier: link:../test-helpers
         version: link:../test-helpers
-      '@types/uuid':
-        specifier: ^3.4.5
-        version: 3.4.10
       fetch-mock:
         specifier: ^5.9.4
         version: 5.13.1
@@ -575,10 +572,6 @@ packages:
 
   /@types/semver@6.2.3:
     resolution: {integrity: sha512-KQf+QAMWKMrtBMsB8/24w53tEsxllMj6TuA80TT/5igJalLI/zm0L3oXRbIAl4Ohfc85gyHX/jhMwsVkmhLU4A==}
-    dev: true
-
-  /@types/uuid@3.4.10:
-    resolution: {integrity: sha512-BgeaZuElf7DEYZhWYDTc/XcLZXdVgFkVSTa13BqKvbnmUrxr3TJFKofUxCtDO9UQOdhnV+HPOESdHiHKZOJV1A==}
     dev: true
 
   /@webassemblyjs/ast@1.9.0:
@@ -6689,11 +6682,11 @@ packages:
     resolution: {integrity: sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==}
     deprecated: Please upgrade  to version 7 or higher.  Older versions may use Math.random() in certain circumstances, which is known to be problematic.  See https://v8.dev/blog/math-random for details.
     hasBin: true
+    dev: true
 
   /uuid@8.3.2:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
     hasBin: true
-    dev: true
 
   /v8-compile-cache@2.3.0:
     resolution: {integrity: sha512-l8lCEmLcLYZh4nbunNZvQCJc5pv7+RCwa8q/LdUx8u7lsWvPDKmpodJAJNwkAhJC//dFY48KuIEmjtd4RViDrA==}

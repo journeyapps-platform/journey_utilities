@@ -1,5 +1,5 @@
 import { DatabaseAdapter } from '../database/adapters/DatabaseAdapter';
-import { ObjectType, QueryType } from '@journeyapps/parser-schema';
+import { ObjectType } from '@journeyapps/parser-schema';
 import { Expression, TrueExpression, expressionFromHash, parse as parseQuery, AndExpression } from './queryOperations';
 import { DatabaseObject } from '../database/DatabaseObject';
 import { Batch } from '../database/Batch';
@@ -439,10 +439,6 @@ function compare(a: any, b: any) {
     return 0;
   }
 }
-
-QueryType.prototype.clone = function (query: Query) {
-  return query._clone();
-};
 
 var globalFreshness = 0;
 

@@ -1,6 +1,7 @@
+import './types/primitives';
 // Everything from browser.ts, as well as OnlineDB
 export * from './browser';
 
 export * from './database/OnlineDB';
 
-import './types/primitives';
+export { primitives } from './types/primitives';

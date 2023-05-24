@@ -5,10 +5,10 @@ import {
   ValueSerializeOptions,
   PrimitiveType
 } from '@journeyapps/parser-schema';
-import { Day, pureDate } from '@journeyapps/core-date';
+import { Day, parseDateTime, pureDate } from '@journeyapps/core-date';
 import { Attachment, toBackendData } from './Attachment';
 import { Location } from './Location';
-import { isValid } from '../utils/uuid';
+import * as uuid from 'uuid';
 
 const moment = require('moment'); // tslint:disable-line
 
@@ -113,16 +113,7 @@ primitive[PrimitiveType.DATETIME].prototype.valueToJSON = function (value: any) 
 };
 
 primitive[PrimitiveType.DATETIME].prototype.valueFromJSON = (value: string) => {
-  if (typeof value == 'string') {
-    const parsed = Date.parse(value);
-    if (isNaN(parsed)) {
-      return null;
-    } else {
-      return new Date(parsed);
-    }
-  } else {
-    return null;
-  }
+  return parseDateTime(value);
 };
 
 primitive[PrimitiveType.DATETIME].prototype.clone = function (value: any) {
@@ -218,22 +209,6 @@ primitive[PrimitiveType.INTEGER].prototype.cast = function (value: any) {
  * Attachment type mixins
  */
 
-primitive[PrimitiveType.ATTACHMENT].prototype.cast = function (value: any) {
-  if (Attachment.isAttachment(value)) {
-    return value;
-  } else if (typeof value == 'string') {
-    if (!isValid(value)) {
-      throw new Error(value + ' is not a valid id');
-    } else {
-      return new Attachment(value);
-    }
-  } else if (typeof value == 'object') {
-    return new Attachment(value);
-  } else {
-    throw new Error(value + ' is not a valid id');
-  }
-};
-
 primitive[PrimitiveType.ATTACHMENT].prototype.valueToJSON = function (
   value: Attachment,
   options?: ValueSerializeOptions
@@ -250,6 +225,22 @@ primitive[PrimitiveType.ATTACHMENT].prototype.valueToJSON = function (
 primitive[PrimitiveType.ATTACHMENT].prototype.valueFromJSON = function (value: any) {
   if (value != null) {
     return new Attachment(value);
+  }
+};
+
+primitive[PrimitiveType.ATTACHMENT].prototype.cast = function (value: any) {
+  if (Attachment.isAttachment(value)) {
+    return value;
+  } else if (typeof value == 'string') {
+    if (!uuid.validate(value)) {
+      throw new Error(value + ' is not a valid id');
+    } else {
+      return new Attachment(value);
+    }
+  } else if (typeof value == 'object') {
+    return new Attachment(value);
+  } else {
+    throw new Error(value + ' is not a valid id');
   }
 };
 
@@ -399,4 +390,4 @@ primitive[PrimitiveType.MULTIPLE_CHOICE_INTEGER].prototype.format = formatMultip
 primitive[PrimitiveType.MULTIPLE_CHOICE].prototype.format = formatMultipleChoice;
 
 // Re-export
-export { Day, Attachment, Location };
+export { Day, Attachment, Location, primitive as primitives };
