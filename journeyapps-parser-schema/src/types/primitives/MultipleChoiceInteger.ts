@@ -1,7 +1,7 @@
 import { ChoiceType } from './ChoiceType';
 
 export class MultipleChoiceIntegerType extends ChoiceType {
-  static TYPE = 'multiple-choice-integer';
+  static readonly TYPE = 'multiple-choice-integer';
 
   constructor() {
     super(MultipleChoiceIntegerType.TYPE, { multiple: true });

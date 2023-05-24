@@ -6,7 +6,6 @@ import * as j from '../JourneyPromise';
 
 // ## Collection
 // This is the external interface for an object collection, as in `DB.asset`.
-
 export class Collection<T extends DatabaseObject = DatabaseObject> {
   type: ObjectType;
   adapter: DatabaseAdapter;

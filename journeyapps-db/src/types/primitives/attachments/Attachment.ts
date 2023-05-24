@@ -1,7 +1,7 @@
 import { AttachmentType } from '@journeyapps/parser-schema';
-import { Attachment, toBackendData } from '../../Attachment';
-import { isValid } from '../../utils/uuid';
-import { DBTypeMixin, ValueSerializeOptions } from '../Type';
+import { Attachment, toBackendData } from '../../../Attachment';
+import { isValid } from '../../../utils/uuid';
+import { DBTypeMixin, ValueSerializeOptions } from '../../Type';
 
 type GConstructor<T extends AttachmentType = AttachmentType> = new (...args: any[]) => T;
 

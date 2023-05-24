@@ -2,10 +2,10 @@ import { TypeInterface } from '@journeyapps/evaluator';
 import { PrimitiveType } from '../PrimitiveType';
 
 export class AttachmentType extends PrimitiveType {
-  static TYPE = 'attachment';
+  static readonly TYPE = 'attachment';
 
   static isInstanceOf(type: TypeInterface): type is AttachmentType {
-    return type?.name === AttachmentType.TYPE;
+    return type.name === AttachmentType.TYPE;
   }
 
   media?: string;

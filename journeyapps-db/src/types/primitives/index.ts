@@ -2,7 +2,7 @@ import { Day } from '@journeyapps/core-date';
 import { Attachment } from '../../Attachment';
 import { Location } from '../../Location';
 
-export * from './Attachment';
+export * from './attachments/Attachment';
 export * from './Boolean';
 export * from './Date';
 export * from './Datetime';

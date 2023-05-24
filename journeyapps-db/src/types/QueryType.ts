@@ -1,15 +1,17 @@
-import { QueryType } from '@journeyapps/parser-schema';
-import { DBTypeMixin } from './primitives';
+import { GenerateCollectionTypeEvent, QueryType, QueryTypeFactory } from '@journeyapps/parser-schema';
 import { Query } from '../query/Query';
+import { DBObjectType } from './ObjectType';
+import { DBTypeMixin } from './primitives';
 
-type GConstructor<T extends QueryType = QueryType> = new (...args: any[]) => T;
-
-export function DBQueryTypeMixin<TBase extends GConstructor>(Base: TBase) {
-  return class extends DBTypeMixin(Base) {
-    clone(query: Query) {
-      return query._clone();
-    }
-  };
+export class DBQueryType extends DBTypeMixin(QueryType) {
+  objectType: DBObjectType;
+  clone(query: Query) {
+    return query._clone();
+  }
 }
 
-export class DBQueryType extends DBQueryTypeMixin(QueryType) {}
+export class DBQueryTypeFactory extends QueryTypeFactory {
+  generate(event: GenerateCollectionTypeEvent) {
+    return new DBQueryType(event.objectType);
+  }
+}

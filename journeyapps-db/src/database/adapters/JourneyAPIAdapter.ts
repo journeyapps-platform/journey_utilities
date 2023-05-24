@@ -9,6 +9,7 @@ import { DBType } from '../../types/primitives';
 import { retryableFetch } from '../../utils/retryableFetch';
 import { ExecuteBatchOperation } from '../Batch';
 import { ObjectData, PersistedObjectData } from '../ObjectData';
+import { DBSchema } from '../Schema';
 
 import { BaseAdapter } from './BaseAdapter';
 
@@ -249,7 +250,7 @@ export class JourneyAPIAdapter extends BaseAdapter {
     }
     const xml = await response.text();
 
-    this.schema = new Schema();
+    this.schema = new DBSchema();
     this.schema.loadXml(xml, { apiVersion: new Version('4.0') });
   }
 

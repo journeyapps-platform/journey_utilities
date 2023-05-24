@@ -1,9 +1,9 @@
-import { Variable } from '../../schema/Variable';
+import { Variable } from '../Variable';
 import { NumberType } from './Number';
 import { PrimitiveType } from './PrimitiveType';
 
 export class LocationType extends PrimitiveType {
-  static TYPE = 'location';
+  static readonly TYPE = 'location';
 
   constructor() {
     super(LocationType.TYPE);

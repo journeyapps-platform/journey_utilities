@@ -1,7 +1,7 @@
 import { AttachmentType } from './Attachment';
 
 export class SignatureType extends AttachmentType {
-  static TYPE = 'signature';
+  static readonly SUB_TYPE = 'signature';
 
   constructor() {
     super();
@@ -9,6 +9,6 @@ export class SignatureType extends AttachmentType {
   }
 
   stringify(): string {
-    return SignatureType.TYPE;
+    return SignatureType.SUB_TYPE;
   }
 }

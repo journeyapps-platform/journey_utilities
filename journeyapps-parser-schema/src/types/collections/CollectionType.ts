@@ -1,5 +1,10 @@
+import { GenerateTypeEvent } from '../AbstractTypeFactory';
 import { ObjectType } from '../ObjectType';
 import { Type } from '../Type';
+
+export interface GenerateCollectionTypeEvent extends GenerateTypeEvent {
+  objectType: ObjectType;
+}
 
 /**
  * Collection type base class.

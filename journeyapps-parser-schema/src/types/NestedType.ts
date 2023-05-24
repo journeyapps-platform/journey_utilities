@@ -1,9 +1,10 @@
 import { TypeInterface } from '@journeyapps/evaluator';
 import { Schema } from '../schema/Schema';
 import { parseJsonVariable } from '../schema/schemaParser';
+import { AbstractTypeFactory, GenerateTypeEvent } from './AbstractTypeFactory';
 import { Type } from './Type';
 
-export class NestedType extends Type {
+export class NestedType<T extends TypeInterface = Type> extends Type {
   static TYPE = 'scope';
 
   static isInstanceOf(type: TypeInterface) {
@@ -21,7 +22,7 @@ export class NestedType extends Type {
     return type;
   }
 
-  constructor(public parent?: Type) {
+  constructor(public parent?: T) {
     super(NestedType.TYPE);
 
     if (this.parent) {
@@ -38,5 +39,22 @@ export class NestedType extends Type {
       }
     }
     return result;
+  }
+}
+
+export interface GenerateNestedTypeEvent<T extends Type> extends GenerateTypeEvent {
+  parent?: T;
+}
+
+export class NestedTypeFactory<T extends Type = Type> extends AbstractTypeFactory<
+  NestedType,
+  GenerateNestedTypeEvent<T>
+> {
+  constructor() {
+    super(NestedType.TYPE);
+  }
+
+  generate(event: GenerateNestedTypeEvent<T>) {
+    return new NestedType(event?.parent);
   }
 }

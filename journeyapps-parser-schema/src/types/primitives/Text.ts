@@ -2,7 +2,7 @@ import { TypeInterface } from '@journeyapps/evaluator';
 import { PrimitiveType } from './PrimitiveType';
 
 export class TextType extends PrimitiveType {
-  static TYPE = 'text';
+  static readonly TYPE = 'text';
 
   static isInstanceOf(type: TypeInterface): type is TextType {
     return type.name === TextType.TYPE;

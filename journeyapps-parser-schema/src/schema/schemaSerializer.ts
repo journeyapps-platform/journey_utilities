@@ -3,7 +3,7 @@ import { Schema } from './Schema';
 import { setAttributes, OrderedIncrementalUpdater } from '@journeyapps/core-xml';
 import { XMLElement, XMLDocument } from '@journeyapps/domparser/types';
 import * as xml from '@journeyapps/core-xml';
-import { Variable } from './Variable';
+import { Variable } from '../types/Variable';
 
 export function toDOM(schema: Schema): XMLDocument {
   let doc = xml.createDocument('data-model');

@@ -5,6 +5,7 @@
   "main": "./dist/src/index.js",
   "typings": "./dist/@types/src/index",
   "scripts": {
+    "clean": "rm -rf dist  && tsc -b --clean",
     "build": "../node_modules/.bin/tsc --build && rm -rf dist/test/fixtures && cp -R test/fixtures dist/test/fixtures && webpack --config ./test/webpack.config.js",
     "test": "pnpm build && pnpm test:node && pnpm test:browser",
     "test:browser": "karma start karma.conf.js --single-run",

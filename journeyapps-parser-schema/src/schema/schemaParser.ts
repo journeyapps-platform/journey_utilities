@@ -5,21 +5,13 @@ import * as xml from '@journeyapps/core-xml';
 import { XMLDocument, XMLElement } from '@journeyapps/domparser/types';
 import { FormatString } from '@journeyapps/evaluator';
 import { ParseErrors } from '@journeyapps/parser-common';
-import { validateFieldName, validateModelName } from '../reservedNames';
+import { validateFieldName, validateModelName } from './reservedNames';
 import { ObjectType } from '../types/ObjectType';
-import {
-  AttachmentType,
-  BooleanType,
-  ChoiceType,
-  DateType,
-  primitive,
-  PrimitiveType,
-  TextType
-} from '../types/primitives';
+import { AttachmentType, BooleanType, ChoiceType, DateType, PrimitiveType, TextType } from '../types/primitives';
 import { Type } from '../types/Type';
 import { IndexDatabase, IndexDirection, ModelIndex, ModelIndexKey } from './ModelIndex';
 import { Schema } from './Schema';
-import { Variable } from './Variable';
+import { Variable } from '../types/Variable';
 
 function parseElement(element: XMLElement, definitions: any, errorHandler: ParseErrors) {
   const result = xml.parseElement(element, definitions);
@@ -1091,8 +1083,8 @@ export function parseJsonVariable(schema: Schema, attributeName: string, attribu
 
 // Schema-free variable parsing
 // Used for indexes
-export function parseJsonField(attributeData: any) {
-  const type = primitive(attributeData.type);
+export function parseJsonField(schema: Schema, attributeData: any) {
+  const type = schema.primitive(attributeData.type);
   let variable = new Variable(attributeData.name, type);
   if (attributeData.relationship) {
     variable.relationship = attributeData.relationship;

@@ -9,3 +9,5 @@ export * from './Database';
 export * from './DatabaseObject';
 export * from './GenericDatabase';
 export * from './ObjectData';
+
+export * from './Schema';

@@ -1,7 +1,7 @@
 import { PrimitiveType } from './PrimitiveType';
 
 export class GeoTrackType extends PrimitiveType {
-  static TYPE = 'track';
+  static readonly TYPE = 'track';
 
   constructor() {
     super(GeoTrackType.TYPE);

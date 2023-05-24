@@ -1,8 +1,9 @@
-import { Variable } from '../schema/Variable';
-import { IVariable, TypeInterface } from '@journeyapps/evaluator';
+import { Variable } from './Variable';
+import { VariableTypeInterface, TypeInterface } from '@journeyapps/evaluator';
 
 // Base class for any type (attribute type, object type or view definition).
 export class Type implements TypeInterface {
+  static TYPE = 'type';
   name: string;
   attributes: { [index: string]: Variable };
   isPrimitiveType: boolean;
@@ -66,7 +67,9 @@ export class Type implements TypeInterface {
     return this.attributes;
   }
 
-  getAttribute<T extends TypeInterface = TypeInterface, V extends IVariable<T> = Variable<T>>(name: string): V | null {
+  getAttribute<T extends TypeInterface = TypeInterface, V extends VariableTypeInterface<T> = Variable<T>>(
+    name: string
+  ): V | null {
     if (name in this.attributes) {
       return this.attributes[name] as unknown as V;
     }
@@ -75,7 +78,9 @@ export class Type implements TypeInterface {
 
   // Given an expression, return an attribute/variable defined by the expression.
   // The expression should be dot-separated, such as `person` or `person.name`.
-  getVariable<T extends TypeInterface = TypeInterface, V extends IVariable<T> = Variable<T>>(expression: string): V {
+  getVariable<T extends TypeInterface = TypeInterface, V extends VariableTypeInterface<T> = Variable<T>>(
+    expression: string
+  ): V {
     if (expression == null || expression == 'null') {
       return null;
     }

@@ -1,9 +1,8 @@
 import { ApiAdapterOptions, JourneyAPIAdapter } from './adapters/JourneyAPIAdapter';
-
-import { Schema } from '@journeyapps/parser-schema';
 import { Version } from '@journeyapps/parser-common';
 import { ApiCredentialOptions, ApiCredentials } from '../credentials/ApiCredentials';
 import { Database } from './Database';
+import { DBSchema } from './Schema';
 
 export interface OnlineDBCredentials extends ApiCredentialOptions {
   adapter?: ApiAdapterOptions;
@@ -14,7 +13,7 @@ export function OnlineDB(options: OnlineDBCredentials) {
   const fs = require('fs');
 
   const datamodelXml = fs.readFileSync(options.dataModelPath, 'utf8');
-  const schema = new Schema().loadXml(datamodelXml, {
+  const schema = new DBSchema().loadXml(datamodelXml, {
     apiVersion: new Version('4.0')
   });
   const credentials = new ApiCredentials(options);

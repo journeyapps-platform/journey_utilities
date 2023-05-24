@@ -2,13 +2,13 @@
 // This is the external database interface, the `DB` object.
 import { ApiCredentialOptions, ApiCredentials } from '../credentials';
 import { JourneyAPIAdapter } from './adapters/JourneyAPIAdapter';
-import { Schema } from '@journeyapps/parser-schema';
 import { DatabaseAdapter } from './adapters/DatabaseAdapter';
 import { Collection, TypedCollection } from './Collection';
 import { Batch } from './Batch';
 import { GenericDatabase } from './GenericDatabase';
 import { DatabaseObject } from './DatabaseObject';
 import { Query } from '../query/Query';
+import { DBSchema } from './Schema';
 
 export class Database {
   /**
@@ -25,19 +25,19 @@ export class Database {
   }
 
   Batch: new () => Batch;
-  schema: Schema;
+  schema: DBSchema;
 
   /** @internal */
   _adapter: DatabaseAdapter; // tslint:disable-line
 
   static getTypedDatabase<T extends { [key: string]: {} }, U = { [K in keyof T]?: TypedCollection<T[K]> }>(
-    schema: Schema,
+    schema: DBSchema,
     adapter: DatabaseAdapter
   ): Database & U {
     return new Database(schema, adapter) as Database & U;
   }
 
-  constructor(schema: Schema, adapter: DatabaseAdapter) {
+  constructor(schema: DBSchema, adapter: DatabaseAdapter) {
     for (var name in schema.objects) {
       if (schema.objects.hasOwnProperty(name)) {
         (this as any as GenericDatabase)[name] = new Collection(adapter, schema.objects[name]);

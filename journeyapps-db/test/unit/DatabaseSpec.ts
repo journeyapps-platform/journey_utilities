@@ -9,7 +9,6 @@ import * as fetchMock from 'fetch-mock';
 import { hasWebSQL } from './databaseSetup';
 import { Collection, Database } from '../../dist';
 import { Attachment } from '../../dist/Attachment';
-import { GenericDatabase } from '../../src';
 
 if (hasWebSQL()) {
   describe('Database with WebSQLAdapter', DatabaseWebSQLSpec);

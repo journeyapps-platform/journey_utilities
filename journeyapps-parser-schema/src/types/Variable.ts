@@ -1,6 +1,8 @@
-import { ObjectType } from '../types/ObjectType';
+import { AbstractTypeFactory, GenerateTypeEvent } from './AbstractTypeFactory';
+import { ObjectType } from './ObjectType';
 import { XMLElement } from '@journeyapps/domparser/types';
-import { TypeInterface, IVariable } from '@journeyapps/evaluator';
+import { BaseType, TypeInterface, VariableTypeInterface } from '@journeyapps/evaluator';
+import { Type } from './Type';
 
 export interface VariableJsonType {
   name: string;
@@ -10,7 +12,8 @@ export interface VariableJsonType {
 }
 
 // Variable constructor. A variable is simply a name and a type.
-export class Variable<T extends TypeInterface = TypeInterface> implements IVariable<T> {
+export class Variable<T extends TypeInterface = Type> implements VariableTypeInterface<T> {
+  static TYPE = 'variable';
   name: string;
   type: T;
   errors: any[];
@@ -61,5 +64,23 @@ export class Variable<T extends TypeInterface = TypeInterface> implements IVaria
     }
 
     return result;
+  }
+}
+
+export interface GenerateVariableEvent<T extends TypeInterface> extends GenerateTypeEvent {
+  name: string;
+  type: T;
+}
+
+export class VariableTypeFactory<
+  T extends TypeInterface = Type,
+  V extends VariableTypeInterface<T> = Variable<T>
+> extends AbstractTypeFactory<V, GenerateVariableEvent<T>> {
+  constructor() {
+    super(Variable.TYPE);
+  }
+
+  generate(event: GenerateVariableEvent<T>): V {
+    return new Variable<T>(event.name, event.type) as unknown as V;
   }
 }

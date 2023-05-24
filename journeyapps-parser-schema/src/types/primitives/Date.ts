@@ -1,7 +1,7 @@
 import { PrimitiveType } from './PrimitiveType';
 
 export class DateType extends PrimitiveType {
-  static TYPE = 'date';
+  static readonly TYPE = 'date';
   isDay?: boolean;
 
   constructor() {

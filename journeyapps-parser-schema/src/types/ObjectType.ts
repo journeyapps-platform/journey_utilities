@@ -1,13 +1,23 @@
+import { AbstractTypeFactory, GenerateTypeEvent } from './AbstractTypeFactory';
 import { Type } from './Type';
-import { FormatString, IVariable, TypeInterface } from '@journeyapps/evaluator';
-import { Variable } from '../schema/Variable';
-import { Relationship } from '../schema/Relationship';
+import { FormatString, VariableTypeInterface, TypeInterface } from '@journeyapps/evaluator';
+import { Variable } from './Variable';
+import { Relationship } from './Relationship';
 import { Schema } from '../schema/Schema';
 import { XMLElement } from '@journeyapps/domparser/types';
 import { ModelIndex } from '../schema/ModelIndex';
 import { TextType } from './primitives';
 
+export interface NotificationConfig {
+  message: FormatString;
+  recipient: string;
+  received: string;
+  badgeCount: string;
+}
+
 export class ObjectType extends Type {
+  static TYPE = 'object';
+
   displayFormat: FormatString | null;
   displaySource?: XMLElement;
   label: string;
@@ -57,7 +67,9 @@ export class ObjectType extends Type {
   /**
    * Attribute or relationship variable.
    */
-  getAttribute<T extends TypeInterface = TypeInterface, V extends IVariable<T> = Variable<T>>(name: string): V | null {
+  getAttribute<T extends TypeInterface = TypeInterface, V extends VariableTypeInterface<T> = Variable<T>>(
+    name: string
+  ): V | null {
     if (name in this.attributes) {
       return super.getAttribute<T, V>(name);
     } else if (name in this.belongsToVars) {
@@ -138,10 +150,10 @@ export class ObjectType extends Type {
         object.belongsTo[name] = rel;
 
         // For type lookups
-        object.belongsToVars[name] = schema.variable(name, rel.foreignType);
+        object.belongsToVars[name] = schema.variable(name, rel.foreignType) as Variable<Type>;
         object.belongsToVars[name].relationship = name;
 
-        const idVar = schema.variable<ObjectType>(name + '_id', 'text');
+        const idVar = schema.variable(name + '_id', 'text');
         idVar.relationship = name;
         idVar.isBelongsToId = true;
         object.belongsToIdVars[idVar.name] = idVar;
@@ -158,9 +170,19 @@ export class ObjectType extends Type {
   }
 }
 
-export interface NotificationConfig {
-  message: FormatString;
-  recipient: string;
-  received: string;
-  badgeCount: string;
+export interface GenericObjectTypeEvent extends GenerateTypeEvent {
+  name?: string;
+}
+
+export class ObjectTypeFactory<T extends ObjectType = ObjectType> extends AbstractTypeFactory<
+  T,
+  GenericObjectTypeEvent
+> {
+  constructor() {
+    super(ObjectType.TYPE);
+  }
+
+  generate(event?: GenericObjectTypeEvent): T {
+    return new ObjectType(event?.name) as T;
+  }
 }

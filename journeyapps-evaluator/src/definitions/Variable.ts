@@ -1,8 +1,6 @@
-import { TypeInterface } from './TypeInterface';
+import { BaseType, TypeInterface } from './TypeInterface';
 
-export interface IVariable<T extends TypeInterface = TypeInterface> {
-  name: string;
+export interface VariableTypeInterface<T extends TypeInterface = TypeInterface> extends BaseType {
   type: T;
   label?: string;
-  toJSON(): Record<string, any>;
 }

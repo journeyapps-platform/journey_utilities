@@ -1,13 +1,17 @@
-import { IVariable } from './Variable';
+import { VariableTypeInterface } from './Variable';
 
-export interface TypeInterface {
+export interface BaseType {
   name: string;
+  toJSON(): any;
+}
+
+export interface TypeInterface extends BaseType {
   isPrimitiveType: boolean;
   isObject?: boolean;
   isCollection?: boolean;
-  attributes: { [index: string]: IVariable };
+  attributes: { [index: string]: VariableTypeInterface };
   getType<T extends TypeInterface = TypeInterface>(expression: string): T | null;
-  getVariable<T extends TypeInterface = TypeInterface, V extends IVariable<T> = IVariable<T>>(
+  getVariable<T extends TypeInterface = TypeInterface, V extends VariableTypeInterface<T> = VariableTypeInterface<T>>(
     expression: string
   ): V | null;
   getVariableTypeAndNameWithParent(expression: string);
@@ -18,5 +22,4 @@ export interface TypeInterface {
   stringify(): string;
   valueToJSON(value: any, options?: any): any;
   valueFromJSON(value: any): any;
-  toJSON(): any;
 }

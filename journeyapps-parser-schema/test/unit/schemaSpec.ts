@@ -4,7 +4,6 @@ import {
   parser3,
   jsonParser,
   parseJsonField,
-  primitives,
   SingleChoiceIntegerType,
   ObjectType,
   TextType,
@@ -91,7 +90,7 @@ describe('json parsing', function () {
   });
 
   it('should parse a field', function () {
-    const field = parseJsonField({
+    const field = parseJsonField(new Schema(), {
       name: 'serial_number',
       type: 'text',
       label: 'Serial Number',
@@ -109,7 +108,7 @@ describe('json parsing', function () {
   });
 
   it('should parse a date field', function () {
-    let field = parseJsonField({
+    let field = parseJsonField(new Schema(), {
       name: 'day',
       type: 'date'
     });
@@ -123,7 +122,7 @@ describe('json parsing', function () {
   });
 
   it('should parse a date field (isDay: true)', function () {
-    let field = parseJsonField({
+    let field = parseJsonField(new Schema(), {
       name: 'day',
       type: 'date',
       isDay: true
@@ -137,7 +136,7 @@ describe('json parsing', function () {
   });
 
   it('should parse a date field (isDay: false)', function () {
-    let field = parseJsonField({
+    let field = parseJsonField(new Schema(), {
       name: 'day',
       type: 'date',
       isDay: false
@@ -366,7 +365,8 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should load an object', function () {
-      const assetType = parser2(new Schema()).parseObjectType(
+      const s = new Schema();
+      const assetType = parser2(s).parseObjectType(
         xml(
           '<object name="asset" label="Asset">' +
             '<attribute name="serial_number" label="Serial Number" type="string" />' +
@@ -382,7 +382,7 @@ useDomParsers.forEach(function (useDomParser) {
       expect(serial).not.toEqual(null);
       expect(serial.name).toEqual('serial_number');
       expect(serial.label).toEqual('Serial Number');
-      expect(serial.type instanceof primitives.text).toBe(true);
+      expect(TextType.isInstanceOf(serial.type)).toBe(true);
     });
 
     ['2', '3'].forEach(function (v) {

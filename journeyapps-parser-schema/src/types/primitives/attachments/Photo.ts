@@ -1,7 +1,7 @@
 import { AttachmentType } from './Attachment';
 
 export class PhotoType extends AttachmentType {
-  static TYPE = 'photo';
+  static readonly SUB_TYPE = 'photo';
 
   constructor() {
     super();
@@ -9,6 +9,6 @@ export class PhotoType extends AttachmentType {
   }
 
   stringify(): string {
-    return PhotoType.TYPE;
+    return PhotoType.SUB_TYPE;
   }
 }
