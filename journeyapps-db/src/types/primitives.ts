@@ -189,9 +189,9 @@ primitive[PrimitiveType.NUMBER].prototype.format = function (value: any, format:
 };
 
 primitive[PrimitiveType.NUMBER].prototype.cast = (value: string) => {
-  if (typeof value == 'number') {
-    return value;
-  } else {
+  try {
+    return parseFloat(value);
+  } catch (e) {
     throw new Error(value + ' is not a number');
   }
 };

@@ -1,7 +1,7 @@
 import { ObjectType } from '@journeyapps/parser-schema';
 import { hasWebSQL } from './databaseSetup';
-import { DatabaseAdapter, WebSQLAdapter } from '../../dist/index';
-import { Query } from '../../dist/Query';
+import { WebSQLAdapter } from '../../dist/index';
+import { Query } from '../../dist/query/Query';
 import * as uuid from 'uuid/v1';
 
 if (hasWebSQL()) {
