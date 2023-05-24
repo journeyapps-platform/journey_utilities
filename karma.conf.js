@@ -1,4 +1,4 @@
-const isTravis = 'CI' in process.env;
+const isCI = 'CI' in process.env;
 module.exports = function (basepath) {
   return function (config) {
     config.set({
@@ -58,10 +58,10 @@ module.exports = function (basepath) {
     });
 
     //only do this stuff if we are in travis
-    if (isTravis) {
+    if (isCI) {
       config.set({
         reporters: ['dots'],
-        browsers: ['TravisChrome', 'Firefox'],
+        browsers: ['TravisChrome'],
         customLaunchers: {
           TravisChrome: {
             base: 'Chrome',

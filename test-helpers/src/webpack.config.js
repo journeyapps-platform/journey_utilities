@@ -32,8 +32,7 @@ module.exports = (dir) => {
     mode: 'development',
     resolve: {
       alias: {
-        'isomorphic-fetch': 'node-fetch',
-        sqlite3: require.resolve('sqlite3')
+        'isomorphic-fetch': 'node-fetch'
       }
     },
     plugins: [
