@@ -7,9 +7,9 @@
   "typings": "./dist/index",
   "appTypings": "./dist/app",
   "scripts": {
-    "build": "../node_modules/.bin/tsc --build",
+    "build": "tsc --build",
     "test": "tsc -b test && pnpm test:node && pnpm test:browser",
-    "clean": "tsc -b --clean && tsc -b --clean test && rm -rf dist test/dist",
+    "clean": "tsc -b test --clean && rm -rf dist test/dist",
     "test:browser": "karma start karma.conf.js --single-run",
     "test:node": "jasmine test/dist/all.js"
   },
@@ -30,13 +30,15 @@
     "@journeyapps/core-test-helpers": "^4.1.1",
     "@types/uuid": "^3.4.5",
     "fetch-mock": "^5.9.4",
-    "websql": "^2.0.3"
+    "websql": "^2.0.3",
+    "sqlite3": "^5.1.6"
   },
   "files": [
     "dist"
   ],
   "pnpm": {
     "overrides": {
+      "sqlite3": "5.1.6",
       "@journeyapps/core-test-helpers": "link:../test-helpers"
     }
   }

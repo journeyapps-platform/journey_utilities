@@ -192,10 +192,10 @@ primitive[PrimitiveType.NUMBER].prototype.cast = (value: any) => {
   if (typeof value == 'number') {
     return value;
   } else if (typeof value == 'string') {
-    try {
-      return parseFloat(value);
-    } catch (e) {
-      // fall through
+    // Try parse to float but throw if not a number
+    const parsed = parseFloat(value);
+    if (!isNaN(parsed)) {
+      return parsed;
     }
   }
   throw new Error(value + ' is not a number');
@@ -205,10 +205,10 @@ primitive[PrimitiveType.INTEGER].prototype.cast = function (value: any) {
   if (typeof value == 'number') {
     return Math.floor(value);
   } else if (typeof value == 'string') {
-    try {
-      return parseInt(value);
-    } catch (e) {
-      // fall through
+    // Try parse to int but throw if not a number
+    const parsed = parseInt(value, 10);
+    if (!isNaN(parsed)) {
+      return parsed;
     }
   }
   throw new Error(value + ' is not a integer');

@@ -3,13 +3,12 @@ module.exports = function (basepath) {
   return function (config) {
     config.set({
       basePath: basepath,
-      plugins: [
-        'karma-webpack',
-        'karma-sourcemap-loader',
-        'karma-jasmine',
-        'karma-chrome-launcher',
-        'karma-firefox-launcher'
-      ],
+      // Make Karma work with pnpm.
+      // See: https://github.com/pnpm/pnpm/issues/720#issuecomment-954120387
+      plugins: Object.keys(require('./package').devDependencies).flatMap((packageName) => {
+        if (!packageName.startsWith('karma-')) return [];
+        return [require(packageName)];
+      }),
       frameworks: ['webpack', 'sourcemap', 'jasmine'],
       preprocessors: {
         // All the tests are loaded via this. We preprocess with webpack.
