@@ -1,13 +1,13 @@
 import { ObjectType } from '@journeyapps/parser-schema';
-import { Query } from './Query';
+import { Query } from '../query/Query';
 import { Batch, CrudError } from './Batch';
-import { RelationMatch } from './queryOperations';
+import { RelationMatch } from '../query/queryOperations';
 import * as uuid from 'uuid/v4';
-import { ObjectData } from './ObjectData';
-import { GenericObject } from './GenericObject';
-import { DatabaseAdapter } from './DatabaseAdapter';
+import { ObjectData } from '../types/ObjectData';
+import { GenericObject } from '../types/GenericObject';
+import { DatabaseAdapter } from './adapters/DatabaseAdapter';
 import { VariableFormatStringScope } from '@journeyapps/evaluator';
-import * as j from './JourneyPromise';
+import * as j from '../utils/JourneyPromise';
 
 // type is the type object, not the name
 export class DatabaseObject {
@@ -655,31 +655,6 @@ export class DatabaseObject {
     return this._destroy();
   }
 }
-
-ObjectType.prototype.cast = function (value) {
-  if (typeof value != 'object') {
-    throw new Error(value + ' is not an object');
-  }
-  if (
-    value.type != null &&
-    value.type instanceof ObjectType &&
-    value.type.name == this.name &&
-    typeof value._save == 'function'
-  ) {
-    // This implies that value is (likely) also an instance of DatabaseObject.
-    return value;
-  } else {
-    throw new Error('Expected ' + value + ' to have type ' + this.name);
-  }
-};
-
-ObjectType.prototype.format = function (value, format) {
-  return value.toString();
-};
-
-ObjectType.prototype.clone = function (value) {
-  return value._clone();
-};
 
 function defineHiddenConstant(object: any, name: string, value: any) {
   Object.defineProperty(object, name, {

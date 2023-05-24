@@ -1,8 +1,8 @@
 import { DatabaseObject } from './DatabaseObject';
-import { DatabaseAdapter } from './DatabaseAdapter';
+import { DatabaseAdapter } from './adapters/DatabaseAdapter';
 import { Database } from './Database';
-import * as j from './JourneyPromise';
-import { ObjectData, PersistedObjectData } from './ObjectData';
+import * as j from '../utils/JourneyPromise';
+import { ObjectData, PersistedObjectData } from '../types/ObjectData';
 
 interface BatchOperation {
   object: DatabaseObject;

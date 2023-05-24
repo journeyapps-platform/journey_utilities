@@ -6,7 +6,7 @@
 import { Variable, Type } from '@journeyapps/parser-schema';
 import { Day } from '@journeyapps/core-date';
 
-import { ObjectData } from './ObjectData';
+import { ObjectData } from '../types/ObjectData';
 
 // Build an expression from a hash such as {make: 'Nokia', model: '5800'}
 export function expressionFromHash(scopeType: Type, hash: any): Expression {
@@ -157,7 +157,6 @@ export class Operation implements Expression {
             }) >= 0
           );
         }
-
       } else {
         throw new Error("Array value is required for 'in' operator");
       }

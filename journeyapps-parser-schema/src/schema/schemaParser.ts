@@ -4,10 +4,10 @@
 import { FormatString } from '@journeyapps/evaluator';
 import * as xml from '@journeyapps/core-xml';
 import { Schema } from './Schema';
-import { ObjectType } from './ObjectType';
-import { Type } from './Type';
-import { primitive } from './primitives';
-import { Variable } from './Variable';
+import { ObjectType } from '../types/ObjectType';
+import { Type } from '../types/Type';
+import { primitive, PrimitiveType } from '../types/primitives';
+import { Variable } from '../types/Variable';
 import { ParseErrors } from '@journeyapps/parser-common';
 import { XMLDocument, XMLElement } from '@journeyapps/domparser/types';
 import { validateFieldName, validateModelName } from './reservedNames';
@@ -128,15 +128,15 @@ const v3ParameterDef = {
 };
 
 const v2PrimitiveMapping: { [index: string]: string } = {
-  enum_set: 'multiple-choice-integer',
-  enum: 'single-choice-integer',
-  int: 'integer',
-  string: 'text',
-  attachment: 'attachment',
-  location: 'location',
-  decimal: 'number',
-  date: 'date',
-  datetime: 'datetime'
+  enum_set: PrimitiveType.MULTIPLE_CHOICE_INTEGER,
+  enum: PrimitiveType.SINGLE_CHOICE_INTEGER,
+  int: PrimitiveType.INTEGER,
+  string: PrimitiveType.TEXT,
+  attachment: PrimitiveType.ATTACHMENT,
+  location: PrimitiveType.LOCATION,
+  decimal: PrimitiveType.NUMBER,
+  date: PrimitiveType.DATE,
+  datetime: PrimitiveType.DATETIME
 };
 
 const v3SpecMapping: { [index: string]: string } = {
@@ -527,7 +527,7 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
               );
             } else {
               var names = [];
-              for (var i = 0; i < candidates.length; i++) {
+              for (let i = 0; i < candidates.length; i++) {
                 names.push(candidates[i].name);
               }
               errorHandler.pushError(
@@ -688,7 +688,7 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
   }
 
   function parseNotifications(object: ObjectType, element: XMLElement) {
-    var syntax = {
+    const syntax = {
       'notify-user': {
         message: xml.attribute.notBlank,
         'received-field': xml.attribute.notBlank,
@@ -713,7 +713,7 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
   }
 
   function parseIndexes(object: ObjectType, element: XMLElement) {
-    var indexDef = {
+    const indexDef = {
       index: {
         name: xml.attribute.name,
         on: xml.attribute.notBlank,
@@ -775,13 +775,13 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
   }
 
   function parseIntegerOptions(type: Type, element: XMLElement) {
-    var index = 0;
-    var largest = -1;
+    let index = 0;
+    let largest = -1;
     xml.children(element, 'option').forEach(function (e) {
       parseElement(e, optionDef, errorHandler);
-      var valueText = getAttribute(e, tag.optionKey);
-      var value = valueText == null ? largest + 1 : parseInt(valueText, 10);
-      var label = e.textContent;
+      const valueText = getAttribute(e, tag.optionKey);
+      const value = valueText == null ? largest + 1 : parseInt(valueText, 10);
+      const label = e.textContent;
       try {
         let enumOption = type.addOption(value, label, index);
         recordSource(enumOption, e);
@@ -794,11 +794,11 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
   }
 
   function parseStringOptions(type: Type, element: XMLElement) {
-    var index = 0;
+    let index = 0;
     xml.children(element, 'option').forEach(function (e) {
       parseElement(e, optionDef, errorHandler);
-      var value = getAttribute(e, tag.optionKey);
-      var label = e.textContent;
+      const value = getAttribute(e, tag.optionKey);
+      const label = e.textContent;
       try {
         let enumOption = type.addOption(value, label, index);
         recordSource(enumOption, e);
@@ -876,10 +876,10 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
     variable.sourceTypeName = originalTypeName; // Useful for debugging info
 
     let typeName = originalTypeName;
-    var subType = null;
+    let subType = null;
 
     if (originalTypeName != null) {
-      var colon = originalTypeName.indexOf(':');
+      const colon = originalTypeName.indexOf(':');
       if (colon >= 0 && v3) {
         typeName = originalTypeName.substring(0, colon);
         subType = originalTypeName.substring(colon + 1);
@@ -899,8 +899,8 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
       }
     }
 
-    var query = false;
-    var array = false;
+    let query = false;
+    let array = false;
 
     if (isVariable) {
       if (v3 && typeName == 'query') {
@@ -914,11 +914,11 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
       }
     }
 
-    var primitiveType = null;
+    let primitiveType = null;
 
     if (v3) {
       if (!v3p1 && typeName == 'decimal') {
-        typeName = 'number';
+        typeName = PrimitiveType.NUMBER;
       }
       primitiveType = schema.primitive(typeName);
     } else {
@@ -931,11 +931,11 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
     }
 
     if (
-      typeName == 'single-choice-integer' ||
-      typeName == 'multiple-choice-integer' ||
-      typeName == 'single-choice' ||
-      typeName == 'multiple-choice' ||
-      typeName == 'boolean'
+      typeName == PrimitiveType.SINGLE_CHOICE_INTEGER ||
+      typeName == PrimitiveType.MULTIPLE_CHOICE_INTEGER ||
+      typeName == PrimitiveType.SINGLE_CHOICE ||
+      typeName == PrimitiveType.MULTIPLE_CHOICE ||
+      typeName == PrimitiveType.BOOLEAN
     ) {
       errorHandler.pushErrors(xml.validateChildren(element, { option: 1 }));
     } else {
@@ -943,13 +943,13 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
     }
 
     if (primitiveType == null && isVariable) {
-      var objectType = schema.getType(typeName);
+      const objectType = schema.getType(typeName);
       if (objectType != null) {
         if (query) {
-          var queryType = schema.queryType(objectType);
+          const queryType = schema.queryType(objectType);
           variable.type = queryType;
         } else if (array) {
-          var arrayType = schema.arrayType(objectType);
+          const arrayType = schema.arrayType(objectType);
           variable.type = arrayType;
         } else {
           variable.type = objectType;
@@ -957,7 +957,7 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
       }
     } else if (primitiveType != null) {
       variable.type = primitiveType;
-      if (typeName == 'text') {
+      if (typeName == PrimitiveType.TEXT) {
         variable.type.spec = getAttribute(element, 'spec');
 
         if (v3 && subType) {
@@ -1074,7 +1074,7 @@ export function parseJsonVariable(schema: Schema, attributeName: string, attribu
 // Schema-free variable parsing
 // Used for indexes
 export function parseJsonField(attributeData: any) {
-  var type = primitive(attributeData.type);
+  const type = primitive(attributeData.type);
   let variable = new Variable(attributeData.name, type);
   if (attributeData.relationship) {
     variable.relationship = attributeData.relationship;
@@ -1112,15 +1112,15 @@ export function jsonParser(schema: Schema) {
 
     // First pass - load the objects with attributes and display names
     Object.keys(data.objects).forEach(function (name) {
-      var objectData = data.objects[name];
-      var object = schema.newObjectType();
+      const objectData = data.objects[name];
+      const object = schema.newObjectType();
       object.name = name;
       object.label = objectData.label;
       object.displayFormat = new FormatString(objectData.display);
 
       Object.keys(objectData.attributes).forEach(function (attributeName) {
-        var attributeData = objectData.attributes[attributeName];
-        var variable = parseJsonVariable(schema, attributeName, attributeData);
+        const attributeData = objectData.attributes[attributeName];
+        const variable = parseJsonVariable(schema, attributeName, attributeData);
         object.addAttribute(variable);
       });
 
@@ -1128,12 +1128,12 @@ export function jsonParser(schema: Schema) {
     });
 
     Object.keys(data.objects).forEach(function (name) {
-      var objectData = data.objects[name];
-      var object = schema.objects[name];
+      const objectData = data.objects[name];
+      const object = schema.objects[name];
 
       Object.keys(objectData.belongsTo).forEach(function (relName) {
-        var relData = objectData.belongsTo[relName];
-        var rel = object.addBelongsTo({
+        const relData = objectData.belongsTo[relName];
+        const rel = object.addBelongsTo({
           name: relName,
           type: relData.type,
           schema: schema,

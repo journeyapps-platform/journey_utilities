@@ -1,16 +1,15 @@
 import 'isomorphic-fetch';
-import { retryableFetch } from './utils/retryableFetch';
+import { retryableFetch } from '../utils/retryableFetch';
 import type { Response, RequestInit } from 'node-fetch';
 
-import { BaseAdapter } from './BaseAdapter';
+import { BaseAdapter } from './adapters/BaseAdapter';
 import { Schema, ObjectType, Variable, Relationship } from '@journeyapps/parser-schema';
 import { Version } from '@journeyapps/parser-common';
-import { Query } from './Query';
+import { Query } from '../query/Query';
 import { ExecuteBatchOperation } from './Batch';
-import { ObjectData, PersistedObjectData } from './ObjectData';
-import { ApiCredentials } from './credentials';
-import { DatabaseAdapter } from './DatabaseAdapter';
-import { Operation } from './queryOperations';
+import { ObjectData, PersistedObjectData } from '../types/ObjectData';
+import { ApiCredentials } from '../credentials';
+import { Operation } from '../query/queryOperations';
 
 export type { Response, RequestInit } from 'node-fetch';
 

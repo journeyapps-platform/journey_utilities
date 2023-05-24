@@ -1,14 +1,14 @@
 // ## Database
 // This is the external database interface, the `DB` object.
-import { ApiCredentialOptions, ApiCredentials } from './credentials';
+import { ApiCredentialOptions, ApiCredentials } from '../credentials';
 import { JourneyAPIAdapter } from './JourneyAPIAdapter';
 import { Schema } from '@journeyapps/parser-schema';
-import { DatabaseAdapter } from './DatabaseAdapter';
+import { DatabaseAdapter } from './adapters/DatabaseAdapter';
 import { Collection, TypedCollection } from './Collection';
 import { Batch } from './Batch';
 import { GenericDatabase } from './GenericDatabase';
 import { DatabaseObject } from './DatabaseObject';
-import { Query } from './Query';
+import { Query } from '../query/Query';
 
 export class Database {
   /**
@@ -40,7 +40,7 @@ export class Database {
   constructor(schema: Schema, adapter: DatabaseAdapter) {
     for (var name in schema.objects) {
       if (schema.objects.hasOwnProperty(name)) {
-        ((this as any) as GenericDatabase)[name] = new Collection(adapter, schema.objects[name]);
+        (this as any as GenericDatabase)[name] = new Collection(adapter, schema.objects[name]);
       }
     }
 

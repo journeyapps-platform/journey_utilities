@@ -31,6 +31,7 @@ module.exports = (dir) => {
     },
     mode: 'development',
     resolve: {
+      symlinks: true,
       alias: {
         'isomorphic-fetch': 'node-fetch'
       }

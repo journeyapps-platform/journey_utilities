@@ -15,46 +15,62 @@ export interface SingleChoiceIntegerPrimitive extends ChoicePrimitive {
   setOptionLabels: (labels: string[]) => any;
 }
 
+export enum PrimitiveType {
+  TEXT = 'text',
+  INTEGER = 'integer',
+  SINGLE_CHOICE = 'single-choice',
+  SINGLE_CHOICE_INTEGER = 'single-choice-integer',
+  BOOLEAN = 'boolean',
+  NUMBER = 'number',
+  DATE = 'date',
+  DATETIME = 'datetime',
+  MULTIPLE_CHOICE = 'multiple-choice',
+  MULTIPLE_CHOICE_INTEGER = 'multiple-choice-integer',
+  LOCATION = 'location',
+  ATTACHMENT = 'attachment',
+  TRACK = 'track'
+}
+
 // Collection of primitive types.
 // Each type is a constructor creating a default instance of that type.
-export const primitives: { [index: string]: any } = {
-  text: function () {
+export const primitives: { [index in PrimitiveType]: any } = {
+  [PrimitiveType.TEXT]: function () {
     // No options
   },
-  integer: function () {
+  [PrimitiveType.INTEGER]: function () {
     // No options
   },
-  'single-choice-integer': function () {
+  [PrimitiveType.SINGLE_CHOICE_INTEGER]: function () {
     this.options = {};
   },
-  'single-choice': function () {
+  [PrimitiveType.SINGLE_CHOICE]: function () {
     this.options = {};
   },
-  boolean: function () {
+  [PrimitiveType.BOOLEAN]: function () {
     this.options = {};
   },
-  number: function () {
+  [PrimitiveType.NUMBER]: function () {
     // No options
   },
-  date: function () {
+  [PrimitiveType.DATE]: function () {
     // No options
   },
-  datetime: function () {
+  [PrimitiveType.DATETIME]: function () {
     // No options
   },
-  'multiple-choice-integer': function () {
+  [PrimitiveType.MULTIPLE_CHOICE_INTEGER]: function () {
     this.options = {};
   },
-  'multiple-choice': function () {
+  [PrimitiveType.MULTIPLE_CHOICE]: function () {
     this.options = {};
   },
-  location: function () {
+  [PrimitiveType.LOCATION]: function () {
     // No options
   },
-  attachment: function () {
+  [PrimitiveType.ATTACHMENT]: function () {
     // No options
   },
-  track: function () {
+  [PrimitiveType.TRACK]: function () {
     // No options
   }
 };
@@ -105,11 +121,11 @@ function extendWithOptions(proto: ChoicePrimitive, isInt: boolean, multiple: boo
   }
 }
 
-extendWithOptions(primitives['single-choice'].prototype, false, false);
-extendWithOptions(primitives['single-choice-integer'].prototype, true, false);
-extendWithOptions(primitives['multiple-choice'].prototype, false, true);
-extendWithOptions(primitives['multiple-choice-integer'].prototype, true, true);
-extendWithOptions(primitives['boolean'].prototype, false, false);
+extendWithOptions(primitives[PrimitiveType.SINGLE_CHOICE].prototype, false, false);
+extendWithOptions(primitives[PrimitiveType.SINGLE_CHOICE_INTEGER].prototype, true, false);
+extendWithOptions(primitives[PrimitiveType.MULTIPLE_CHOICE].prototype, false, true);
+extendWithOptions(primitives[PrimitiveType.MULTIPLE_CHOICE_INTEGER].prototype, true, true);
+extendWithOptions(primitives[PrimitiveType.BOOLEAN].prototype, false, false);
 
 primitives.text.prototype.toJSON = function () {
   var json = {} as any;

@@ -1,8 +1,8 @@
 import { DatabaseObject } from './DatabaseObject';
 import { ObjectType } from '@journeyapps/parser-schema';
-import { DatabaseAdapter } from './DatabaseAdapter';
-import { Query } from './Query';
-import * as j from './JourneyPromise';
+import { DatabaseAdapter } from './adapters/DatabaseAdapter';
+import { Query } from '../query/Query';
+import * as j from '../utils/JourneyPromise';
 
 // ## Collection
 // This is the external interface for an object collection, as in `DB.asset`.

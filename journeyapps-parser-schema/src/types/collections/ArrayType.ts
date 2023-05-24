@@ -1,17 +1,17 @@
-import { Type } from './Type';
-import { ObjectType } from './ObjectType';
+import { Type } from '../Type';
+import { ObjectType } from '../ObjectType';
 import { TypeInterface } from '@journeyapps/evaluator';
 
-export class QueryType extends Type {
-  static TYPE = 'query';
+export class ArrayType extends Type {
+  static TYPE = 'array';
   objectType: ObjectType;
 
-  static isInstanceOf(type: TypeInterface): type is QueryType {
-    return type.name === QueryType.TYPE;
+  static isInstanceOf(type: TypeInterface): type is ArrayType {
+    return type.name === ArrayType.TYPE;
   }
 
   constructor(objectType: ObjectType) {
-    super(QueryType.TYPE);
+    super(ArrayType.TYPE);
 
     this.objectType = objectType;
     this.isCollection = true;
@@ -23,7 +23,7 @@ export class QueryType extends Type {
 
   toJSON() {
     return {
-      type: QueryType.TYPE,
+      type: ArrayType.TYPE,
       object: this.objectType.name
     };
   }

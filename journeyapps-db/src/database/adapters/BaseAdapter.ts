@@ -1,6 +1,6 @@
-import { Query } from './Query';
-import { ObjectData } from './ObjectData';
-import { ExecuteBatchOperation } from './Batch';
+import { Query } from '../../query/Query';
+import { ObjectData } from '../../types/ObjectData';
+import { ExecuteBatchOperation } from '../Batch';
 import { DatabaseAdapter } from './DatabaseAdapter';
 
 // Enable for debugging

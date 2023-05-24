@@ -2,10 +2,10 @@ import { Type } from './Type';
 import { FormatString } from '@journeyapps/evaluator';
 import { Variable } from './Variable';
 import { Relationship } from './Relationship';
-import { Schema } from './Schema';
+import { Schema } from '../schema/Schema';
 import { XMLElement } from '@journeyapps/domparser/types';
 import { primitive } from './primitives';
-import { ModelIndex } from './ModelIndex';
+import { ModelIndex } from '../schema/ModelIndex';
 
 export class ObjectType extends Type {
   displayFormat: FormatString | null;

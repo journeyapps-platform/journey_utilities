@@ -1,6 +1,6 @@
 import { TypeInterface } from '@journeyapps/evaluator';
-import { Schema } from './Schema';
-import { parseJsonVariable } from './schemaParser';
+import { Schema } from '../schema/Schema';
+import { parseJsonVariable } from '../schema/schemaParser';
 import { Type } from './Type';
 
 export class NestedType extends Type {

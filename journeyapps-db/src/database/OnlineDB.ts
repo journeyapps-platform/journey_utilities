@@ -2,7 +2,7 @@ import { ApiAdapterOptions, JourneyAPIAdapter } from './JourneyAPIAdapter';
 
 import { Schema } from '@journeyapps/parser-schema';
 import { Version } from '@journeyapps/parser-common';
-import { ApiCredentialOptions, ApiCredentials } from './credentials/ApiCredentials';
+import { ApiCredentialOptions, ApiCredentials } from '../credentials/ApiCredentials';
 import { Database } from './Database';
 
 export interface OnlineDBCredentials extends ApiCredentialOptions {

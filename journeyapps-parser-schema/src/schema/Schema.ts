@@ -3,13 +3,13 @@
 
 import { Version, DEFAULT as DEFAULT_VERSION } from '@journeyapps/parser-common';
 import * as parser from './schemaParser';
-import { Variable } from './Variable';
-import { QueryType } from './QueryType';
-import { ArrayType } from './ArrayType';
-import { ObjectType } from './ObjectType';
-import { Type } from './Type';
-import { primitives, primitive } from './primitives';
-import { Relationship } from './Relationship';
+import { Variable } from '../types/Variable';
+import { QueryType } from '../types/collections/QueryType';
+import { ArrayType } from '../types/collections/ArrayType';
+import { ObjectType } from '../types/ObjectType';
+import { Type } from '../types/Type';
+import { primitives, primitive } from '../types/primitives';
+import { Relationship } from '../types/Relationship';
 import { ValidationError } from '@journeyapps/core-xml';
 import { XMLError, XMLElement } from '@journeyapps/domparser/types';
 import { TypeInterface } from '@journeyapps/evaluator';

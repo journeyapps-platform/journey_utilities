@@ -1,8 +1,8 @@
 import { BaseAdapter } from './BaseAdapter';
-import { Query } from './Query';
-import { ObjectData, PersistedObjectData } from './ObjectData';
+import { Query } from '../../query/Query';
+import { ObjectData, PersistedObjectData } from '../../types/ObjectData';
 import { DatabaseAdapter } from './DatabaseAdapter';
-import { ExecuteBatchOperation } from './Batch';
+import { ExecuteBatchOperation } from '../Batch';
 
 var logQuery = BaseAdapter.logQuery;
 
