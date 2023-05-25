@@ -86,10 +86,10 @@ importers:
   journeyapps:
     dependencies:
       '@journeyapps/core-date':
-        specifier: ^5.2.1
+        specifier: workspace:*
         version: link:../journeyapps-core-date
       '@journeyapps/db':
-        specifier: ^7.3.0
+        specifier: workspace:*
         version: link:../journeyapps-db
 
   journeyapps-core-date:
@@ -166,7 +166,7 @@ importers:
   journeyapps-evaluator:
     dependencies:
       '@journeyapps/core-xml':
-        specifier: ^5.0.1
+        specifier: workspace:*
         version: link:../journeyapps-core-xml
     devDependencies:
       '@journeyapps/core-test-helpers':
@@ -176,13 +176,13 @@ importers:
   journeyapps-parser-common:
     dependencies:
       '@journeyapps/core-xml':
-        specifier: ^5.0.1
+        specifier: workspace:*
         version: link:../journeyapps-core-xml
       '@journeyapps/domparser':
         specifier: ^0.3.0
         version: 0.3.0
       '@journeyapps/evaluator':
-        specifier: ^6.2.2
+        specifier: workspace:*
         version: link:../journeyapps-evaluator
       io-ts:
         specifier: ^1.8.6
@@ -195,13 +195,13 @@ importers:
   journeyapps-parser-schema:
     dependencies:
       '@journeyapps/core-xml':
-        specifier: ^5.0.1
+        specifier: workspace:*
         version: link:../journeyapps-core-xml
       '@journeyapps/evaluator':
-        specifier: ^6.2.2
+        specifier: workspace:*
         version: link:../journeyapps-evaluator
       '@journeyapps/parser-common':
-        specifier: ^7.2.2
+        specifier: workspace:*
         version: link:../journeyapps-parser-common
     devDependencies:
       '@journeyapps/core-test-helpers':

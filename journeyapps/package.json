@@ -7,8 +7,8 @@
     "build": "tsc --build"
   },
   "dependencies": {
-    "@journeyapps/core-date": "^5.2.1",
-    "@journeyapps/db": "^7.3.0"
+    "@journeyapps/core-date": "workspace:*",
+    "@journeyapps/db": "workspace:*"
   },
   "gitHead": "ce2941d006fe4fd9d212e64c58ac49b9990f361c"
 }

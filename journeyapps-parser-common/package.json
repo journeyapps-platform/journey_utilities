@@ -11,9 +11,9 @@
     "test:node": "jasmine dist/test/unit/all.js"
   },
   "dependencies": {
-    "@journeyapps/core-xml": "^5.0.1",
+    "@journeyapps/core-xml": "workspace:*",
     "@journeyapps/domparser": "^0.3.0",
-    "@journeyapps/evaluator": "^6.2.2",
+    "@journeyapps/evaluator": "workspace:*",
     "io-ts": "^1.8.6"
   },
   "files": [

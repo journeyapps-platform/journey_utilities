@@ -11,9 +11,9 @@
     "test:node": "jasmine dist/test/unit/all.bundle.js"
   },
   "dependencies": {
-    "@journeyapps/core-xml": "^5.0.1",
-    "@journeyapps/evaluator": "^6.2.2",
-    "@journeyapps/parser-common": "^7.2.2"
+    "@journeyapps/core-xml": "workspace:*",
+    "@journeyapps/evaluator": "workspace:*",
+    "@journeyapps/parser-common": "workspace:*"
   },
   "devDependencies": {
     "@journeyapps/core-test-helpers": "^4.1.1",
