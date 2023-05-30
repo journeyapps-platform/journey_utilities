@@ -1,6 +1,8 @@
 import { ObjectType } from './ObjectType';
 
 export class Relationship {
+  static readonly TYPE = 'relationship';
+
   /** one-to-many, many-to-many, one-to-one */
   type: string;
 

@@ -1,7 +1,6 @@
 import * as fetchMock from 'fetch-mock';
-import { Schema } from '@journeyapps/parser-schema';
 import { Version } from '@journeyapps/parser-common';
-import { ApiCredentials, Attachment, Batch, Database, DatabaseObject, JourneyAPIAdapter } from '../../dist';
+import { ApiCredentials, Attachment, Batch, Database, DatabaseObject, DBSchema, JourneyAPIAdapter } from '../../dist';
 import { FetchError } from './FetchError';
 import { schema3Xml } from './fixtures';
 
@@ -14,7 +13,7 @@ describe('JourneyAPIAdapter', function () {
   });
 
   const v3 = new Version('3.1');
-  const schema = new Schema().loadXml(schema3Xml, { apiVersion: v3 });
+  const schema = new DBSchema().loadXml(schema3Xml, { apiVersion: v3 });
 
   beforeEach(function () {
     adapter = new JourneyAPIAdapter(credentials, schema);

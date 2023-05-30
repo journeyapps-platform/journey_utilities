@@ -12,6 +12,8 @@ export interface VariableJsonType {
 
 // Variable constructor. A variable is simply a name and a type.
 export class Variable<T extends Type | TypeInterface = Type> {
+  static readonly TYPE = 'variable';
+
   name: string;
   type: T;
   errors: any[];
@@ -45,7 +47,7 @@ export class Variable<T extends Type | TypeInterface = Type> {
       result.label = this.label;
     }
     if (this.type != null && !(this.type instanceof ObjectType)) {
-      var typeJson = this.type.toJSON();
+      const typeJson = this.type.toJSON();
       Object.assign(result, typeJson);
     }
 

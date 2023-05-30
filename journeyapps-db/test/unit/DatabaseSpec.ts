@@ -1,21 +1,18 @@
-import { DatabaseObject, WebSQLAdapter } from '../../dist/index';
+import { DatabaseObject, DBSchema, WebSQLAdapter, Collection, Database, Attachment } from '../../dist';
 
 import { schema3Xml } from './fixtures';
 
-import { Schema, EnumOption } from '@journeyapps/parser-schema';
+import { EnumOption } from '@journeyapps/parser-schema';
 import { Version } from '@journeyapps/parser-common';
 import * as fetchMock from 'fetch-mock';
-
 import { hasWebSQL } from './databaseSetup';
-import { Collection, Database } from '../../dist';
-import { Attachment } from '../../dist/types/Attachment';
 
 if (hasWebSQL()) {
   describe('Database with WebSQLAdapter', DatabaseWebSQLSpec);
 }
 
 function DatabaseWebSQLSpec() {
-  let schema: Schema;
+  let schema: DBSchema;
   let db: any;
   let adapter: WebSQLAdapter;
 
@@ -26,7 +23,7 @@ function DatabaseWebSQLSpec() {
     await adapter.open();
 
     const v3 = new Version('3.1');
-    schema = new Schema().loadXml(schema3Xml, { apiVersion: v3 });
+    schema = new DBSchema().loadXml(schema3Xml, { apiVersion: v3 });
     db = new Database(schema, adapter);
   });
 

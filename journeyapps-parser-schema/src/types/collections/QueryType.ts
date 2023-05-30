@@ -3,7 +3,8 @@ import { ObjectType } from '../ObjectType';
 import { TypeInterface } from '@journeyapps/evaluator';
 
 export class QueryType extends Type {
-  static TYPE = 'query';
+  static readonly TYPE = 'query';
+
   objectType: ObjectType;
 
   static isInstanceOf(type: TypeInterface): type is QueryType {
@@ -12,6 +13,9 @@ export class QueryType extends Type {
 
   constructor(objectType: ObjectType) {
     super(QueryType.TYPE);
+    if (objectType === undefined) {
+      throw new Error('objectType is required');
+    }
 
     this.objectType = objectType;
     this.isCollection = true;

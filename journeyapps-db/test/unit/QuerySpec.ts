@@ -1,9 +1,8 @@
-import { query } from '../../dist';
-import * as schema from '@journeyapps/parser-schema';
+import { query, Type, DBSchema } from '../../dist';
 import { Day } from '@journeyapps/core-date';
 
 describe('Queries', function () {
-  let scope: schema.Type;
+  let scope: Type;
 
   const one = 1;
   const blue = 'blue';
@@ -16,30 +15,33 @@ describe('Queries', function () {
 
   const peterId = 'b0b278a4-beea-11e3-b97a-e0db55d54387';
 
-  const colour = new schema.Variable('colour', schema.primitive('text'));
-  const colours = new schema.Variable('colours', schema.primitive('multiple-choice'));
+  const schema = new DBSchema();
+
+  const colour = schema.variable('colour', schema.primitive('text'));
+  const colours = schema.variable('colours', schema.primitive('multiple-choice'));
   colours.type.addOption('red', 'Red', 0);
   colours.type.addOption('green', 'Green', 1);
   colours.type.addOption('blue', 'Blue', 2);
-  const number = new schema.Variable('number', schema.primitive('integer'));
-  const date = new schema.Variable('date', schema.primitive('date'));
-  const day = new schema.Variable('day', schema.primitive('date'));
+  const number = schema.variable('number', schema.primitive('integer'));
+  const date = schema.variable('date', schema.primitive('date'));
+  const day = schema.variable('day', schema.primitive('date'));
   day.type.isDay = true;
-  const datetime = new schema.Variable('datetime', schema.primitive('datetime'));
-  const ownerId = new schema.Variable('owner_id', schema.primitive('text'));
-  const owner = new schema.Variable('owner', new schema.ObjectType());
+  const datetime = schema.variable('datetime', schema.primitive('datetime'));
+  const ownerId = schema.variable('owner_id', schema.primitive('text'));
+  const owner = schema.variable('owner', schema.newObjectType());
   ownerId.relationship = 'owner';
   owner.relationship = 'owner';
 
-  beforeEach(function() {
-    scope = new schema.Type(null);
+  beforeEach(function () {
+    scope = new Type(null);
+
     scope.name = 'TestScope';
-    scope.addAttribute(new schema.Variable('id', schema.primitive('text')));
-    scope.addAttribute(new schema.Variable('make', schema.primitive('text')));
-    scope.addAttribute(new schema.Variable('model', schema.primitive('text')));
-    scope.addAttribute(new schema.Variable('score', schema.primitive('integer')));
-    scope.addAttribute(new schema.Variable('date', schema.primitive('date')));
-    scope.addAttribute(new schema.Variable('datetime', schema.primitive('datetime')));
+    scope.addAttribute(schema.variable('id', schema.primitive('text')));
+    scope.addAttribute(schema.variable('make', schema.primitive('text')));
+    scope.addAttribute(schema.variable('model', schema.primitive('text')));
+    scope.addAttribute(schema.variable('score', schema.primitive('integer')));
+    scope.addAttribute(schema.variable('date', schema.primitive('date')));
+    scope.addAttribute(schema.variable('datetime', schema.primitive('datetime')));
     scope.addAttribute(day);
     scope.addAttribute(colour);
     scope.addAttribute(owner);
@@ -47,7 +49,7 @@ describe('Queries', function () {
     scope.addAttribute(colours);
   });
 
-  describe('Expression parsing', function() {
+  describe('Expression parsing', function () {
     function assertParses(expression, result) {
       if (typeof result == 'string') {
         expect(query.parse(scope, expression, ['?', '?', '?']).toString()).toBe(result);
@@ -68,7 +70,7 @@ describe('Queries', function () {
       }
     }
 
-    it('Should parse basic expressions', function() {
+    it('Should parse basic expressions', function () {
       // Basic expressions
       assertParses('id = ?', 'id = ?');
       assertParses('id=?', 'id = ?');
@@ -149,7 +151,7 @@ describe('Queries', function () {
       assertParses('id=? and (score=? or score=?)', '(id = ? and (score = ? or score = ?))');
     });
 
-    it('should handle early termination', function() {
+    it('should handle early termination', function () {
       assertInvalid('id', 2);
       assertInvalid('id =', 4);
       assertInvalid('id = ', 5);
@@ -159,13 +161,13 @@ describe('Queries', function () {
       assertInvalid('(id = ?', 7);
     });
 
-    it('should handle invalid start', function() {
+    it('should handle invalid start', function () {
       assertInvalid('? = id', 0);
       assertInvalid('= id ?', 0);
       assertInvalid('or id = ?', 3);
     });
 
-    it('should handle invalid expressions', function() {
+    it('should handle invalid expressions', function () {
       assertInvalid('id and id', 3);
       assertInvalid('id ?', 3);
       assertInvalid('id = 1', 5);
@@ -179,13 +181,13 @@ describe('Queries', function () {
     });
   });
 
-  describe('toOriginalExpression', function() {
+  describe('toOriginalExpression', function () {
     // This is relevant only for the Backend JS Console
     function assertOriginalExpression(expression: string, result: any[]) {
       expect(query.parse(scope, expression, ['1', '2', '3']).toOriginalExpression()).toEqual(result);
     }
 
-    it('should return the original expression, with the arguments in the correct order', function() {
+    it('should return the original expression, with the arguments in the correct order', function () {
       assertOriginalExpression('make = ?', ['make = ?', '1']);
       assertOriginalExpression('id = ? and score = ?', ['(id = ? and score = ?)', '1', '2']);
       assertOriginalExpression('id = ? or score = ?', ['(id = ? or score = ?)', '1', '2']);
@@ -224,24 +226,32 @@ describe('Queries', function () {
         '3'
       ]);
 
-      expect(query.parse(scope, 'id = ? and score in ?', ['1', ['2', '3']]).toOriginalExpression()).toEqual(
-        ['(id = ? and score in ?)', '1', ['2', '3']]
-      );
+      expect(query.parse(scope, 'id = ? and score in ?', ['1', ['2', '3']]).toOriginalExpression()).toEqual([
+        '(id = ? and score in ?)',
+        '1',
+        ['2', '3']
+      ]);
 
-      expect(query.parse(scope, 'id = ? or score in ?', ['1', ['2', '3']]).toOriginalExpression()).toEqual(
-        ['(id = ? or score in ?)', '1', ['2', '3']]
-      );
+      expect(query.parse(scope, 'id = ? or score in ?', ['1', ['2', '3']]).toOriginalExpression()).toEqual([
+        '(id = ? or score in ?)',
+        '1',
+        ['2', '3']
+      ]);
 
-      expect(query.parse(scope, 'id in ? and score = ?', [['1', '2'], '3']).toOriginalExpression()).toEqual(
-        ['(id in ? and score = ?)', ['1', '2'], '3']
-      );
+      expect(query.parse(scope, 'id in ? and score = ?', [['1', '2'], '3']).toOriginalExpression()).toEqual([
+        '(id in ? and score = ?)',
+        ['1', '2'],
+        '3'
+      ]);
 
-      expect(query.parse(scope, 'id in ? or score = ?', [['1', '2'], '3']).toOriginalExpression()).toEqual(
-        ['(id in ? or score = ?)', ['1', '2'], '3']
-      );
+      expect(query.parse(scope, 'id in ? or score = ?', [['1', '2'], '3']).toOriginalExpression()).toEqual([
+        '(id in ? or score = ?)',
+        ['1', '2'],
+        '3'
+      ]);
     });
 
-    it('should handle TrueExpressions', function() {
+    it('should handle TrueExpressions', function () {
       // These can't feasibly be constructed by the user at the time of writing, but we still want these to be handled correctly.
       const op = new query.Operation(number, '=', one);
       const trueExpr = new query.TrueExpression();
@@ -255,7 +265,7 @@ describe('Queries', function () {
     });
   });
 
-  describe('Normalize', function() {
+  describe('Normalize', function () {
     function assertNormalized(expression, normalized) {
       if (typeof expression == 'string') {
         expression = query.parse(scope, expression, ['?', '?', '?', '?']);
@@ -263,7 +273,7 @@ describe('Queries', function () {
       expect(expression.normalize().toString()).toBe(normalized);
     }
 
-    it('should normalize expressions', function() {
+    it('should normalize expressions', function () {
       assertNormalized('make = ?', '((make = ?))');
       assertNormalized('make = ? and model = ?', '((make = ? and model = ?))');
       assertNormalized('make = ? and model = ? and colour = ?', '((make = ? and model = ? and colour = ?))');
@@ -291,8 +301,8 @@ describe('Queries', function () {
     });
   });
 
-  describe('Operations', function() {
-    it('=', function() {
+  describe('Operations', function () {
+    it('=', function () {
       const eq = new query.Operation(colour, '=', blue);
       expect(eq.evaluate({ attributes: { colour: 'blue' } })).toBe(true);
       expect(eq.evaluate({ attributes: { colour: 'red' } })).toBe(false);
@@ -335,23 +345,23 @@ describe('Queries', function () {
       expect(eq6.evaluate({ attributes: { colours: ['red'] } })).toBe(true);
       expect(eq6.evaluate({ attributes: { colours: [] } })).toBe(false);
       expect(eq6.evaluate({ attributes: { colours: ['red', 'green'] } })).toBe(false);
-      expect(eq6.evaluate({ attributes: { } })).toBe(false);
+      expect(eq6.evaluate({ attributes: {} })).toBe(false);
 
       const eq7 = new query.Operation(colours, '=', ['red', 'green']);
       expect(eq7.evaluate({ attributes: { colours: ['red', 'green'] } })).toBe(true);
       expect(eq7.evaluate({ attributes: { colours: ['green', 'red'] } })).toBe(false);
       expect(eq7.evaluate({ attributes: { colours: ['red'] } })).toBe(false);
       expect(eq7.evaluate({ attributes: { colours: [] } })).toBe(false);
-      expect(eq7.evaluate({ attributes: { } })).toBe(false);
+      expect(eq7.evaluate({ attributes: {} })).toBe(false);
 
       const eq8 = new query.Operation(colours, '=', 'red');
       expect(eq8.evaluate({ attributes: { colours: ['red'] } })).toBe(false);
       expect(eq8.evaluate({ attributes: { colours: [] } })).toBe(false);
       expect(eq8.evaluate({ attributes: { colours: ['red', 'green'] } })).toBe(false);
-      expect(eq8.evaluate({ attributes: { } })).toBe(false);
+      expect(eq8.evaluate({ attributes: {} })).toBe(false);
     });
 
-    it('Day = Day', function() {
+    it('Day = Day', function () {
       const eq6 = new query.Operation(day, '=', tuesDay);
       expect(eq6.evaluate({ attributes: { day: tuesDay.toString() } })).toBe(true);
       expect(eq6.evaluate({ attributes: { day: '2013-08-27T00:00:00Z' } })).toBe(true);
@@ -360,7 +370,7 @@ describe('Queries', function () {
       expect(eq6.evaluate({ attributes: {} })).toBe(false);
     });
 
-    it('Day = Date', function() {
+    it('Day = Date', function () {
       // Takes the local timezone portion of the Date
       let eq: query.Operation;
 
@@ -377,7 +387,7 @@ describe('Queries', function () {
       expect(eq.evaluate({ attributes: { day: '2013-08-27' } })).toBe(false);
     });
 
-    it('Date = Day', function() {
+    it('Date = Day', function () {
       // This compares the Date in the local timezone
       const eq6 = new query.Operation(datetime, '=', tuesDay);
       expect(eq6.evaluate({ attributes: { datetime: new Date(2013, 7, 27, 23, 59).toISOString() } })).toBe(true);
@@ -387,7 +397,7 @@ describe('Queries', function () {
       expect(eq6.evaluate({ attributes: {} })).toBe(false);
     });
 
-    it('!=', function() {
+    it('!=', function () {
       const eq = new query.Operation(colour, '!=', blue);
       expect(eq.evaluate({ attributes: { colour: 'blue' } })).toBe(false);
       expect(eq.evaluate({ attributes: { colour: 'red' } })).toBe(true);
@@ -421,10 +431,10 @@ describe('Queries', function () {
       expect(eq5.evaluate({ attributes: { colours: ['red'] } })).toBe(false);
       expect(eq5.evaluate({ attributes: { colours: [] } })).toBe(true);
       expect(eq5.evaluate({ attributes: { colours: ['red', 'green'] } })).toBe(true);
-      expect(eq5.evaluate({ attributes: { } })).toBe(true);
+      expect(eq5.evaluate({ attributes: {} })).toBe(true);
     });
 
-    it('>', function() {
+    it('>', function () {
       const eq = new query.Operation(colour, '>', blue);
       expect(eq.evaluate({ attributes: { colour: 'blue' } })).toBe(false);
       expect(eq.evaluate({ attributes: { colour: 'red' } })).toBe(true);
@@ -454,7 +464,7 @@ describe('Queries', function () {
       expect(eq2.evaluate({ attributes: {} })).toBe(false);
     });
 
-    it('>=', function() {
+    it('>=', function () {
       const eq = new query.Operation(colour, '>=', blue);
       expect(eq.evaluate({ attributes: { colour: 'blue' } })).toBe(true);
       expect(eq.evaluate({ attributes: { colour: 'red' } })).toBe(true);
@@ -480,10 +490,10 @@ describe('Queries', function () {
       expect(eq4.evaluate({ attributes: { colours: ['red'] } })).toBe(false);
       expect(eq4.evaluate({ attributes: { colours: [] } })).toBe(false);
       expect(eq4.evaluate({ attributes: { colours: ['red', 'green'] } })).toBe(false);
-      expect(eq4.evaluate({ attributes: { } })).toBe(false);
+      expect(eq4.evaluate({ attributes: {} })).toBe(false);
     });
 
-    it('<', function() {
+    it('<', function () {
       const eq = new query.Operation(colour, '<', blue);
       expect(eq.evaluate({ attributes: { colour: 'blue' } })).toBe(false);
       expect(eq.evaluate({ attributes: { colour: 'red' } })).toBe(false);
@@ -506,7 +516,7 @@ describe('Queries', function () {
       expect(eq2.evaluate({ attributes: {} })).toBe(false);
     });
 
-    it('<=', function() {
+    it('<=', function () {
       const eq = new query.Operation(colour, '<=', blue);
       expect(eq.evaluate({ attributes: { colour: 'blue' } })).toBe(true);
       expect(eq.evaluate({ attributes: { colour: 'red' } })).toBe(false);
@@ -529,7 +539,7 @@ describe('Queries', function () {
       expect(eq2.evaluate({ attributes: {} })).toBe(false);
     });
 
-    it('contains', function() {
+    it('contains', function () {
       const eq = new query.Operation(colour, 'contains', blue);
       expect(eq.evaluate({ attributes: { colour: 'blue' } })).toBe(true);
       expect(eq.evaluate({ attributes: { colour: 'bluebird' } })).toBe(true);
@@ -553,7 +563,7 @@ describe('Queries', function () {
       expect(eq3.evaluate({ attributes: { colours: [] } })).toBe(false);
       expect(eq3.evaluate({ attributes: { colours: ['red', 'green'] } })).toBe(true);
       expect(eq3.evaluate({ attributes: { colours: ['green', 'red'] } })).toBe(true);
-      expect(eq3.evaluate({ attributes: { } })).toBe(false);
+      expect(eq3.evaluate({ attributes: {} })).toBe(false);
 
       const eq4 = new query.Operation(colours, 'contains', ['red', 'green']);
       expect(eq4.evaluate({ attributes: { colours: ['red'] } })).toBe(false);
@@ -561,10 +571,10 @@ describe('Queries', function () {
       expect(eq4.evaluate({ attributes: { colours: ['red', 'green'] } })).toBe(true);
       expect(eq4.evaluate({ attributes: { colours: ['green', 'red'] } })).toBe(true);
       expect(eq4.evaluate({ attributes: { colours: ['green', 'red', 'blue'] } })).toBe(true);
-      expect(eq4.evaluate({ attributes: { } })).toBe(false);
+      expect(eq4.evaluate({ attributes: {} })).toBe(false);
     });
 
-    it('in', function() {
+    it('in', function () {
       const eq = new query.Operation(colour, 'in', [blue]);
       expect(eq.evaluate({ attributes: { colour: 'blue' } })).toBe(true);
       expect(eq.evaluate({ attributes: { colour: 'red' } })).toBe(false);
@@ -587,7 +597,7 @@ describe('Queries', function () {
       expect(eq3.evaluate({ attributes: {} })).toBe(false);
     });
 
-    it('not in', function() {
+    it('not in', function () {
       const eq = new query.Operation(colour, 'not in', [blue]);
       expect(eq.evaluate({ attributes: { colour: 'blue' } })).toBe(false);
       expect(eq.evaluate({ attributes: { colour: 'red' } })).toBe(true);
@@ -609,8 +619,7 @@ describe('Queries', function () {
       expect(eq3.evaluate({ attributes: {} })).toBe(true);
     });
 
-
-    it('starts with', function() {
+    it('starts with', function () {
       const eq = new query.Operation(colour, 'starts with', blue);
       expect(eq.evaluate({ attributes: { colour: 'blue' } })).toBe(true);
       expect(eq.evaluate({ attributes: { colour: 'bluebird' } })).toBe(true);
@@ -628,7 +637,7 @@ describe('Queries', function () {
       expect(eq2.evaluate({ attributes: {} })).toBe(false);
     });
 
-    it('and', function() {
+    it('and', function () {
       const colourOp = new query.Operation(colour, '=', blue);
       const numberOp = new query.Operation(number, '=', one);
       const and = new query.AndExpression([colourOp, numberOp]);
@@ -641,7 +650,7 @@ describe('Queries', function () {
       expect(and.evaluate({ attributes: { colour: 'red', number: 2 } })).toBe(false);
     });
 
-    it('or', function() {
+    it('or', function () {
       const colourOp = new query.Operation(colour, '=', blue);
       const numberOp = new query.Operation(number, '=', one);
       const or = new query.OrExpression([colourOp, numberOp]);
@@ -653,8 +662,8 @@ describe('Queries', function () {
     });
   });
 
-  describe('RelationMatch', function() {
-    it('should match', function() {
+  describe('RelationMatch', function () {
+    it('should match', function () {
       const match = new query.RelationMatch('region', '12345');
       expect(match.evaluate({ belongs_to: { region: '12345' } })).toBe(true);
       expect(match.evaluate({ belongs_to: { region: '12346' } })).toBe(false);

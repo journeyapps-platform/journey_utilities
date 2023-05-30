@@ -1,5 +1,4 @@
 ---
-'@journeyapps/parser-schema': minor
 '@journeyapps/parser-common': patch
 '@journeyapps/evaluator': patch
 '@journeyapps/core-xml': patch

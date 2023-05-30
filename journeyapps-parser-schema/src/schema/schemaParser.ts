@@ -1,12 +1,11 @@
 // # schema module
 // Parser for v2 and v3 of the schema XML.
-
 import { FormatString } from '@journeyapps/evaluator';
 import * as xml from '@journeyapps/core-xml';
 import { Schema } from './Schema';
 import { ObjectType } from '../types/ObjectType';
 import { Type } from '../types/Type';
-import { primitive, PrimitiveType } from '../types/primitives';
+import { PrimitiveType } from '../types/primitives';
 import { Variable } from '../types/Variable';
 import { ParseErrors } from '@journeyapps/parser-common';
 import { XMLDocument, XMLElement } from '@journeyapps/domparser/types';
@@ -298,8 +297,8 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
 
     // Second pass - load the belongs_to relationships
     objects.forEach(function (element) {
-      var name = getAttribute(element, 'name');
-      var object = schema.objects[name];
+      const name = getAttribute(element, 'name');
+      const object = schema.objects[name];
       if (object) {
         parseBelongsTo(object, element);
       }
@@ -307,8 +306,8 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
 
     // Third pass - load the has_many relationships and indexes
     objects.forEach(function (element) {
-      var name = getAttribute(element, 'name');
-      var object = schema.objects[name];
+      const name = getAttribute(element, 'name');
+      const object = schema.objects[name];
       if (object) {
         parseHasMany(object, element);
         parseIndexes(object, element);
@@ -317,8 +316,8 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
 
     // Fourth pass - display and webhooks
     objects.forEach(function (element) {
-      var name = getAttribute(element, 'name');
-      var object = schema.objects[name];
+      const name = getAttribute(element, 'name');
+      const object = schema.objects[name];
       if (object) {
         parseDisplay(object, element);
         parseWebhooks(object, element);
@@ -328,7 +327,7 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
   }
 
   function parseObjectType(element: XMLElement) {
-    var object = schema.newObjectType();
+    const object = schema.newObjectType();
     recordSource(object, element);
 
     const modelDef = {
@@ -358,7 +357,7 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
     }
 
     // the ordering of the elements (elements can share a number and be interchangeable)
-    var allowedChildren = {
+    const allowedChildren = {
       [tag.field]: 1,
       [tag.belongsTo]: 2,
       [tag.hasMany]: 2,
@@ -390,9 +389,9 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
   }
 
   function parseDisplay(object: ObjectType, element: XMLElement) {
-    var displayElements = xml.children(element, 'display');
+    const displayElements = xml.children(element, 'display');
     if (displayElements.length == 1) {
-      var displayElement = displayElements[0];
+      const displayElement = displayElements[0];
       parseElement(
         displayElement,
         {
@@ -402,8 +401,8 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
         },
         errorHandler
       );
-      var attribute = true;
-      var fmtString = getAttribute(displayElement, 'format');
+      let attribute = true;
+      let fmtString = getAttribute(displayElement, 'format');
       if (fmtString == null) {
         fmtString = displayElement.textContent;
         attribute = false;
@@ -412,7 +411,7 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
       if (options.recordSource) {
         object.displaySource = displayElement;
       }
-      var displayErrors = object.displayFormat.validate(object);
+      const displayErrors = object.displayFormat.validate(object);
       displayErrors.forEach(function (error) {
         if (attribute) {
           errorHandler.pushError(
@@ -451,22 +450,22 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
       parseElement(e, syntax, errorHandler);
 
       try {
-        var typeName = getAttribute(e, tag.relatedModel);
-        var name = getAttribute(e, 'name');
+        const typeName = getAttribute(e, tag.relatedModel);
+        let name = getAttribute(e, 'name');
         if (name == null || name === '') {
           name = typeName;
         }
         object.addBelongsTo({ name: name, type: typeName, schema: schema });
         recordSource(object.belongsToVars[name], e);
       } catch (err) {
-        var node = xml.attributeNode(e, err.attribute) || e;
+        const node = xml.attributeNode(e, err.attribute) || e;
         errorHandler.pushError(node, err.message);
       }
     });
   }
 
   function parseHasMany(object: ObjectType, element: XMLElement) {
-    var syntax = {
+    const syntax = {
       [tag.hasMany]: {
         name: xml.attribute.name,
         [tag.inverseOf]: xml.attribute.notBlank,
@@ -478,20 +477,20 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
     xml.children(element, tag.hasMany).forEach(function (e) {
       parseElement(e, syntax, errorHandler);
 
-      var typeName = getAttribute(e, tag.relatedModel);
-      var name = getAttribute(e, 'name');
+      const typeName = getAttribute(e, tag.relatedModel);
+      const name = getAttribute(e, 'name');
 
-      var inverseOf = getAttribute(e, tag.inverseOf);
+      const inverseOf = getAttribute(e, tag.inverseOf);
 
       if (typeName != null) {
-        var objectType = schema.objects[typeName];
+        const objectType = schema.objects[typeName];
         if (objectType == null) {
           errorHandler.pushError(
             xml.attributeNode(e, tag.relatedModel) || e,
             "Object '" + typeName + "' is not defined"
           );
         } else {
-          var rel = null;
+          let rel = null;
           if (inverseOf != null) {
             rel = objectType.belongsTo[inverseOf];
             if (rel == null) {
@@ -501,10 +500,10 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
               );
             }
           } else {
-            var candidates = [];
-            for (var key in objectType.belongsTo) {
+            const candidates = [];
+            for (let key in objectType.belongsTo) {
               if (objectType.belongsTo.hasOwnProperty(key)) {
-                var r = objectType.belongsTo[key];
+                const r = objectType.belongsTo[key];
                 if (r.foreignType === object) {
                   candidates.push(r);
                 }
@@ -526,7 +525,7 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
                   "'"
               );
             } else {
-              var names = [];
+              const names = [];
               for (let i = 0; i < candidates.length; i++) {
                 names.push(candidates[i].name);
               }
@@ -1074,8 +1073,9 @@ export function parseJsonVariable(schema: Schema, attributeName: string, attribu
 // Schema-free variable parsing
 // Used for indexes
 export function parseJsonField(attributeData: any) {
-  const type = primitive(attributeData.type);
-  let variable = new Variable(attributeData.name, type);
+  const s = new Schema();
+  const type = s.primitive(attributeData.type);
+  let variable = s.variable(attributeData.name, type);
   if (attributeData.relationship) {
     variable.relationship = attributeData.relationship;
     variable.isRelationshipId = attributeData.isRelationshipId;

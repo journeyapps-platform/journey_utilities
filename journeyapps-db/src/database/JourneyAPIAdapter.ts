@@ -1,15 +1,16 @@
 import 'isomorphic-fetch';
 import { retryableFetch } from '../utils/retryableFetch';
 import type { Response, RequestInit } from 'node-fetch';
-
 import { BaseAdapter } from './adapters/BaseAdapter';
-import { Schema, ObjectType, Variable, Relationship } from '@journeyapps/parser-schema';
+import { Variable, Relationship } from '@journeyapps/parser-schema';
 import { Version } from '@journeyapps/parser-common';
 import { Query } from '../query/Query';
 import { ExecuteBatchOperation } from './Batch';
 import { ObjectData, PersistedObjectData } from '../types/ObjectData';
 import { ApiCredentials } from '../credentials';
 import { Operation } from '../query/queryOperations';
+import { ObjectType } from '../types/ObjectType';
+import { DBSchema } from '../Schema';
 
 export type { Response, RequestInit } from 'node-fetch';
 
@@ -111,11 +112,11 @@ export class JourneyAPIAdapter extends BaseAdapter {
     inlineAttachments: true
   };
 
-  schema: Schema;
+  schema: DBSchema;
   options: ApiAdapterOptions;
   credentials: ApiCredentials;
 
-  constructor(credentials: ApiCredentials, schema: Schema, options: ApiAdapterOptions = {}) {
+  constructor(credentials: ApiCredentials, schema: DBSchema, options: ApiAdapterOptions = {}) {
     super();
 
     this.schema = schema;
@@ -153,7 +154,7 @@ export class JourneyAPIAdapter extends BaseAdapter {
   }
 
   async getAll(type: string, ids: string[]): Promise<ObjectData[]> {
-    const model = this.schema.getType(type) as ObjectType;
+    const model = this.schema.getType(type);
     let result: ObjectData[] = [];
     // This is more efficient batching than relying on limit and skip.
     for (let i = 0; i < ids.length; i += this.batchLimit) {
@@ -249,7 +250,7 @@ export class JourneyAPIAdapter extends BaseAdapter {
     }
     const xml = await response.text();
 
-    this.schema = new Schema();
+    this.schema = new DBSchema();
     this.schema.loadXml(xml, { apiVersion: new Version('4.0') });
   }
 

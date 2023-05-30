@@ -4,10 +4,16 @@ import { Variable } from './Variable';
 import { Relationship } from './Relationship';
 import { Schema } from '../schema/Schema';
 import { XMLElement } from '@journeyapps/domparser/types';
-import { primitive } from './primitives';
 import { ModelIndex } from '../schema/ModelIndex';
+import { TextType } from './primitives';
 
 export class ObjectType extends Type {
+  static readonly TYPE = 'object';
+
+  static isInstanceOf(type: Type): type is ObjectType {
+    return type.name == ObjectType.TYPE;
+  }
+
   displayFormat: FormatString | null;
   displaySource?: XMLElement;
   label: string;
@@ -18,7 +24,7 @@ export class ObjectType extends Type {
   belongsToVars: { [index: string]: Variable };
   belongsToIdVars: { [index: string]: Variable };
   hasManyVars: { [index: string]: Variable };
-  idVar = new Variable('id', primitive('text'));
+  idVar: Variable<TextType>;
 
   /**
    * App and Cloud indexes.
@@ -51,6 +57,8 @@ export class ObjectType extends Type {
     this.notifyUsers = [];
 
     this.isObject = true;
+
+    this.idVar = new Variable('id', new TextType());
   }
 
   /**
@@ -109,14 +117,14 @@ export class ObjectType extends Type {
   }
 
   addBelongsTo(options: { schema: Schema; type?: string; foreignName?: string; name: string }) {
-    var object = this;
-    var schema = options.schema;
-    var err;
-    var rel = new Relationship();
-    var typeName = options.type;
-    var foreignName = options.foreignName;
+    const object = this;
+    const schema = options.schema;
+    let err;
+    const rel = schema.newRelationship();
+    const typeName = options.type;
+    const foreignName = options.foreignName;
     if (typeName != null) {
-      var name = options.name;
+      let name = options.name;
       if (name == null || name === '') {
         name = typeName;
       }
@@ -140,7 +148,7 @@ export class ObjectType extends Type {
         object.belongsToVars[name] = schema.variable(name, rel.foreignType);
         object.belongsToVars[name].relationship = name;
 
-        var idVar = schema.variable(name + '_id', 'text');
+        const idVar = schema.variable(name + '_id', 'text');
         idVar.relationship = name;
         idVar.isBelongsToId = true;
         object.belongsToIdVars[idVar.name] = idVar;

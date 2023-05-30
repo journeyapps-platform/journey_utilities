@@ -3,7 +3,7 @@ import { ObjectType } from '../ObjectType';
 import { TypeInterface } from '@journeyapps/evaluator';
 
 export class ArrayType extends Type {
-  static TYPE = 'array';
+  static readonly TYPE = 'array';
   objectType: ObjectType;
 
   static isInstanceOf(type: TypeInterface): type is ArrayType {

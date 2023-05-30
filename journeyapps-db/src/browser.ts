@@ -11,12 +11,18 @@ export { database, query };
 
 export * from './credentials/ApiCredentials';
 export * from './credentials/MobileCredentials';
-export { Attachment } from './types/Attachment';
+
+export * from './Schema';
+
+export * from './types/Type';
 export * from './types/GenericObject';
 export * from './types/ObjectData';
-export * from './types/Location';
-export * from './types/QueryType';
 export * from './types/ObjectType';
+export * from './types/ArrayType';
+export * from './types/QueryType';
+
+export * from './types/Location';
+export { Attachment } from './types/Attachment';
 
 export * from './database/Batch';
 export * from './database/Database';
