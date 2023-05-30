@@ -16,9 +16,9 @@ declare function expect(cond): jasmine.Matchers<any> & {
 };
 
 describe('json parsing', function () {
+  const schema = new Schema();
   it('should parse an object', function () {
-    const s = new Schema();
-    const parser = jsonParser(s);
+    const parser = jsonParser(schema);
     parser.parse({
       objects: {
         asset: {
@@ -55,8 +55,8 @@ describe('json parsing', function () {
       }
     });
 
-    const asset = s.objects.asset;
-    const room = s.objects.room;
+    const asset = schema.objects.asset;
+    const room = schema.objects.room;
 
     expect(asset.label).toBe('Asset');
     expect(asset.attributes.serial.type.spec).toBe('number');
@@ -74,7 +74,7 @@ describe('json parsing', function () {
   });
 
   it('should parse a field', function () {
-    const field = parseJsonField({
+    const field = parseJsonField(schema, {
       name: 'serial_number',
       type: 'text',
       label: 'Serial Number',
@@ -91,7 +91,7 @@ describe('json parsing', function () {
   });
 
   it('should parse a date field', function () {
-    let field = parseJsonField({
+    let field = parseJsonField(schema, {
       name: 'day',
       type: 'date'
     });
@@ -104,7 +104,7 @@ describe('json parsing', function () {
   });
 
   it('should parse a date field (isDay: true)', function () {
-    let field = parseJsonField({
+    let field = parseJsonField(schema, {
       name: 'day',
       type: 'date',
       isDay: true
@@ -117,7 +117,7 @@ describe('json parsing', function () {
   });
 
   it('should parse a date field (isDay: false)', function () {
-    let field = parseJsonField({
+    let field = parseJsonField(schema, {
       name: 'day',
       type: 'date',
       isDay: false

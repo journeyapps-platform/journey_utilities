@@ -2,7 +2,7 @@ import { EnumOption, SingleChoiceIntegerType as SchemaSingleChoiceIntegerType } 
 import { DBTypeMixin } from '../Type';
 
 export class SingleChoiceIntegerType extends DBTypeMixin(SchemaSingleChoiceIntegerType) {
-  format(value: any) {
+  format(value: any): string {
     const option = this.options[value];
     if (option == null) {
       return '< invalid value >';

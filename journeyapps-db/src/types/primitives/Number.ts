@@ -2,7 +2,7 @@ import { NumberType as SchemaNumberType } from '@journeyapps/parser-schema';
 import { DBTypeMixin } from '../Type';
 
 export class NumberType extends DBTypeMixin(SchemaNumberType) {
-  format(value: any, format: string) {
+  format(value: any, format?: string): string {
     if (typeof value != 'number') {
       return 'NaN';
     }

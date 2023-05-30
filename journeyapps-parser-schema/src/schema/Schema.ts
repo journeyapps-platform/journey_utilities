@@ -23,7 +23,10 @@ export interface TypeFactory {
   generate: <T>(event?: any) => any;
 }
 
-type InferReturnType<T> = T extends PrimitiveTypeNames ? Type : ObjectType;
+export type InferGetType<
+  T extends string | PrimitiveTypeNames,
+  MAP extends { [key in PrimitiveTypeNames]: typeof Type } = PrimitiveTypeMap
+> = T extends PrimitiveTypeNames ? InstanceType<MAP[T]> : ObjectType;
 
 export class Schema {
   typeFactories: { [key: string]: TypeFactory } = {};
@@ -121,8 +124,8 @@ export class Schema {
     return this.getFactory(ArrayType.TYPE).generate({ objectType });
   }
 
-  newObjectType() {
-    return this.getFactory(ObjectType.TYPE).generate() as ObjectType;
+  newObjectType(name?: string) {
+    return this.getFactory(ObjectType.TYPE).generate({ name }) as ObjectType;
   }
 
   newRelationship() {
@@ -131,22 +134,22 @@ export class Schema {
 
   // Given a type name, return the specified type. Returns `undefined` if the type is not found.
   // The type name may refer to a primitive, or an object type defined in the schema.
-  getType<T extends string | PrimitiveTypeNames>(typeName: T): InferReturnType<T> {
+  getType<T extends string | PrimitiveTypeNames>(typeName: T): InferGetType<T> {
     if (typeName in PrimitiveTypeMap) {
       // primitive
-      return this.primitive(typeName) as InferReturnType<T>;
+      return this.primitive(typeName);
     }
     // not a primitive - most likely an object
-    return this.objects[typeName];
+    return this.objects[typeName] as InferGetType<T>;
   }
 
-  primitive(name: string) {
+  primitive<T extends string | PrimitiveTypeNames>(name: T): InferGetType<T> {
     if (!(name in PrimitiveTypeMap)) {
       return null;
     }
     const factory = this.getFactory(name);
     if (factory) {
-      return factory.generate() as Type;
+      return factory.generate();
     } else {
       return null;
     }

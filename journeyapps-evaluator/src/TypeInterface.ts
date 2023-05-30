@@ -1,12 +1,12 @@
 export interface TypeInterface {
   name: string;
+  options: object;
   isPrimitiveType: boolean;
+  objectType?: TypeInterface;
   getVariable(expression: string);
   getVariableTypeAndNameWithParent(expression: string);
   getType(expression: string): TypeInterface | null;
   toJSON(): any;
-  format(value: any, format?: string): string;
-  options: object;
   stringify(): string;
-  objectType?: TypeInterface;
+  format(value: any, format?: string): string;
 }

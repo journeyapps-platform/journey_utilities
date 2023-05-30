@@ -24,8 +24,8 @@ describe('Schema toDOM', function () {
     // START MODIFICATIONS
 
     // Add fields
-    schema.objects.building.addAttribute(new Variable('floors', schema.primitive('number')));
-    schema.objects.building.addAttribute(new Variable('height', schema.primitive('number')));
+    schema.objects.building.addAttribute(schema.variable('floors', schema.primitive('number')));
+    schema.objects.building.addAttribute(schema.variable('height', schema.primitive('number')));
     schema.objects.building.attributes.height.label = 'Height';
 
     // Delete model

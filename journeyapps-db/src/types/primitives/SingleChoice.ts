@@ -18,7 +18,7 @@ export class SingleChoiceType extends DBTypeMixin(SchemaSingleChoiceType) {
     }
   }
 
-  format(value: any) {
+  format(value: any): string {
     const option = this.options[value];
     if (option == null) {
       return '< invalid value >';

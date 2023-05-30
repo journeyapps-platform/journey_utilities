@@ -1,11 +1,8 @@
-import { Schema, PrimitiveTypeNames } from '@journeyapps/parser-schema';
+import { Schema, PrimitiveTypeNames, InferGetType } from '@journeyapps/parser-schema';
 import { DBPrimitiveTypeMap } from './types/primitives';
 import { ObjectType } from './types/ObjectType';
 import { QueryType } from './types/QueryType';
 import { ArrayType } from './types/ArrayType';
-import { Type } from './types/Type';
-
-type InferReturnType<T> = T extends PrimitiveTypeNames ? Type : ObjectType;
 
 export class DBSchema extends Schema {
   constructor() {
@@ -13,7 +10,7 @@ export class DBSchema extends Schema {
 
     this.registerTypeFactory({
       name: ObjectType.TYPE,
-      generate: () => new ObjectType()
+      generate: (event) => new ObjectType(event?.name)
     });
     this.registerTypeFactory({
       name: ArrayType.TYPE,
@@ -33,7 +30,11 @@ export class DBSchema extends Schema {
     }
   }
 
-  getType<T extends string | PrimitiveTypeNames>(typeName: T): InferReturnType<T> {
-    return super.getType(typeName) as InferReturnType<T>;
+  getType<T extends string | PrimitiveTypeNames>(typeName: T): InferGetType<T, DBPrimitiveTypeMap> {
+    return super.getType(typeName);
+  }
+
+  primitive<T extends string | PrimitiveTypeNames>(name: T): InferGetType<T, DBPrimitiveTypeMap> {
+    return super.primitive(name);
   }
 }

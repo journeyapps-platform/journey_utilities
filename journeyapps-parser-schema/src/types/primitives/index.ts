@@ -53,6 +53,8 @@ export const PrimitiveTypeMap = {
   [PrimitiveType.PHOTO]: PhotoType
 } as const;
 
+export type PrimitiveTypeMap = typeof PrimitiveTypeMap;
+
 // Collection of primitive type names
 export type PrimitiveTypeNames = keyof typeof PrimitiveTypeMap;
 

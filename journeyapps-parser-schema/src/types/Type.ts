@@ -85,12 +85,6 @@ export class Type implements TypeInterface {
     return this.attributes;
   }
 
-  // Given a value of this type and an optional format specifier, return a string version formatted according to
-  // the specifier. Subclasses should override this to implement their specific formatting.
-  format(value: any, format: string): string {
-    return value.toString();
-  }
-
   getAttribute<T extends Type = Type>(name: string): Variable<T> | null {
     return this.attributes[name] as Variable<T>;
   }
@@ -167,9 +161,10 @@ export class Type implements TypeInterface {
     return {};
   }
 
-  // TODO: move to a subclass
-  addOption(value: any, label: string, index: number): EnumOption {
-    throw new Error('addOption is only for choice types');
+  // Given a value of this type and an optional format specifier, return a string version formatted according to
+  // the specifier. Subclasses should override this to implement their specific formatting.
+  format(value: any, format?: string): string {
+    return value.toString();
   }
 
   // Implemented elsewhere

@@ -50,7 +50,7 @@ export class DateType extends DBTypeMixin(SchemaDateType) {
 
   cast(value: any) {
     if (this.isDay) {
-      if (value instanceof Day) {
+      if (Day.isDay(value)) {
         return value;
       } else if (value instanceof Date) {
         // Convert from local timezone

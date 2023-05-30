@@ -5,7 +5,7 @@ import * as xml from '@journeyapps/core-xml';
 import { Schema } from './Schema';
 import { ObjectType } from '../types/ObjectType';
 import { Type } from '../types/Type';
-import { PrimitiveType } from '../types/primitives';
+import { ChoiceType, PrimitiveType } from '../types/primitives';
 import { Variable } from '../types/Variable';
 import { ParseErrors } from '@journeyapps/parser-common';
 import { XMLDocument, XMLElement } from '@journeyapps/domparser/types';
@@ -774,6 +774,9 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
   }
 
   function parseIntegerOptions(type: Type, element: XMLElement) {
+    if (!ChoiceType.isInstanceOf(type)) {
+      throw new Error('Integer options can only be used with choice types');
+    }
     let index = 0;
     let largest = -1;
     xml.children(element, 'option').forEach(function (e) {
@@ -793,6 +796,9 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
   }
 
   function parseStringOptions(type: Type, element: XMLElement) {
+    if (!ChoiceType.isInstanceOf(type)) {
+      throw new Error('String options can only be used with choice types');
+    }
     let index = 0;
     xml.children(element, 'option').forEach(function (e) {
       parseElement(e, optionDef, errorHandler);
@@ -809,6 +815,9 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
   }
 
   function parseBooleanOptions(type: Type, element: XMLElement) {
+    if (!ChoiceType.isInstanceOf(type)) {
+      throw new Error('Boolean options can only be used with choice types');
+    }
     let index = 0;
     xml.children(element, 'option').forEach(function (e) {
       parseElement(e, optionDef, errorHandler);
@@ -1030,7 +1039,7 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
   };
 }
 
-function partialParseJsonVariable<V extends Variable = Variable>(variable: V, attributeData: any) {
+function partialParseJsonVariable(variable: Variable, attributeData: any) {
   variable.label = attributeData.label;
 
   if (attributeData.spec) {
@@ -1045,7 +1054,7 @@ function partialParseJsonVariable<V extends Variable = Variable>(variable: V, at
     variable.type.isDay = !!attributeData.isDay;
   }
 
-  if (attributeData.options) {
+  if (attributeData.options && ChoiceType.isInstanceOf(variable.type)) {
     for (let optionData of attributeData.options) {
       variable.type.addOption(optionData.value, optionData.label, optionData.index);
     }
@@ -1072,10 +1081,9 @@ export function parseJsonVariable(schema: Schema, attributeName: string, attribu
 
 // Schema-free variable parsing
 // Used for indexes
-export function parseJsonField(attributeData: any) {
-  const s = new Schema();
-  const type = s.primitive(attributeData.type);
-  let variable = s.variable(attributeData.name, type);
+export function parseJsonField(schema: Schema, attributeData: any) {
+  const type = schema.primitive(attributeData.type);
+  let variable = schema.variable(attributeData.name, type);
   if (attributeData.relationship) {
     variable.relationship = attributeData.relationship;
     variable.isRelationshipId = attributeData.isRelationshipId;

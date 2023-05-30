@@ -3,6 +3,7 @@ import * as query from './query/queryOperations';
 
 // Convenience export
 export { Day } from '@journeyapps/core-date';
+export { Variable } from '@journeyapps/parser-schema';
 
 /**
  * @deprecated

@@ -24,8 +24,8 @@ export class DatetimeType extends DBTypeMixin(SchemaDatetimeType) {
     }
   }
 
-  format(value: any, format: string) {
-    return moment(value).format('MMMM D YYYY h:mm A');
+  format(value: any, format: string = 'MMMM D YYYY h:mm A'): string {
+    return moment(value).format(format);
   }
 
   cast(value: any): any {

@@ -1,5 +1,5 @@
 import { DatabaseObject } from './DatabaseObject';
-import { ObjectType } from '@journeyapps/parser-schema';
+import { ObjectType } from '../types/ObjectType';
 import { DatabaseAdapter } from './adapters/DatabaseAdapter';
 import { Query } from '../query/Query';
 import * as j from '../utils/JourneyPromise';

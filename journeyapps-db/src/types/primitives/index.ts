@@ -36,6 +36,8 @@ export const DBPrimitiveTypeMap = {
   [PrimitiveType.PHOTO]: PhotoType
 } as const;
 
+export type DBPrimitiveTypeMap = typeof DBPrimitiveTypeMap;
+
 export * from './attachments/Attachment';
 export * from './attachments/Photo';
 export * from './attachments/Signature';

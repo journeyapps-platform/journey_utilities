@@ -19,7 +19,7 @@ export class ObjectType extends DBTypeMixin(SchemaObjectType) {
     }
   }
 
-  format(value, format) {
+  format(value: any): string {
     return value.toString();
   }
 

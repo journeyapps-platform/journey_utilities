@@ -4,7 +4,7 @@ import { DBTypeMixin } from '../Type';
 type GConstructor<T extends SchemaMultipleChoiceType = SchemaMultipleChoiceType> = new (...args: any[]) => T;
 export function DBMultipleChoiceTypeMixin<TBase extends GConstructor>(Base: TBase) {
   return class extends DBTypeMixin(Base) {
-    format(value: any[]) {
+    format(value: any[]): string {
       // value is an array of integers
       if (value == null || value.length === 0) {
         return '';
