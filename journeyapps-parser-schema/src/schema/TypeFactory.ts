@@ -1,4 +1,3 @@
-import { TypeInterface } from '@journeyapps/evaluator';
 import { ArrayType } from '../types/collections/ArrayType';
 import { QueryType } from '../types/collections/QueryType';
 import { ObjectType } from '../types/ObjectType';

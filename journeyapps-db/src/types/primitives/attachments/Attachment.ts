@@ -7,7 +7,7 @@ type GConstructor<T extends SchemaAttachmentType = SchemaAttachmentType> = new (
 
 export function DBAttachmentTypeMixin<TBase extends GConstructor>(Base: TBase) {
   return class extends DBTypeMixin(Base) {
-    valueToJSON(value: Attachment, options?: ValueSerializeOptions) {
+    valueToJSON(value: Attachment, options?: ValueSerializeOptions): any {
       if (!value) {
         return null;
       } else if (options?.inlineAttachments) {
@@ -17,13 +17,13 @@ export function DBAttachmentTypeMixin<TBase extends GConstructor>(Base: TBase) {
       }
     }
 
-    valueFromJSON(value: any) {
+    valueFromJSON(value: any): any {
       if (value != null) {
         return new Attachment(value);
       }
     }
 
-    cast(value: any) {
+    cast(value: any): any {
       if (Attachment.isAttachment(value)) {
         return value;
       } else if (typeof value == 'string') {

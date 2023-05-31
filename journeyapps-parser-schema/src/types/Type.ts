@@ -174,15 +174,15 @@ export class Type implements TypeInterface {
     // no op
   }
 
-  valueFromJSON(data: any): any {
-    throw new Error('Not implemented');
-  }
-
   cast(value: any): any {
     throw new Error('Not implemented');
   }
 
   clone(value: any): any {
+    throw new Error('Not implemented');
+  }
+
+  valueFromJSON(data: any): any {
     throw new Error('Not implemented');
   }
 
