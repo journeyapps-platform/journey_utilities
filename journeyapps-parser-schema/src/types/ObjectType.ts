@@ -5,7 +5,15 @@ import { Relationship } from './Relationship';
 import { Schema } from '../schema/Schema';
 import { XMLElement } from '@journeyapps/domparser/types';
 import { ModelIndex } from '../schema/ModelIndex';
-import { TextType } from './primitives';
+import { PrimitiveType, TextType } from './primitives';
+import { AbstractObjectTypeFactory, GenerateTypeEvent } from '../schema/TypeFactory';
+
+export interface NotificationConfig {
+  message: FormatString;
+  recipient: string;
+  received: string;
+  badgeCount: string;
+}
 
 export class ObjectType extends Type {
   static readonly TYPE = 'object';
@@ -57,8 +65,10 @@ export class ObjectType extends Type {
     this.notifyUsers = [];
 
     this.isObject = true;
+  }
 
-    this.idVar = new Variable('id', new TextType());
+  setupVariables(schema: Schema) {
+    this.idVar = schema.variable('id', PrimitiveType.TEXT);
   }
 
   /**
@@ -148,7 +158,7 @@ export class ObjectType extends Type {
         object.belongsToVars[name] = schema.variable(name, rel.foreignType);
         object.belongsToVars[name].relationship = name;
 
-        const idVar = schema.variable(name + '_id', 'text');
+        const idVar = schema.variable(name + '_id', PrimitiveType.TEXT);
         idVar.relationship = name;
         idVar.isBelongsToId = true;
         object.belongsToIdVars[idVar.name] = idVar;
@@ -165,9 +175,18 @@ export class ObjectType extends Type {
   }
 }
 
-export interface NotificationConfig {
-  message: FormatString;
-  recipient: string;
-  received: string;
-  badgeCount: string;
+export interface GenerateObjectTypeEvent extends GenerateTypeEvent {
+  name?: string;
+}
+
+export class ObjectTypeFactory extends AbstractObjectTypeFactory<ObjectType, GenerateObjectTypeEvent> {
+  constructor() {
+    super(ObjectType.TYPE);
+  }
+
+  generate(event: GenerateObjectTypeEvent) {
+    const instance = new ObjectType(event.name);
+    instance.setupVariables(event.schema);
+    return instance;
+  }
 }

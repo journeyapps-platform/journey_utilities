@@ -3,10 +3,11 @@
 // It contains the logic to filter a single object based on an expression.
 // It is up to the database adapters to perform optimised queries based on an index.
 
-import { Variable, Type } from '@journeyapps/parser-schema';
+import { Variable } from '@journeyapps/parser-schema';
 import { Day } from '@journeyapps/core-date';
 
 import { ObjectData } from '../types/ObjectData';
+import { Type } from '../types/Type';
 
 // Build an expression from a hash such as {make: 'Nokia', model: '5800'}
 export function expressionFromHash(scopeType: Type, hash: any): Expression {
@@ -213,7 +214,7 @@ function compare(a: any, b: any) {
   } else if (a instanceof Date && b instanceof Date) {
     // Compare seconds only
     compareDiff = discardMillis(a.getTime()) - discardMillis(b.getTime());
-  } else if (a instanceof Day || b instanceof Day) {
+  } else if (Day.isDay(a) || Day.isDay(b)) {
     // New syntax only
     try {
       // Convert both to Days, in the local timezone.

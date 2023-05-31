@@ -8,15 +8,15 @@ export enum IndexDatabase {
   APP = 'app'
 }
 
+export interface ModelIndexKey {
+  field: string;
+  dir: IndexDirection;
+}
+
 export interface ModelIndex {
   name: string;
   /** @deprecated Use `keys` instead. */
   on: string[];
   keys: ModelIndexKey[];
   databases: IndexDatabase[];
-}
-
-export interface ModelIndexKey {
-  field: string;
-  dir: IndexDirection;
 }

@@ -1,4 +1,7 @@
-import { ObjectType as SchemaObjectType } from '@journeyapps/parser-schema';
+import {
+  ObjectType as SchemaObjectType,
+  ObjectTypeFactory as SchemaObjectTypeFactory
+} from '@journeyapps/parser-schema';
 import { DBTypeMixin } from './Type';
 
 export class ObjectType extends DBTypeMixin(SchemaObjectType) {
@@ -25,5 +28,13 @@ export class ObjectType extends DBTypeMixin(SchemaObjectType) {
 
   clone(value) {
     return value._clone();
+  }
+}
+
+export class ObjectTypeFactory extends SchemaObjectTypeFactory {
+  generate(event) {
+    const instance = new ObjectType(event.name);
+    instance.setupVariables(event.schema);
+    return instance;
   }
 }

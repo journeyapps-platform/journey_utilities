@@ -1,4 +1,4 @@
-import { query, Type, DBSchema } from '../../dist';
+import { query, Type, DBSchema as Schema } from '../../dist';
 import { Day } from '@journeyapps/core-date';
 
 describe('Queries', function () {
@@ -15,7 +15,7 @@ describe('Queries', function () {
 
   const peterId = 'b0b278a4-beea-11e3-b97a-e0db55d54387';
 
-  const schema = new DBSchema();
+  const schema = new Schema();
 
   const colour = schema.variable('colour', schema.primitive('text'));
   const colours = schema.variable('colours', schema.primitive('multiple-choice'));

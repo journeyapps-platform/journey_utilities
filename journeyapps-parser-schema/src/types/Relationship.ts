@@ -1,3 +1,4 @@
+import { AbstractObjectTypeFactory } from '../schema/TypeFactory';
 import { ObjectType } from './ObjectType';
 
 export class Relationship {
@@ -26,5 +27,15 @@ export class Relationship {
 
     this.name = null;
     this.foreignName = null;
+  }
+}
+
+export class RelationshipTypeFactory extends AbstractObjectTypeFactory<Relationship> {
+  constructor() {
+    super(Relationship.TYPE);
+  }
+
+  generate(): Relationship {
+    return new Relationship();
   }
 }

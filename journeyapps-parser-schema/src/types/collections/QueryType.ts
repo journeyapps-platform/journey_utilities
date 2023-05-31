@@ -1,3 +1,4 @@
+import { AbstractObjectTypeFactory, GenerateTypeEvent } from '../../schema/TypeFactory';
 import { Type } from '../Type';
 import { ObjectType } from '../ObjectType';
 import { TypeInterface } from '@journeyapps/evaluator';
@@ -30,5 +31,18 @@ export class QueryType extends Type {
       type: QueryType.TYPE,
       object: this.objectType.name
     };
+  }
+}
+
+export interface GenerateQueryTypeEvent extends GenerateTypeEvent {
+  objectType: ObjectType;
+}
+export class QueryTypeFactory extends AbstractObjectTypeFactory<QueryType, GenerateQueryTypeEvent> {
+  constructor() {
+    super(QueryType.TYPE);
+  }
+
+  generate(event: GenerateQueryTypeEvent): QueryType {
+    return new QueryType(event.objectType);
   }
 }

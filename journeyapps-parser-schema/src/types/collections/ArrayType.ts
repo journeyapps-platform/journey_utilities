@@ -1,3 +1,4 @@
+import { AbstractObjectTypeFactory, GenerateTypeEvent } from '../../schema/TypeFactory';
 import { Type } from '../Type';
 import { ObjectType } from '../ObjectType';
 import { TypeInterface } from '@journeyapps/evaluator';
@@ -26,5 +27,18 @@ export class ArrayType extends Type {
       type: ArrayType.TYPE,
       object: this.objectType.name
     };
+  }
+}
+
+export interface GenerateArrayTypeEvent extends GenerateTypeEvent {
+  objectType: ObjectType;
+}
+export class ArrayTypeFactory extends AbstractObjectTypeFactory<ArrayType, GenerateArrayTypeEvent> {
+  constructor() {
+    super(ArrayType.TYPE);
+  }
+
+  generate(event: GenerateArrayTypeEvent): ArrayType {
+    return new ArrayType(event.objectType);
   }
 }

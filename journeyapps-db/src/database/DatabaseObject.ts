@@ -1,10 +1,10 @@
-import { ObjectType } from '@journeyapps/parser-schema';
 import { Query } from '../query/Query';
 import { Batch, CrudError } from './Batch';
 import { RelationMatch } from '../query/queryOperations';
 import * as uuid from 'uuid';
 import { ObjectData } from '../types/ObjectData';
 import { GenericObject } from '../types/GenericObject';
+import { ObjectType } from '../types/ObjectType';
 import { DatabaseAdapter } from './adapters/DatabaseAdapter';
 import { VariableFormatStringScope } from '@journeyapps/evaluator';
 import * as j from '../utils/JourneyPromise';

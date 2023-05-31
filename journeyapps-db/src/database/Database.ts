@@ -2,13 +2,13 @@
 // This is the external database interface, the `DB` object.
 import { ApiCredentialOptions, ApiCredentials } from '../credentials';
 import { JourneyAPIAdapter } from './JourneyAPIAdapter';
-import { Schema } from '@journeyapps/parser-schema';
 import { DatabaseAdapter } from './adapters/DatabaseAdapter';
 import { Collection, TypedCollection } from './Collection';
 import { Batch } from './Batch';
 import { GenericDatabase } from './GenericDatabase';
 import { DatabaseObject } from './DatabaseObject';
 import { Query } from '../query/Query';
+import { DBSchema as Schema } from '../Schema';
 
 export class Database {
   /**

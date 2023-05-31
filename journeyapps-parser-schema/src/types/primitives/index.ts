@@ -56,7 +56,9 @@ export const PrimitiveTypeMap = {
 export type PrimitiveTypeMap = typeof PrimitiveTypeMap;
 
 // Collection of primitive type names
-export type PrimitiveTypeNames = keyof typeof PrimitiveTypeMap;
+export type PrimitiveTypeName = keyof typeof PrimitiveTypeMap;
+
+export type PrimitiveTypeInstance = InstanceType<PrimitiveTypeMap[PrimitiveTypeName]>;
 
 export * from './Boolean';
 export * from './Date';

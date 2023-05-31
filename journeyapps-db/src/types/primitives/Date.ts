@@ -8,7 +8,7 @@ export class DateType extends DBTypeMixin(SchemaDateType) {
   valueToJSON(value: any) {
     if (value instanceof Date) {
       return value.toISOString().substring(0, 10);
-    } else if (value instanceof Day) {
+    } else if (Day.isDay(value)) {
       return value.toISOString();
     } else {
       return null;
@@ -41,7 +41,7 @@ export class DateType extends DBTypeMixin(SchemaDateType) {
 
   format(value: any, format: string = 'MMMM D YYYY') {
     // Works for Date and Day objects.
-    if (value instanceof Day) {
+    if (Day.isDay(value)) {
       value = value.toDate();
     }
     const d = moment(value).utc();
@@ -62,7 +62,7 @@ export class DateType extends DBTypeMixin(SchemaDateType) {
       if (value instanceof Date) {
         // Assume UTC timezone
         return pureDate(value);
-      } else if (value instanceof Day) {
+      } else if (Day.isDay(value)) {
         return value.toDate();
       } else {
         throw new Error(value + ' is not a Date');

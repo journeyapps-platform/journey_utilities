@@ -2,6 +2,8 @@ export * from './schema/Schema';
 export * from './schema/schemaParser';
 export * from './schema/schemaSerializer';
 
+export * from './schema/TypeFactory';
+
 export * from './types/Type';
 export * from './types/EnumOption';
 export * from './types/Variable';

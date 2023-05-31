@@ -1,3 +1,4 @@
+import { Schema } from '../schema/Schema';
 import { Variable } from './Variable';
 import { EnumOption } from './EnumOption';
 import { TypeInterface } from '@journeyapps/evaluator';
@@ -28,10 +29,6 @@ export class Type implements TypeInterface {
     this.name = name;
     this.attributes = {}; // Default value
     this.isPrimitiveType = isPrimitive || false;
-  }
-
-  stringify(): string {
-    return this.name;
   }
 
   // Given a variable, add it as an attribute to this type.
@@ -153,6 +150,10 @@ export class Type implements TypeInterface {
     return arrayOfVariables.slice(n - 2);
   }
 
+  stringify(): string {
+    return this.name;
+  }
+
   valueOf() {
     return this.name;
   }
@@ -168,6 +169,10 @@ export class Type implements TypeInterface {
   }
 
   // Implemented elsewhere
+
+  setupVariables(schema: Schema) {
+    // no op
+  }
 
   valueFromJSON(data: any): any {
     throw new Error('Not implemented');

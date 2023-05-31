@@ -1,3 +1,4 @@
+import { AbstractObjectTypeFactory, GenerateTypeEvent } from '../schema/TypeFactory';
 import { Type } from './Type';
 import { ObjectType } from './ObjectType';
 import { XMLElement } from '@journeyapps/domparser/types';
@@ -64,5 +65,22 @@ export class Variable<T extends Type | TypeInterface = Type> {
     }
 
     return result;
+  }
+}
+
+export interface GenerateVariableEvent<T extends TypeInterface> extends GenerateTypeEvent {
+  name: string;
+  type: T;
+}
+
+export class VariableFactory<T extends TypeInterface = Type> extends AbstractObjectTypeFactory<
+  Variable<T>,
+  GenerateVariableEvent<T>
+> {
+  constructor() {
+    super(Variable.TYPE);
+  }
+  generate<T extends TypeInterface = Type>(event: GenerateVariableEvent<T>): Variable<T> {
+    return new Variable<T>(event.name, event.type);
   }
 }

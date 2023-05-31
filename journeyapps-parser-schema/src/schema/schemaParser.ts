@@ -848,7 +848,7 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
   function parseField(element: XMLElement, isVariable: boolean) {
     const isParam = element.tagName == 'param';
 
-    const variable = schema.variable<Type>();
+    const variable = schema.variable();
 
     recordSource(variable, element);
 

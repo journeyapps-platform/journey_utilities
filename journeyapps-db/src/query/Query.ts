@@ -1,5 +1,4 @@
 import { DatabaseAdapter } from '../database/adapters/DatabaseAdapter';
-import { ObjectType } from '@journeyapps/parser-schema';
 import { Expression, TrueExpression, expressionFromHash, parse as parseQuery, AndExpression } from './queryOperations';
 import { DatabaseObject } from '../database/DatabaseObject';
 import { Batch } from '../database/Batch';
@@ -7,6 +6,7 @@ import { ObjectData } from '../types/ObjectData';
 import { GenericObject } from '../types/GenericObject';
 import { FormatString } from '@journeyapps/evaluator';
 import * as j from '../utils/JourneyPromise';
+import { ObjectType } from '../types/ObjectType';
 
 const cloneDeep = require('lodash/cloneDeep'); // tslint:disable-line
 

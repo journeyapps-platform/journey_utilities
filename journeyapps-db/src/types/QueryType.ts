@@ -1,9 +1,9 @@
-import { QueryType as SchemaObjectType } from '@journeyapps/parser-schema';
+import { QueryType as SchemaQueryType, QueryTypeFactory as SchemaQueryTypeFactory } from '@journeyapps/parser-schema';
 import { Query } from '../query/Query';
 import { ObjectType } from './ObjectType';
 import { DBTypeMixin } from './Type';
 
-export class QueryType extends DBTypeMixin(SchemaObjectType) {
+export class QueryType extends DBTypeMixin(SchemaQueryType) {
   clone = function (query: Query) {
     return query._clone();
   };
@@ -25,4 +25,10 @@ export class QueryType extends DBTypeMixin(SchemaObjectType) {
       throw new Error('Expected value to have query type ' + thisTypeName);
     }
   };
+}
+
+export class QueryTypeFactory extends SchemaQueryTypeFactory {
+  generate(event) {
+    return new QueryType(event.objectType);
+  }
 }

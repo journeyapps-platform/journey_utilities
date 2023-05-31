@@ -1,9 +1,9 @@
 import { DatabaseAdapter } from '../database/adapters/DatabaseAdapter';
-import { ObjectType } from '@journeyapps/parser-schema';
 import { Query } from './Query';
 import { Expression } from './queryOperations';
 import { DatabaseObject } from '../database/DatabaseObject';
 import { ObjectData } from '../types/ObjectData';
+import { ObjectType } from '../types/ObjectType';
 
 export interface InternalQuery<T extends DatabaseObject = DatabaseObject> extends Query<T> {
   readonly adapter: DatabaseAdapter;
