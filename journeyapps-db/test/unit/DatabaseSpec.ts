@@ -1,4 +1,4 @@
-import { DatabaseObject, DBSchema, WebSQLAdapter, Collection, Database, Attachment } from '../../dist';
+import { DatabaseObject, DBSchema as Schema, WebSQLAdapter, Collection, Database, Attachment } from '../../dist';
 
 import { schema3Xml } from './fixtures';
 
@@ -12,7 +12,7 @@ if (hasWebSQL()) {
 }
 
 function DatabaseWebSQLSpec() {
-  let schema: DBSchema;
+  let schema: Schema;
   let db: any;
   let adapter: WebSQLAdapter;
 
@@ -23,7 +23,7 @@ function DatabaseWebSQLSpec() {
     await adapter.open();
 
     const v3 = new Version('3.1');
-    schema = new DBSchema().loadXml(schema3Xml, { apiVersion: v3 });
+    schema = new Schema().loadXml(schema3Xml, { apiVersion: v3 });
     db = new Database(schema, adapter);
   });
 
