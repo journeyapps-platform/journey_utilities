@@ -876,7 +876,8 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
     variable.label = getAttribute(element, 'label');
 
     if (isParam) {
-      variable.required = getAttribute(element, 'required') === 'true';
+      const requiredAttr = getAttribute(element, 'required');
+      variable.required = requiredAttr != null ? requiredAttr !== 'false' : true;
       variable.provideValue = getAttribute(element, 'provide-value');
     }
 
