@@ -4,6 +4,8 @@ import { DBTypeMixin } from '../Type';
 type GConstructor<T extends SchemaMultipleChoiceType = SchemaMultipleChoiceType> = new (...args: any[]) => T;
 export function DBMultipleChoiceTypeMixin<TBase extends GConstructor>(Base: TBase) {
   return class extends DBTypeMixin(Base) {
+    DEFAULT_INVALID_VALUE = '< invalid value >';
+
     format(value: any[]): string {
       // value is an array of integers
       if (value == null || value.length === 0) {
@@ -26,7 +28,7 @@ export function DBMultipleChoiceTypeMixin<TBase extends GConstructor>(Base: TBas
         for (let i = 0; i < clone.length; i++) {
           const v = clone[i];
           const option = this.options[v];
-          let label = '< invalid value >';
+          let label = this.DEFAULT_INVALID_VALUE;
           if (option != null) {
             label = option.label;
           }

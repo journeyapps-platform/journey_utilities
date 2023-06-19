@@ -34,11 +34,5 @@
   },
   "files": [
     "dist"
-  ],
-  "pnpm": {
-    "overrides": {
-      "sqlite3": "5.1.6",
-      "@journeyapps/core-test-helpers": "link:../test-helpers"
-    }
-  }
+  ]
 }

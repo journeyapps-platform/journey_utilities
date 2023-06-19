@@ -17,10 +17,5 @@
   "files": [
     "dist/src",
     "dist/@types"
-  ],
-  "pnpm": {
-    "overrides": {
-      "@journeyapps/core-test-helpers": "link:../test-helpers"
-    }
-  }
+  ]
 }

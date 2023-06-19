@@ -5,6 +5,8 @@ const moment = require('moment');
 
 // Applies applies DBTypeMixin first and then DBDateTypeMixin to BaseClass.
 export class DateType extends DBTypeMixin(SchemaDateType) {
+  static DEFAULT_FORMAT = 'MMMM D YYYY';
+
   valueToJSON(value: any) {
     if (value instanceof Date) {
       return value.toISOString().substring(0, 10);
@@ -39,7 +41,7 @@ export class DateType extends DBTypeMixin(SchemaDateType) {
     }
   }
 
-  format(value: any, format: string = 'MMMM D YYYY') {
+  format(value: any, format: string = DateType.DEFAULT_FORMAT) {
     // Works for Date and Day objects.
     if (Day.isDay(value)) {
       value = value.toDate();

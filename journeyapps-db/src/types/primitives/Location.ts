@@ -5,6 +5,11 @@ import { DBTypeMixin } from '../Type';
 export class LocationType extends DBTypeMixin(SchemaLocationType) {
   valueFromJSON(value: any) {
     if (Array.isArray(value)) {
+      if (value.length < 6) {
+        throw new Error(
+          'Location array format must have 6 parts, namely [latitude, longitude, altitude, horizontal_accuracy, vertical_accuracy, timestamp]'
+        );
+      }
       // Array format
       const data = {
         latitude: value[0],

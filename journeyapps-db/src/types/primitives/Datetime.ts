@@ -3,6 +3,8 @@ import { DBTypeMixin } from '../Type';
 import moment = require('moment');
 
 export class DatetimeType extends DBTypeMixin(SchemaDatetimeType) {
+  static DEFAULT_FORMAT = 'MMMM D YYYY h:mm A';
+
   valueToJSON(value: any) {
     if (value instanceof Date) {
       return value.toISOString();
@@ -24,7 +26,7 @@ export class DatetimeType extends DBTypeMixin(SchemaDatetimeType) {
     }
   }
 
-  format(value: any, format: string = 'MMMM D YYYY h:mm A'): string {
+  format(value: any, format: string = DatetimeType.DEFAULT_FORMAT): string {
     return moment(value).format(format);
   }
 

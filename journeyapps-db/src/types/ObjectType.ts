@@ -2,10 +2,11 @@ import {
   ObjectType as SchemaObjectType,
   ObjectTypeFactory as SchemaObjectTypeFactory
 } from '@journeyapps/parser-schema';
+import { Query } from '../query/Query';
 import { DBTypeMixin } from './Type';
 
 export class ObjectType extends DBTypeMixin(SchemaObjectType) {
-  cast(value) {
+  cast(value: any) {
     if (typeof value != 'object') {
       throw new Error(value + ' is not an object');
     }
@@ -26,7 +27,7 @@ export class ObjectType extends DBTypeMixin(SchemaObjectType) {
     return value.toString();
   }
 
-  clone(value) {
+  clone(value: Query) {
     return value._clone();
   }
 }

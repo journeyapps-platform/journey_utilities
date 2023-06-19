@@ -22,10 +22,5 @@
     "dist/src",
     "dist/@types",
     "domparser.js"
-  ],
-  "pnpm": {
-    "overrides": {
-      "@journeyapps/core-test-helpers": "link:../test-helpers"
-    }
-  }
+  ]
 }

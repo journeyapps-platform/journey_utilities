@@ -22,10 +22,5 @@
   ],
   "devDependencies": {
     "@journeyapps/core-test-helpers": "^4.1.1"
-  },
-  "pnpm": {
-    "overrides": {
-      "@journeyapps/core-test-helpers": "link:../test-helpers"
-    }
   }
 }
