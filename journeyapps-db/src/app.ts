@@ -1,14 +1,14 @@
 export { Day } from '@journeyapps/core-date';
 
-export * from './Batch';
-export * from './Collection';
-export * from './DatabaseObject';
-export * from './Location';
-export * from './Query';
-export * from './GenericDatabase';
-export * from './GenericObject';
-export * from './DatabaseAdapter';
-export * from './ObjectData';
-export * from './Database';
-export * from './Attachment';
-export { Promise } from './JourneyPromise';
+export * from './database/Batch';
+export * from './database/Collection';
+export * from './database/DatabaseObject';
+export * from './types/Location';
+export * from './query/Query';
+export * from './database/GenericDatabase';
+export * from './types/GenericObject';
+export * from './database/adapters/DatabaseAdapter';
+export * from './types/ObjectData';
+export * from './database/Database';
+export * from './types/Attachment';
+export { Promise } from './utils/JourneyPromise';

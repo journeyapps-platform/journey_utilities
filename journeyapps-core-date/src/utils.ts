@@ -24,3 +24,16 @@ export function isPureDate(date: Date) {
     date.getUTCMilliseconds() === 0
   );
 }
+
+export function parseDateTime(value): Date | null {
+  if (typeof value == 'string') {
+    const parsed = Date.parse(value);
+    if (isNaN(parsed)) {
+      return null;
+    } else {
+      return new Date(parsed);
+    }
+  } else {
+    return null;
+  }
+}

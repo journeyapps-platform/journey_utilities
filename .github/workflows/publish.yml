@@ -3,10 +3,13 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - master
+      - "**"
+    tags-ignore:
+      - "**"
 
 env:
   SECRETS: ${{ toJSON(secrets) }}
+  GITHUB_TOKEN: ${{ secrets.GH_SHARED_TOKEN_2 }}
 
 jobs:
   build:
@@ -14,37 +17,71 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/checkout@v2
         with:
-          repository: journeyapps-platform/ci-actions
-          token: ${{ secrets.GH_SHARED_TOKEN_2 }}
-          path: .github/ci
-          ref: v1
+          ref: ${{github.event.pull_request.head.sha}}
+          fetch-depth: 0
+
       - name: Setup NodeJS
         uses: actions/setup-node@v2
         with:
-          node-version: 12.17
-      - uses: pnpm/action-setup@v2.1.0
+          node-version: 16
+
+      - uses: pnpm/action-setup@v2.2.4
         with:
-          version: 6.32.3
+          version: 8
+
       - name: PNPM install
         run: pnpm install --frozen-lockfile
-      - name: Build
-        run: pnpm build
+
       - name: Authenticate
         run: |
           echo "registry=https://registry.npmjs.org/" >> $HOME/.npmrc
           echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> $HOME/.npmrc
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - name: Publish Dev Dependencies
-        run: | 
-          VERSION=0.0.0-dev.$(git rev-parse --short "$GITHUB_SHA")
-          rm -rf .git
-          echo "Publishing "$VERSION
-          lerna version $VERSION --no-private --exact --force-publish --no-push --no-git-tag-version --yes
-          lerna publish from-package --yes --npm-tag next --no-git-reset --ignore-scripts --no-verify-access
-        if: ${{ github.ref != 'refs/heads/master' }}
-      - name: Publish Dependencies
-        run: lerna publish from-package --yes --ignore-scripts --no-verify-access
-        if: ${{ github.ref == 'refs/heads/master' }}   
+
+      - id: is_dev
+        run: |
+          IS_DEV=${{ github.ref != 'refs/heads/master' && github.ref != 'refs/heads/changeset-release/master' }}
+          echo "value=$IS_DEV" >> $GITHUB_OUTPUT
+
+      - name: Has changesets
+        uses: actions/github-script@v6
+        id: changesetsCheck
+        with:
+          script: |
+            const script = async ({ core, require }) => {
+            const getChangesets = require('@changesets/read').default;
+              try {
+                const results = await getChangesets(process.cwd());
+                core.setOutput('hasChangesets', results.length === 0 ? 'false' : 'true');
+              } catch (e) {
+                core.setFailed(`Action failed with error ${e}`);
+              }
+            };
+            await script({ core, require });
+
+      - name: Build
+        run: pnpm build
+
+      - name: Publish dev packages
+        if: ${{ steps.changesetsCheck.outputs.hasChangesets == 'true' && steps.is_dev.outputs.value == 'true' }}
+        run: |
+          pnpm changeset version --no-git-tag --snapshot dev
+          pnpm changeset publish --tag next
+
+      - name: Create Release Pull Request or Publish to npm
+        if: ${{ github.ref == 'refs/heads/master' }}
+        id: changesets
+        uses: changesets/action@v1.4.1
+        with:
+          version: pnpm ci:version
+          commit: "chore: update versions"
+          title: "[Chore] update versions"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_SHARED_TOKEN_2 }}
+
+      - name: Publish production packages.
+        if: ${{ github.ref == 'refs/heads/master' && steps.changesets.outputs.hasChangesets == 'false' && success() }}
+        run: |
+          pnpm ci:publish

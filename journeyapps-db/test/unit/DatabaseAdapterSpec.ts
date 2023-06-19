@@ -1,8 +1,6 @@
-import { ObjectType } from '@journeyapps/parser-schema';
 import { hasWebSQL } from './databaseSetup';
-import { DatabaseAdapter, WebSQLAdapter } from '../../dist/index';
-import { Query } from '../../dist/Query';
-import * as uuid from 'uuid/v1';
+import { WebSQLAdapter, Query, ObjectType } from '../../dist';
+import * as uuid from 'uuid';
 
 if (hasWebSQL()) {
   describe('WebSQLAdapter', WebSQLAdapterSpecs);
@@ -171,7 +169,7 @@ function WebSQLAdapterSyncSpecs() {
   });
 
   it('should perform crud', async function () {
-    const id = uuid();
+    const id = uuid.v1();
     const asset1 = {
       type: 'asset',
       id: id,

@@ -1,5 +1,5 @@
 import { prettyText, parse } from '@journeyapps/core-xml';
-import { Variable, primitive, toDOM, Schema } from '../../src';
+import { Variable, toDOM, Schema } from '../../src';
 import { FormatString } from '@journeyapps/evaluator';
 import { Version } from '@journeyapps/parser-common';
 
@@ -24,8 +24,8 @@ describe('Schema toDOM', function () {
     // START MODIFICATIONS
 
     // Add fields
-    schema.objects.building.addAttribute(new Variable('floors', primitive('number')));
-    schema.objects.building.addAttribute(new Variable('height', primitive('number')));
+    schema.objects.building.addAttribute(schema.variable('floors', schema.primitive('number')));
+    schema.objects.building.addAttribute(schema.variable('height', schema.primitive('number')));
     schema.objects.building.attributes.height.label = 'Height';
 
     // Delete model

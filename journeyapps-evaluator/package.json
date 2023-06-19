@@ -1,7 +1,7 @@
 {
   "name": "@journeyapps/evaluator",
   "version": "6.2.2",
-  "description": "Journey JS library",
+  "description": "Journey Evaluator library",
   "main": "./dist/src/index.js",
   "typings": "./dist/@types/src/index",
   "scripts": {
@@ -11,7 +11,7 @@
     "test:node": "jasmine dist/test/unit/all.js"
   },
   "dependencies": {
-    "@journeyapps/core-xml": "^5.0.1"
+    "@journeyapps/core-xml": "workspace:*"
   },
   "files": [
     "dist/src",
@@ -19,10 +19,5 @@
   ],
   "devDependencies": {
     "@journeyapps/core-test-helpers": "^4.1.1"
-  },
-  "pnpm": {
-    "overrides": {
-      "@journeyapps/core-test-helpers": "link:../test-helpers"
-    }
   }
 }

@@ -1,15 +1,11 @@
-import { DatabaseObject, WebSQLAdapter } from '../../dist/index';
+import { DatabaseObject, DBSchema as Schema, WebSQLAdapter, Collection, Database, Attachment } from '../../dist';
 
 import { schema3Xml } from './fixtures';
 
-import { Schema, EnumOption } from '@journeyapps/parser-schema';
+import { EnumOption } from '@journeyapps/parser-schema';
 import { Version } from '@journeyapps/parser-common';
 import * as fetchMock from 'fetch-mock';
-
 import { hasWebSQL } from './databaseSetup';
-import { Collection, Database } from '../../dist';
-import { Attachment } from '../../dist/Attachment';
-import { GenericDatabase } from '../../src';
 
 if (hasWebSQL()) {
   describe('Database with WebSQLAdapter', DatabaseWebSQLSpec);

@@ -1,43 +1,38 @@
 {
   "name": "@journeyapps/db",
   "version": "7.3.0",
-  "description": "Journey JS library",
+  "description": "Journey DB library",
   "main": "./dist/index.js",
   "browser": "./dist/browser.js",
   "typings": "./dist/index",
   "appTypings": "./dist/app",
   "scripts": {
-    "build": "../node_modules/.bin/tsc --build",
+    "build": "tsc --build",
     "test": "tsc -b test && pnpm test:node && pnpm test:browser",
-    "clean": "tsc -b --clean && tsc -b --clean test && rm -rf dist test/dist",
+    "clean": "tsc -b test --clean && rm -rf dist test/dist",
     "test:browser": "karma start karma.conf.js --single-run",
     "test:node": "jasmine test/dist/all.js"
   },
   "dependencies": {
-    "@journeyapps/core-date": "^5.2.1",
-    "@journeyapps/core-xml": "^5.0.1",
-    "@journeyapps/evaluator": "^6.2.2",
-    "@journeyapps/parser-common": "^7.2.2",
-    "@journeyapps/parser-schema": "^7.2.2",
+    "@journeyapps/core-date": "workspace:*",
+    "@journeyapps/core-xml": "workspace:*",
+    "@journeyapps/evaluator": "workspace:*",
+    "@journeyapps/parser-common": "workspace:*",
+    "@journeyapps/parser-schema": "workspace:*",
     "@types/node-fetch": "^2.5.7",
     "isomorphic-fetch": "^2.2.1",
     "lodash": "^4.17.21",
     "moment": "^2.24.0",
-    "uuid": "^3.3.3",
+    "uuid": "^8.3.2",
     "xmldom": "^0.1.27"
   },
   "devDependencies": {
     "@journeyapps/core-test-helpers": "^4.1.1",
-    "@types/uuid": "^3.4.5",
     "fetch-mock": "^5.9.4",
-    "websql": "^2.0.3"
+    "websql": "^2.0.3",
+    "sqlite3": "^5.1.6"
   },
   "files": [
     "dist"
-  ],
-  "pnpm": {
-    "overrides": {
-      "@journeyapps/core-test-helpers": "link:../test-helpers"
-    }
-  }
+  ]
 }

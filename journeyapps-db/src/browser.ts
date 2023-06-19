@@ -1,8 +1,9 @@
-import * as database from './Database';
-import * as query from './queryOperations';
+import * as database from './database/Database';
+import * as query from './query/queryOperations';
 
 // Convenience export
 export { Day } from '@journeyapps/core-date';
+export { Variable } from '@journeyapps/parser-schema';
 
 /**
  * @deprecated
@@ -11,24 +12,33 @@ export { database, query };
 
 export * from './credentials/ApiCredentials';
 export * from './credentials/MobileCredentials';
-export { Attachment } from './Attachment';
-export * from './BaseAdapter';
-export * from './Batch';
-export * from './Collection';
-export * from './DatabaseObject';
-export * from './JourneyAPIAdapter';
-export * from './Location';
-export * from './Query';
-export * from './WebSQLAdapter';
-export * from './GenericDatabase';
-export * from './GenericObject';
-export * from './DatabaseAdapter';
-export * from './InternalQuery';
-export * from './ObjectData';
+
+export * from './Schema';
+
+export * from './types/Type';
+export * from './types/GenericObject';
+export * from './types/ObjectData';
+export * from './types/ObjectType';
+export * from './types/ArrayType';
+export * from './types/QueryType';
+
+export * from './types/Location';
+export { Attachment } from './types/Attachment';
+
+export * from './database/Batch';
+export * from './database/Database';
+export * from './database/Collection';
+export * from './database/DatabaseObject';
+export * from './database/adapters/BaseAdapter';
+export * from './database/GenericDatabase';
+export * from './database/JourneyAPIAdapter';
+export * from './database/adapters/DatabaseAdapter';
+export * from './database/adapters/WebSQLAdapter';
+
+export * from './query/Query';
+export * from './query/InternalQuery';
 
 export * from './utils/base64';
 export * from './utils/FunctionQueue';
-export * from './utils/uuid';
-export * from './Database';
 
-export { Promise } from './JourneyPromise';
+export { Promise } from './utils/JourneyPromise';

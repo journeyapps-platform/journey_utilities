@@ -1,4 +1,4 @@
-import { WebSQLAdapter } from '../../dist/WebSQLAdapter';
+import { WebSQLAdapter } from '../../dist/database/adapters/WebSQLAdapter';
 
 var _hasWebSQL = false;
 

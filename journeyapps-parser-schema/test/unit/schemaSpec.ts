@@ -1,4 +1,4 @@
-import { Schema, parser2, parser3, jsonParser, parseJsonField, primitives } from '../../src/index';
+import { Schema, parser2, parser3, jsonParser, parseJsonField, TextType, ObjectType } from '../../src/index';
 import { Version } from '@journeyapps/parser-common';
 import * as blackmontapp_xml from '@journeyapps/core-xml';
 import '@journeyapps/core-xml/domparser';
@@ -9,18 +9,16 @@ const schema3BadgeCountXml = require('../fixtures/schema3-badge-count.xml').defa
 const v3 = new Version('3.1');
 const v2 = new Version('2.0');
 
-declare function expect(
-  cond
-): jasmine.Matchers<any> & {
+declare function expect(cond): jasmine.Matchers<any> & {
   toHave(v);
   toHaveError(v);
   toHaveErrors(v: any[]);
 };
 
 describe('json parsing', function () {
+  const schema = new Schema();
   it('should parse an object', function () {
-    var s = new Schema();
-    var parser = jsonParser(s);
+    const parser = jsonParser(schema);
     parser.parse({
       objects: {
         asset: {
@@ -57,8 +55,8 @@ describe('json parsing', function () {
       }
     });
 
-    var asset = s.objects.asset;
-    var room = s.objects.room;
+    const asset = schema.objects.asset;
+    const room = schema.objects.room;
 
     expect(asset.label).toBe('Asset');
     expect(asset.attributes.serial.type.spec).toBe('number');
@@ -66,7 +64,7 @@ describe('json parsing', function () {
     expect(asset.attributes.colours.type.options[0].index).toBe(1);
     expect(asset.attributes.colours.type.options[3].index).toBe(0);
 
-    var rel = asset.belongsTo.container;
+    const rel = asset.belongsTo.container;
     expect(rel.objectType).toBe(asset);
     expect(rel.foreignType).toBe(room);
     expect(rel.foreignName).toEqual('assets');
@@ -76,7 +74,7 @@ describe('json parsing', function () {
   });
 
   it('should parse a field', function () {
-    var field = parseJsonField({
+    const field = parseJsonField(schema, {
       name: 'serial_number',
       type: 'text',
       label: 'Serial Number',
@@ -93,7 +91,7 @@ describe('json parsing', function () {
   });
 
   it('should parse a date field', function () {
-    let field = parseJsonField({
+    let field = parseJsonField(schema, {
       name: 'day',
       type: 'date'
     });
@@ -106,7 +104,7 @@ describe('json parsing', function () {
   });
 
   it('should parse a date field (isDay: true)', function () {
-    let field = parseJsonField({
+    let field = parseJsonField(schema, {
       name: 'day',
       type: 'date',
       isDay: true
@@ -119,7 +117,7 @@ describe('json parsing', function () {
   });
 
   it('should parse a date field (isDay: false)', function () {
-    let field = parseJsonField({
+    let field = parseJsonField(schema, {
       name: 'day',
       type: 'date',
       isDay: false
@@ -132,7 +130,7 @@ describe('json parsing', function () {
   });
 });
 
-var useDomParsers = [true];
+const useDomParsers = [true];
 
 useDomParsers.forEach(function (useDomParser) {
   describe('xml schema parsing ' + (useDomParser ? '(domparser)' : '(native)'), function () {
@@ -145,7 +143,7 @@ useDomParsers.forEach(function (useDomParser) {
     }
 
     it('should load a v2 string attribute', function () {
-      var attr = parser2(new Schema()).parseField(
+      const attr = parser2(new Schema()).parseField(
         xml('<attribute name="serial_number" label="Serial Number" type="string" spec="text.name"/>')
       );
       expect(attr.name).toBe('serial_number');
@@ -155,7 +153,7 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should load a v3 string attribute', function () {
-      var attr = parser3(new Schema()).parseField(
+      const attr = parser3(new Schema()).parseField(
         xml('<field name="serial_number" label="Serial Number" type="text:name" />')
       );
       expect(attr.name).toBe('serial_number');
@@ -166,7 +164,7 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should load an enum attribute', function () {
-      var attr = parser2(new Schema()).parseField(
+      const attr = parser2(new Schema()).parseField(
         xml(
           '<attribute name="colours" label="Colours" type="enum">' +
             '<option>Red</option>' +
@@ -203,7 +201,7 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should load a single-choice attribute', function () {
-      var attr = parser3(new Schema()).parseField(
+      const attr = parser3(new Schema()).parseField(
         xml(
           '<field name="colours" label="Colours" type="single-choice">' +
             '<option key="red">Red</option>' +
@@ -262,7 +260,7 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should load a boolean attribute', function () {
-      var attr = parser3(new Schema()).parseField(
+      const attr = parser3(new Schema()).parseField(
         xml(
           '<field name="confirm" label="Confirm" type="boolean">' +
             '<option key="true">OK</option>' +
@@ -283,7 +281,7 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should load a boolean attribute with defaults', function () {
-      var attr = parser3(new Schema()).parseField(xml('<field name="confirm" label="Confirm" type="boolean"/>'));
+      const attr = parser3(new Schema()).parseField(xml('<field name="confirm" label="Confirm" type="boolean"/>'));
       expect(attr.type.name).toEqual('boolean');
       expect(attr.type.hasOptions).toBe(true);
       expect(attr.type.multipleOptions).toBe(false);
@@ -295,7 +293,7 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should load a multiple-choice attribute', function () {
-      var attr = parser3(new Schema()).parseField(
+      const attr = parser3(new Schema()).parseField(
         xml(
           '<field name="colours" label="Colours" type="multiple-choice">' +
             '<option key="red">Red</option>' +
@@ -317,7 +315,7 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should load a multiple-choice-integer attribute', function () {
-      var attr = parser3(new Schema()).parseField(
+      const attr = parser3(new Schema()).parseField(
         xml(
           '<field name="colours" label="Colours" type="multiple-choice-integer">' +
             '<option key="1">Red</option>' +
@@ -339,7 +337,7 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should load an object', function () {
-      var assetType = parser2(new Schema()).parseObjectType(
+      const assetType = parser2(new Schema()).parseObjectType(
         xml(
           '<object name="asset" label="Asset">' +
             '<attribute name="serial_number" label="Serial Number" type="string" />' +
@@ -351,16 +349,16 @@ useDomParsers.forEach(function (useDomParser) {
       expect(assetType.name).toBe('asset');
       expect(assetType.label).toBe('Asset');
 
-      var serial = assetType.getVariable('serial_number');
+      const serial = assetType.getVariable('serial_number');
       expect(serial).not.toEqual(null);
       expect(serial.name).toEqual('serial_number');
       expect(serial.label).toEqual('Serial Number');
-      expect(serial.type instanceof primitives.text).toBe(true);
+      expect(TextType.isInstanceOf(serial.type)).toBe(true);
     });
 
     ['2', '3'].forEach(function (v) {
       it('should load a v' + v + ' schema from an xml string', function () {
-        var s;
+        let s;
         if (v == '2') {
           s = new Schema().loadXml(schema2_xml, { apiVersion: v2 });
         } else if (v == '3') {
@@ -369,7 +367,7 @@ useDomParsers.forEach(function (useDomParser) {
 
         expect(s.errors).toEqual([]);
 
-        var assetType = s.getType('asset');
+        const assetType = s.getType('asset');
         expect(assetType).not.toEqual(null);
         expect(assetType.label).toBe('Asset');
 
@@ -386,10 +384,10 @@ useDomParsers.forEach(function (useDomParser) {
           }
         ]);
 
-        var roomType = s.getType('room');
+        const roomType = s.getType('room');
         expect(roomType).not.toEqual(null);
 
-        var rel = assetType.belongsTo.room;
+        const rel = assetType.belongsTo.room;
         expect(rel).not.toEqual(null);
         expect(rel.name).toEqual('room');
         expect(rel.objectType).toEqual(assetType);
@@ -399,17 +397,17 @@ useDomParsers.forEach(function (useDomParser) {
 
         expect(roomType.hasMany.assets).toBe(rel);
 
-        var roomAttr = assetType.getAttribute('room');
+        const roomAttr = assetType.getAttribute('room');
         expect(roomAttr.name).toBe('room');
         expect(roomAttr.type.name).toBe('room');
         expect(roomAttr.relationship).toBe('room');
 
-        var roomIdAttr = assetType.getAttribute('room_id');
+        const roomIdAttr = assetType.getAttribute('room_id');
         expect(roomIdAttr.name).toBe('room_id');
         expect(roomIdAttr.type.name).toBe('text');
         expect(roomIdAttr.relationship).toBe('room');
 
-        var assetsAttr = roomType.getAttribute('assets');
+        const assetsAttr = roomType.getAttribute('assets');
         expect(assetsAttr.name).toBe('assets');
         expect(assetsAttr.type.name).toBe('query');
         expect(assetsAttr.type.objectType.name).toBe('asset');
@@ -426,7 +424,7 @@ useDomParsers.forEach(function (useDomParser) {
           expect(signatureAttr.type.autoDownload).toBe(false);
         }
 
-        var attributeKeys = Object.keys(roomType.getAttributes()).sort();
+        const attributeKeys = Object.keys(roomType.getAttributes()).sort();
         expect(attributeKeys).toEqual([
           'assets',
           'barcode',
@@ -438,20 +436,20 @@ useDomParsers.forEach(function (useDomParser) {
           'personnel_id'
         ]);
 
-        var barcodeAttr = assetType.getAttribute('barcode');
+        const barcodeAttr = assetType.getAttribute('barcode');
         expect(barcodeAttr.type.spec).toBe('text.email');
       });
     });
 
     it('should load a notify-user definition for a model', function () {
-      var s = new Schema().loadXml(schema3_xml, { apiVersion: v3 });
+      const s = new Schema().loadXml(schema3_xml, { apiVersion: v3 });
 
       expect(s.errors).toEqual([]);
 
-      var workerType = s.getType('worker');
+      const workerType = s.getType('worker');
       expect(workerType).not.toEqual(null); // sanity check
 
-      var notification = s.getType('order_notification');
+      const notification = s.getType('order_notification');
       expect(notification).not.toEqual(null); // sanity check
       expect(notification.notifyUsers).not.toEqual(null);
       expect(notification.notifyUsers.length).toEqual(1);
@@ -462,14 +460,14 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should a notify-user definition for a model with badge count', function () {
-      var s = new Schema().loadXml(schema3BadgeCountXml, { apiVersion: v3 });
+      const s = new Schema().loadXml(schema3BadgeCountXml, { apiVersion: v3 });
 
       expect(s.errors).toEqual([]);
 
-      var workerType = s.getType('worker');
+      const workerType = s.getType('worker') as ObjectType;
       expect(workerType).not.toEqual(null); // sanity check
 
-      var notification = s.getType('order_notification');
+      const notification = s.getType('order_notification') as ObjectType;
       expect(notification).not.toEqual(null); // sanity check
       expect(notification.notifyUsers).not.toEqual(null);
       expect(notification.notifyUsers.length).toEqual(1);
@@ -480,25 +478,25 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should load a ready webhook definition for a model', function () {
-      var s = new Schema().loadXml(schema3_xml, { apiVersion: v3 });
+      const s = new Schema().loadXml(schema3_xml, { apiVersion: v3 });
 
       expect(s.errors).toEqual([]);
 
-      var assetType = s.getType('asset');
+      const assetType = s.getType('asset') as ObjectType;
       expect(assetType).not.toEqual(null); // sanity check
 
       expect(assetType.webhooks).not.toEqual(null);
       expect(assetType.webhooks.length).toEqual(2);
 
       // first webhook for asset model
-      var webhook = assetType.webhooks[0];
+      let webhook = assetType.webhooks[0];
       expect(webhook).not.toEqual(null);
       expect(webhook.type).toEqual('ready');
       expect(webhook.name).toEqual('ready_asset');
       expect(webhook.fields).not.toEqual(null);
       expect(webhook.fields.length).toEqual(3);
 
-      var webhookField = webhook.fields[0];
+      let webhookField = webhook.fields[0];
       expect(webhookField).not.toEqual(null);
       expect(webhookField.name).toEqual('room');
       expect(webhookField.embed).toEqual(true);
@@ -529,17 +527,17 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should load an update webhook definition for a model', function () {
-      var s = new Schema().loadXml(schema3_xml, { apiVersion: v3 });
+      const s = new Schema().loadXml(schema3_xml, { apiVersion: v3 });
 
       expect(s.errors).toEqual([]);
 
-      var roomType = s.getType('room');
+      const roomType = s.getType('room') as ObjectType;
       expect(roomType).not.toEqual(null); // sanity check
 
       expect(roomType.webhooks).not.toEqual(null);
       expect(roomType.webhooks.length).toEqual(1);
 
-      var webhook = roomType.webhooks[0];
+      const webhook = roomType.webhooks[0];
       expect(webhook).not.toEqual(null);
       expect(webhook.type).toEqual('update');
       expect(webhook.name).toEqual('update_room');
@@ -549,10 +547,10 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should load a webhook with an explicit receiver', function () {
-      var s = new Schema().loadXml(schema3_xml, { apiVersion: v3 });
+      const s = new Schema().loadXml(schema3_xml, { apiVersion: v3 });
       expect(s.errors).toEqual([]);
 
-      var part = s.getType('part');
+      const part = s.getType('part') as ObjectType;
       expect(part).not.toEqual(null); // sanity check
 
       expect(part.webhooks).not.toEqual(null);
@@ -565,10 +563,10 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should give helpful errors for webhooks', function () {
-      var f;
+      let f;
 
       function schema_for(wh_def) {
-        var x =
+        const x =
           '<?xml version="1.0" encoding="UTF-8"?>\n' +
           '<data-model>\n' +
           '  <model name="worker" label="Worker">\n' +
@@ -580,11 +578,11 @@ useDomParsers.forEach(function (useDomParser) {
           '  </model>\n' +
           '</data-model>\n';
 
-        var s = new Schema().loadXml(x, { apiVersion: v3 });
+        const s = new Schema().loadXml(x, { apiVersion: v3 });
 
         return {
           schema: s,
-          hook: s.getType('worker').webhooks[0],
+          hook: (s.getType('worker') as ObjectType).webhooks[0],
           errors: s.errors.map(function (e) {
             return e.message;
           })
@@ -623,7 +621,7 @@ useDomParsers.forEach(function (useDomParser) {
     }
 
     it('should report an error when the root element is not <schema>', function () {
-      var schema = parseSchema('<somethingelse></somethingelse>', {
+      const schema = parseSchema('<somethingelse></somethingelse>', {
         apiVersion: v2
       });
       expect(schema.errors).toHaveError({
@@ -635,7 +633,7 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should report an error when the root element is not <data-model> in v3 schema', function () {
-      var schema = parseSchema('<somethingelse></somethingelse>', {
+      const schema = parseSchema('<somethingelse></somethingelse>', {
         apiVersion: v3
       });
       expect(schema.errors).toHaveError({
@@ -647,7 +645,7 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should report a warning when there are children other than <object>', function () {
-      var schema = parseSchema(
+      const schema = parseSchema(
         '<schema><object name="test" label="Test"><display format="Test" /></object><somechild /></schema>'
       );
       expect(schema.errors).toHaveError({
@@ -657,7 +655,7 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should require at least one object type', function () {
-      var schema = parseSchema('<schema></schema>');
+      const schema = parseSchema('<schema></schema>');
       expect(schema.errors).toHaveError({
         message: 'At least one model is required',
         type: 'error'
@@ -665,7 +663,7 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should validate the order of elements in <object>', function () {
-      var schema = parseSchema(
+      const schema = parseSchema(
         '<schema><object name="test" label="Test"><display format="Test" /><attribute name="t" type="string" label="T" /></object></schema>'
       );
       expect(schema.errors).toHaveError({
@@ -675,7 +673,7 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should require a display element', function () {
-      var schema = parseSchema('<schema><object name="test" label="Test"></object></schema>');
+      const schema = parseSchema('<schema><object name="test" label="Test"></object></schema>');
       expect(schema.errors).toHaveError({
         message: '<display> is required',
         type: 'error'
@@ -683,7 +681,7 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should not allow more than one display element', function () {
-      var schema = parseSchema(
+      const schema = parseSchema(
         '<schema><object name="test" label="Test"><display format="Test" /><display format="Test" /></object></schema>'
       );
       expect(schema.errors).toHaveError({
@@ -693,14 +691,14 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should validate <display> attributes', function () {
-      var schema = parseSchema(
+      const schema = parseSchema(
         '<schema><object name="test" label="Test"><display something="wrong" /></object></schema>'
       );
       expect(schema.errors).toHaveErrors([{ message: "Invalid attribute 'something'", type: 'warning' }]);
     });
 
     it('should validate that an <object> element has no other children', function () {
-      var schema = parseSchema(
+      const schema = parseSchema(
         '<schema><object name="test" label="Test"><somethingelse /> <display format="Test" /></object></schema>'
       );
       expect(schema.errors).toHaveError({
@@ -710,7 +708,7 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should validate attributes on <object> elements', function () {
-      var schema = parseSchema(
+      const schema = parseSchema(
         '<schema><object something="invalid" label=""><display format="Test" /></object></schema>'
       );
       expect(schema.errors).toHaveErrors([
@@ -720,7 +718,7 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should validate attribute types', function () {
-      var schema = parseSchema(
+      const schema = parseSchema(
         '<schema><object name="test" label="Test">\n<attribute name="t" type="somethingelse" label="Test" />\n<display format="Test" /></object></schema>'
       );
       expect(schema.errors).toHaveError({
@@ -730,7 +728,7 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should not allow pure v2 attribute types in v3 schema', function () {
-      var schema = parseSchema(
+      const schema = parseSchema(
         '<data-model><model name="test" label="Test">\n<field name="t" type="string" label="Test" />\n<display format="Test" /></model></data-model>',
         { apiVersion: v3 }
       );
@@ -741,7 +739,7 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should validate a missing attribute type', function () {
-      var schema = parseSchema(
+      const schema = parseSchema(
         '<schema><object name="test" label="Test">\n<attribute name="t" label="Test" />\n<display format="Test" /></object></schema>'
       );
       expect(schema.errors).toHaveError({
@@ -751,7 +749,7 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should validate attachment media in v2 schema', function () {
-      var schema = parseSchema(
+      const schema = parseSchema(
         '<schema><object name="test" label="Test">\n<attribute name="t" type="attachment" media="application/octet-stream" label="Test"/>\n<display format="Test" /></object></schema>',
         { apiVersion: v2 }
       );
@@ -762,7 +760,7 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should validate attachment media in v3 schema', function () {
-      var schema = parseSchema(
+      const schema = parseSchema(
         '<data-model><model name="test" label="Test">\n<field name="t" type="attachment" media="application/octet-stream" label="Test"/>\n<display format="Test" /></model></data-model>',
         { apiVersion: v3 }
       );
@@ -773,7 +771,7 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should allow not blank attachment media in v3 schema', function () {
-      var schema = parseSchema(
+      const schema = parseSchema(
         '<data-model><model name="test" label="Test">\n<field name="t" type="attachment" label="Test"/>\n<display format="Test" /></model></data-model>',
         { apiVersion: v3 }
       );
@@ -784,12 +782,12 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should handle broken xml', function () {
-      var schema = parseSchema('<schema broken></schema>');
+      const schema = parseSchema('<schema broken></schema>');
       expect(schema.errors.length).toBe(1);
     });
 
     it('should error on duplicate object names', function () {
-      var schema = parseSchema(
+      const schema = parseSchema(
         '<schema>\n<object name="test" label="Test"><display format="Test" /></object>\n<object name="test" label="Test"><display format="Test" /></object></schema>'
       );
 
@@ -801,7 +799,7 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should error on an unknown string spec', function () {
-      var schema = parseSchema(
+      const schema = parseSchema(
         '<schema>\n<object name="test" label="Test">\n<attribute spec="text.whatisthis" name="t" type="string" label="test"/>\n<display format="Test" /></object></schema>'
       );
 
@@ -813,7 +811,7 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should error on an unknown string format', function () {
-      var schema = parseSchema(
+      const schema = parseSchema(
         '<data-model>\n<model name="test" label="Test">\n<field name="t" type="text:whatisthis" label="test"/>\n<display format="Test" /></model></data-model>',
         { apiVersion: v3 }
       );
@@ -826,7 +824,7 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should validate object names', function () {
-      var schema = parseSchema(
+      const schema = parseSchema(
         '<schema>\n<object name="my test" label="Test"><display format="Test" /></object></schema>'
       );
 
@@ -837,7 +835,7 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should report an error for reserved object names', function () {
-      var schema = parseSchema(
+      const schema = parseSchema(
         '<schema><object name="account" label="Account"><display format="Test" /></object></schema>'
       );
       expect(schema.errors).toHaveError({
@@ -847,7 +845,7 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should error on duplicate attribute names', function () {
-      var schema = parseSchema(
+      const schema = parseSchema(
         '<schema>\n<object name="test" label="Test"><attribute name="t" type="string" label="Test" />\n<attribute name="t" type="string" label="Test" /><display format="Test" /></object></schema>'
       );
 
@@ -859,7 +857,7 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should validate belongs_to attributes', function () {
-      var schema = parseSchema(
+      const schema = parseSchema(
         '<schema>\n<object name="test" label="Test">\n<belongs_to something="wrong" /><display format="Test" /></object></schema>'
       );
       expect(schema.errors).toHaveErrors([
@@ -875,7 +873,7 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should error on an invalid belongs_to', function () {
-      var schema = parseSchema(
+      const schema = parseSchema(
         '<schema>\n<object name="test" label="Test">\n<belongs_to type="another" /><display format="Test" /></object></schema>'
       );
 
@@ -887,7 +885,7 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should error on an belongs_to with pure v3 syntax', function () {
-      var schema = parseSchema(
+      const schema = parseSchema(
         '<data-model>\n<model name="test" label="Test">\n<belongs_to type="test" /><display format="Test" /></model></data-model>',
         { apiVersion: v3 }
       );
@@ -899,7 +897,7 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should validate has_many attributes', function () {
-      var schema = parseSchema(
+      const schema = parseSchema(
         '<schema>\n<object name="test" label="Test">\n<has_many something="wrong" /><display format="Test" /></object></schema>'
       );
       expect(schema.errors).toHaveErrors([
@@ -919,7 +917,7 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should error on an invalid has_many', function () {
-      var schema = parseSchema(
+      const schema = parseSchema(
         '<schema>\n<object name="test" label="Test">\n<has_many name="others" type="another" /><display format="Test" /></object></schema>'
       );
 
@@ -930,7 +928,7 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should error on an has_many without belongs_to', function () {
-      var schema = parseSchema(
+      const schema = parseSchema(
         '<schema>\n<object name="test" label="Test">\n<has_many name="others" type="test" /><display format="Test" /></object></schema>'
       );
 
@@ -941,7 +939,7 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should error on an has_many with multiple belongs_to', function () {
-      var schema = parseSchema(
+      const schema = parseSchema(
         '<schema>\n<object name="test" label="Test">\n<belongs_to name="one" type="test" /><belongs_to name="two" type="test" /><has_many name="others" type="test" /><display format="Test" /></object></schema>'
       );
 
@@ -952,7 +950,7 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should error on an has_many with invalid inverse_of', function () {
-      var schema = parseSchema(
+      const schema = parseSchema(
         '<schema>\n<object name="test" label="Test">\n<has_many name="others" type="test" inverse_of="something" /><display format="Test" /></object></schema>'
       );
 
@@ -963,7 +961,7 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should error on an has-many with invalid v3 inverse-of', function () {
-      var schema = parseSchema(
+      const schema = parseSchema(
         '<data-model>\n<model name="test" label="Test">\n<has-many name="others" model="test" inverse-of="something" /><display format="Test" /></model></data-model>',
         { apiVersion: v3 }
       );
@@ -975,7 +973,7 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should not allow inverse_of on a v3 has-many', function () {
-      var schema = parseSchema(
+      const schema = parseSchema(
         '<data-model>\n<model name="test" label="Test">\n<has-many name="others" model="test" inverse_of="something" /><display format="Test" /></model></data-model>',
         { apiVersion: v3 }
       );
@@ -993,7 +991,7 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should error on duplicate belongs_to names', function () {
-      var schema = parseSchema(
+      const schema = parseSchema(
         '<schema>\n<object name="test" label="Test">\n<belongs_to type="test" name="test1" />\n<belongs_to name="test1" type="test" />\n<display format="Test" /></object></schema>'
       );
 
@@ -1005,7 +1003,7 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should error on duplicate has_many names', function () {
-      var schema = parseSchema(
+      const schema = parseSchema(
         '<schema>\n' +
           '<object name="test" label="Test">\n<belongs_to type="other" name="a" />\n<belongs_to name="b" type="other" />\n<display format="Test" /></object>' +
           '<object name="other" label="O">\n<has_many type="test" name="tt" inverse_of="a" />\n<has_many type="test" name="tt" inverse_of="b" />\n<display format="Test" /></object>' +
@@ -1019,7 +1017,7 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should error on duplicate has_many', function () {
-      var schema = parseSchema(
+      const schema = parseSchema(
         '<schema>\n' +
           '<object name="test" label="Test">\n<belongs_to type="other" name="a" />\n<display format="Test" /></object>' +
           '<object name="other" label="O">\n<has_many type="test" name="t1" />\n<has_many type="test" name="t2" />\n<display format="Test" /></object>' +
@@ -1035,8 +1033,8 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should not allow anything other than <option> in an enum element', function () {
-      var parser = parser2(new Schema());
-      var attr = parser.parseField(
+      const parser = parser2(new Schema());
+      const attr = parser.parseField(
         xml(
           '<attribute name="colours" label="Colours" type="enum">' +
             '<option>Red</option>' +
@@ -1064,8 +1062,8 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should not allow anything in a normal attribute element', function () {
-      var parser = parser2(new Schema());
-      var attr = parser.parseField(
+      const parser = parser2(new Schema());
+      const attr = parser.parseField(
         xml(
           '<attribute name="colours" label="Colours" type="string">' +
             '<option>Red</option>' +
@@ -1088,8 +1086,8 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should validate an attribute name', function () {
-      var parser = parser2(new Schema());
-      var attr = parser.parseField(
+      const parser = parser2(new Schema());
+      const attr = parser.parseField(
         xml('<attribute name="my colour" label="My Colour" type="string"/>'),
         false
         // { v2syntax: true }
@@ -1104,8 +1102,8 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should report an error for reserved attribute names', function () {
-      var parser = parser2(new Schema());
-      var attr = parser.parseField(
+      const parser = parser2(new Schema());
+      const attr = parser.parseField(
         xml('<attribute name="id" label="My Colour" type="string"/>'),
         false
         // { v2syntax: true }
@@ -1120,8 +1118,8 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should warn for bad attribute names', function () {
-      var parser = parser2(new Schema());
-      var attr = parser.parseField(
+      const parser = parser2(new Schema());
+      const attr = parser.parseField(
         xml('<attribute name="document_id" label="Document ID" type="string"/>'),
         false
         // { v2syntax: true }
@@ -1136,7 +1134,7 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should report an error for invalid webhook types', function () {
-      var schema = parseSchema(
+      const schema = parseSchema(
         '<schema>\n<object label="Test" name="test"><display format="Test" /><webhook type="invalid" name="invalid_webhook"></webhook></object>\n</schema>'
       );
 
@@ -1147,7 +1145,7 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should error for index on fields that are not indexable', function () {
-      var schema = parseSchema(
+      const schema = parseSchema(
         '<data-model>\n<model label="Test" name="test"><field name="mugshot" label="Mugshot" type="photo"/><display format="Test" /><index on="mugshot"/></model>\n</data-model>',
         { apiVersion: v3 }
       );
@@ -1159,7 +1157,7 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should error for index on undefined fields', function () {
-      var schema = parseSchema(
+      const schema = parseSchema(
         '<data-model>\n<model label="Test" name="test"><display format="Test" /><index on="wtf"/></model>\n</data-model>',
         { apiVersion: v3 }
       );
@@ -1171,7 +1169,7 @@ useDomParsers.forEach(function (useDomParser) {
     });
 
     it('should error for index on undefined fields when multiple are specified', function () {
-      var schema = parseSchema(
+      const schema = parseSchema(
         '<data-model>\n<model label="Test" name="test"><field name="name" label="Name" type="text"/><display format="Test" /><index on="name,wtf"/></model>\n</data-model>',
         { apiVersion: v3 }
       );

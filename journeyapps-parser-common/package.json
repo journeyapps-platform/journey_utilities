@@ -1,7 +1,7 @@
 {
   "name": "@journeyapps/parser-common",
   "version": "7.2.2",
-  "description": "Journey JS library",
+  "description": "Journey Parser library",
   "main": "./dist/src/index.js",
   "typings": "./dist/@types/src/index",
   "scripts": {
@@ -11,9 +11,9 @@
     "test:node": "jasmine dist/test/unit/all.js"
   },
   "dependencies": {
-    "@journeyapps/core-xml": "^5.0.1",
+    "@journeyapps/core-xml": "workspace:*",
     "@journeyapps/domparser": "^0.3.0",
-    "@journeyapps/evaluator": "^6.2.2",
+    "@journeyapps/evaluator": "workspace:*",
     "io-ts": "^1.8.6"
   },
   "files": [
@@ -22,10 +22,5 @@
   ],
   "devDependencies": {
     "@journeyapps/core-test-helpers": "^4.1.1"
-  },
-  "pnpm": {
-    "overrides": {
-      "@journeyapps/core-test-helpers": "link:../test-helpers"
-    }
   }
 }
