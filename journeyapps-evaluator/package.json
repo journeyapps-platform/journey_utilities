@@ -1,6 +1,6 @@
 {
   "name": "@journeyapps/evaluator",
-  "version": "6.2.2",
+  "version": "6.2.3",
   "description": "Journey Evaluator library",
   "main": "./dist/src/index.js",
   "typings": "./dist/@types/src/index",
