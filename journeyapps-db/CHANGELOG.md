@@ -1,5 +1,11 @@
 # @journeyapps/db
 
+## 8.0.1
+
+### Patch Changes
+
+- 06272c4: Fix `QueryType` in `journeyapps/db` cast and clone methods
+
 ## 8.0.0
 
 ### Major Changes
