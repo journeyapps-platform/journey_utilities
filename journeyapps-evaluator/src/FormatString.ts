@@ -40,11 +40,11 @@ export class FormatString {
       const i = format.indexOf('{', start);
       if (i < 0 || i == len - 1) {
         // end of string - everything is normal text
-        tokens.push(new ConstantTokenExpression(unescape(format.substring(start)), start));
+        tokens.push(new ConstantTokenExpression(FormatString.unescape(format.substring(start)), start));
         break;
       }
       // normal text in the gaps between curly braces
-      tokens.push(new ConstantTokenExpression(unescape(format.substring(start, i)), start));
+      tokens.push(new ConstantTokenExpression(FormatString.unescape(format.substring(start, i)), start));
       if (format[i + 1] == '{') {
         // Double left brace - escape and continue
         tokens.push(new ConstantTokenExpression('{', start));
@@ -52,7 +52,7 @@ export class FormatString {
         continue;
       }
 
-      const parsedBraces = parseEnclosingBraces(format.substring(i));
+      const parsedBraces = FormatString.parseEnclosingBraces(format.substring(i));
       if (!parsedBraces) {
         // Brace pair faulty (no closing brace), return as a constant
         tokens.push(new ConstantTokenExpression(format.substring(i), start));
@@ -288,69 +288,70 @@ export class FormatString {
     }
     return result;
   }
+
+  static parseEnclosingBraces(format: string) {
+    const i = format.indexOf('{');
+    if (i === -1) {
+      return null;
+    }
+    // We want to skip through these sections
+    // i.e. do not match { in a string, e.g. "{"
+    const SPECIAL_SECTIONS = ["'", '"'];
+
+    for (let k = i + 1; k < format.length; k++) {
+      const character = format[k];
+
+      if (SPECIAL_SECTIONS.indexOf(character) !== -1) {
+        // This is the start of a string, jump to its end
+        const endChar = format.indexOf(character, k + 1);
+        if (endChar === -1) {
+          // Unless the end doesn't exist. Error out.
+          return null;
+        }
+        k = endChar;
+        continue;
+      }
+
+      if (character === '{') {
+        // Start of a pair of inner braces,
+        // recursively parse them
+        const inner = FormatString.parseEnclosingBraces(format.substring(k));
+        if (!inner) {
+          // Faulty inner, return null
+          return null;
+        }
+        k += inner.length;
+        continue;
+      }
+
+      if (character === '}') {
+        // Found closing part for current level of braces
+        // Return the length to the caller
+        return { length: k - i };
+      }
+    }
+    // Came to end of loop without a match. Faulty, return null
+    return null;
+  }
+
+  static unescape(s: string) {
+    let start = 0;
+    let result = '';
+    const len = s.length;
+    while (true) {
+      const i = s.indexOf('}', start);
+      if (i == -1 || i == len - 1) {
+        result += s.substring(start);
+        break;
+      }
+      result += s.substring(start, i + 1);
+      // We assume that the character at i+1 is another right brace, but we don't do any checking.
+      start = i + 2;
+    }
+    return result;
+  }
 }
 
 // Expose internal functions for tests
 export const _compile = FormatString.compile;
-
-export function parseEnclosingBraces(format: string) {
-  const i = format.indexOf('{');
-  if (i === -1) {
-    return null;
-  }
-  // We want to skip through these sections
-  // i.e. do not match { in a string, e.g. "{"
-  const SPECIAL_SECTIONS = ["'", '"'];
-
-  for (let k = i + 1; k < format.length; k++) {
-    const character = format[k];
-
-    if (SPECIAL_SECTIONS.indexOf(character) !== -1) {
-      // This is the start of a string, jump to its end
-      const endChar = format.indexOf(character, k + 1);
-      if (endChar === -1) {
-        // Unless the end doesn't exist. Error out.
-        return null;
-      }
-      k = endChar;
-      continue;
-    }
-
-    if (character === '{') {
-      // Start of a pair of inner braces,
-      // recursively parse them
-      const inner = parseEnclosingBraces(format.substring(k));
-      if (!inner) {
-        // Faulty inner, return null
-        return null;
-      }
-      k += inner.length;
-      continue;
-    }
-
-    if (character === '}') {
-      // Found closing part for current level of braces
-      // Return the length to the caller
-      return { length: k - i };
-    }
-  }
-  // Came to end of loop without a match. Faulty, return null
-  return null;
-}
-
-export function unescape(s: string) {
-  let start = 0;
-  let result = '';
-  const len = s.length;
-  while (true) {
-    const i = s.indexOf('}', start);
-    if (i == -1 || i == len - 1) {
-      result += s.substring(start);
-      break;
-    }
-    result += s.substring(start, i + 1);
-    // We assume that the character at i+1 is another right brace, but we don't do any checking.
-    start = i + 2;
-  }
-  return result;
-}
+export const parseEnclosingBraces = FormatString.parseEnclosingBraces;
