@@ -16,7 +16,7 @@ export class Variable<T extends Type | TypeInterface = Type> {
   static readonly TYPE = 'variable';
 
   static isInstanceOf(obj: any): obj is Variable {
-    return obj?.name == Variable.TYPE;
+    return 'name' in obj && 'type' in obj;
   }
 
   name: string;
