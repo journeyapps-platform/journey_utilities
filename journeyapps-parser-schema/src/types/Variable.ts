@@ -15,6 +15,10 @@ export interface VariableJsonType {
 export class Variable<T extends Type | TypeInterface = Type> {
   static readonly TYPE = 'variable';
 
+  static isInstanceOf(obj: any): obj is Variable {
+    return obj?.name == Variable.TYPE;
+  }
+
   name: string;
   type: T;
   errors: any[];
