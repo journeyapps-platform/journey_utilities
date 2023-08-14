@@ -878,7 +878,7 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
     if (isParam) {
       const requiredAttr = getAttribute(element, 'required');
       variable.required = requiredAttr != null ? requiredAttr !== 'false' : true;
-      variable.provideValue = getAttribute(element, 'provide-value');
+      variable.provideValue = getAttribute(element, 'transform-value');
     }
 
     const originalTypeName = getAttribute(element, 'type');
