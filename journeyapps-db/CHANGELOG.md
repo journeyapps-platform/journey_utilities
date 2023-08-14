@@ -1,5 +1,12 @@
 # @journeyapps/db
 
+## 8.0.2
+
+### Patch Changes
+
+- Updated dependencies [0d76e5a]
+  - @journeyapps/parser-schema@8.0.1
+
 ## 8.0.1
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @journeyapps/parser-schema
 
+## 8.0.1
+
+### Patch Changes
+
+- 0d76e5a: Rename `provide-value` -> `transform-value` for view param
+
 ## 8.0.0
 
 ### Major Changes
