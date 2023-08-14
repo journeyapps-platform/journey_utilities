@@ -11,16 +11,16 @@ export interface VariableJsonType {
   [key: string]: any;
 }
 
-// Variable constructor. A variable is simply a name and a type.
+// Variable constructor. A variable is simply a name and a type (can be null).
 export class Variable<T extends Type | TypeInterface = Type> {
   static readonly TYPE = 'variable';
 
   static isInstanceOf(obj: any): obj is Variable {
-    return 'name' in obj && 'type' in obj;
+    return obj instanceof Variable || 'name' in obj;
   }
 
   name: string;
-  type: T;
+  type: T | null;
   errors: any[];
   label?: string;
   relationship?: string;
@@ -33,7 +33,7 @@ export class Variable<T extends Type | TypeInterface = Type> {
   required?: boolean;
   provideValue?: string;
 
-  constructor(name: string, type: T) {
+  constructor(name: string, type: T | null) {
     this.name = name;
     this.type = type;
     this.errors = [];
@@ -46,14 +46,14 @@ export class Variable<T extends Type | TypeInterface = Type> {
     };
     if (this.type != null) {
       result.type = this.type.name;
+      if (!ObjectType.isInstanceOf(this.type)) {
+        const typeJson = this.type.toJSON();
+        Object.assign(result, typeJson);
+      }
     }
 
     if (typeof this.label != 'undefined') {
       result.label = this.label;
-    }
-    if (this.type != null && !(this.type instanceof ObjectType)) {
-      const typeJson = this.type.toJSON();
-      Object.assign(result, typeJson);
     }
 
     if (this.relationship != null) {
