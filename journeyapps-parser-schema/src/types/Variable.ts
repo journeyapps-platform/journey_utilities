@@ -46,14 +46,14 @@ export class Variable<T extends Type | TypeInterface = Type> {
     };
     if (this.type != null) {
       result.type = this.type.name;
-      if (!ObjectType.isInstanceOf(this.type)) {
-        const typeJson = this.type.toJSON();
-        Object.assign(result, typeJson);
-      }
     }
 
     if (typeof this.label != 'undefined') {
       result.label = this.label;
+    }
+    if (this.type != null && !(this.type instanceof ObjectType)) {
+      const typeJson = this.type.toJSON();
+      Object.assign(result, typeJson);
     }
 
     if (this.relationship != null) {
