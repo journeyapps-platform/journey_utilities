@@ -2,4 +2,4 @@
 '@journeyapps/parser-schema': patch
 ---
 
-Added transform-value to param parser definition
+Add `transform-value` to param parser definition
