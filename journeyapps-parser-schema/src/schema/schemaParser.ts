@@ -1,6 +1,6 @@
 // # schema module
 // Parser for v2 and v3 of the schema XML.
-import { FormatString } from '@journeyapps/evaluator';
+import { FormatString, FunctionTokenExpression } from '@journeyapps/evaluator';
 import * as xml from '@journeyapps/core-xml';
 import { Schema } from './Schema';
 import { ObjectType } from '../types/ObjectType';
@@ -123,6 +123,7 @@ const v3ParameterDef = {
     "media must be 'any', or one of the specific allowed mime types."
   ),
   required: xml.attribute.optionList(['true', 'false']),
+  'transform-value': xml.attribute.optionListWithFunctions([], FunctionTokenExpression.PREFIX),
   _required: ['name', 'type']
 };
 
