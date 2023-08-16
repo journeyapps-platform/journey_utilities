@@ -1,5 +1,11 @@
 # @journeyapps/parser-schema
 
+## 8.0.2
+
+### Patch Changes
+
+- b6b32fb: Add `transform-value` to param parser definition
+
 ## 8.0.1
 
 ### Patch Changes
