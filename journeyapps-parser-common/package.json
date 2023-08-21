@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@journeyapps/core-xml": "workspace:*",
-    "@journeyapps/domparser": "^0.3.0",
+    "@journeyapps/domparser": "^0.4.1",
     "@journeyapps/evaluator": "workspace:*",
     "io-ts": "^1.8.6"
   },

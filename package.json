@@ -17,7 +17,7 @@
     },
     "devDependencies": {
       "@changesets/cli": "^2.26.1",
-      "@journeyapps/domparser": "^0.3.0",
+      "@journeyapps/domparser": "^0.4.1",
       "@types/jasmine": "^3.10.4",
       "@types/node": "^16.18.32",
       "imports-loader": "^0.8.0",

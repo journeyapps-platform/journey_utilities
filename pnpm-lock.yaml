@@ -1,5 +1,9 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 overrides:
   '@journeyapps/core-test-helpers': link:./test-helpers
 
@@ -11,8 +15,8 @@ importers:
         specifier: ^2.26.1
         version: 2.26.1
       '@journeyapps/domparser':
-        specifier: ^0.3.0
-        version: 0.3.0
+        specifier: ^0.4.1
+        version: 0.4.1
       '@types/jasmine':
         specifier: ^3.10.4
         version: 3.10.4
@@ -104,8 +108,8 @@ importers:
   journeyapps-core-xml:
     dependencies:
       '@journeyapps/domparser':
-        specifier: ^0.3.0
-        version: 0.3.0
+        specifier: ^0.4.1
+        version: 0.4.1
       xmldom:
         specifier: ^0.6.0
         version: 0.6.0
@@ -179,8 +183,8 @@ importers:
         specifier: workspace:*
         version: link:../journeyapps-core-xml
       '@journeyapps/domparser':
-        specifier: ^0.3.0
-        version: 0.3.0
+        specifier: ^0.4.1
+        version: 0.4.1
       '@journeyapps/evaluator':
         specifier: workspace:*
         version: link:../journeyapps-evaluator
@@ -208,8 +212,8 @@ importers:
         specifier: link:../test-helpers
         version: link:../test-helpers
       '@journeyapps/domparser':
-        specifier: ^0.3.0
-        version: 0.3.0
+        specifier: ^0.4.1
+        version: 0.4.1
 
   test-helpers: {}
 
@@ -432,8 +436,8 @@ packages:
     dev: true
     optional: true
 
-  /@journeyapps/domparser@0.3.0:
-    resolution: {integrity: sha512-QAN6ZiRBTJR1XmwjzvUIfkYcOI8qsyWhoTOSdnBUv/ymdQ9e5cKa6YaZhSh+pcgw3KANl3FnmHL0VjXszOVq9g==}
+  /@journeyapps/domparser@0.4.1:
+    resolution: {integrity: sha512-rZ2gxAVVwE6tklS2lm04nkI52BCUjECVO8R9+bG9Uz8L9/ZBqxhuXu23jKX66G0Dc3evx5HWmuEuunOW7/Mahw==}
 
   /@manypkg/find-root@1.1.0:
     resolution: {integrity: sha512-mki5uBvhHzO8kYYix/WRy2WX8S3B5wdVSc9D6KcU5lQNglP2yt58/VfLuAK49glRXChosY8ap2oJ1qgma3GUVA==}
