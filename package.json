@@ -17,6 +17,7 @@
     },
     "devDependencies": {
       "@changesets/cli": "^2.26.1",
+      "@journeyapps-platform/lerno": "^1.0.2",
       "@journeyapps/domparser": "^0.4.1",
       "@types/jasmine": "^3.10.4",
       "@types/node": "^16.18.32",
