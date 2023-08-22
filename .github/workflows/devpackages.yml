@@ -1,0 +1,48 @@
+name: Dev Packages
+
+on:
+  push:
+    branches:
+      - "**"
+      - '!master' # excludes master, this is handled by changesets
+    tags-ignore:
+      - "**"
+
+env:
+  SECRETS: ${{ toJSON(secrets) }}
+
+jobs:
+  build-and-publish:
+    name: Build and Publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+        with:
+          repository: journeyapps-platform/ci-actions
+          token: ${{ secrets.SHARED_GH_TOKEN }}
+          path: .github/ci
+          ref: v1
+
+      - name: Setup NodeJS
+        uses: actions/setup-node@v2
+        with:
+          node-version: 18.16.0
+      - name: Install PNPM
+        run: npm i pnpm@8 -g
+
+      - name: Install Dependencies
+        uses: ./.github/ci/actions/npm-install
+        with:
+          client: pnpm
+
+      - name: Build modules
+        run: pnpm build
+        env:
+          NODE_ENV: ${{ github.ref == 'refs/heads/master' && 'production' || 'development' }}
+
+      - name: Publish Dependencies
+        uses: ./.github/ci/actions/pnpm-publish
+        with:
+          dev: true
+          version-cli: lerno
