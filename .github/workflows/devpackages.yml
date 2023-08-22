@@ -10,6 +10,7 @@ on:
 
 env:
   SECRETS: ${{ toJSON(secrets) }}
+  GITHUB_TOKEN: ${{ secrets.GH_SHARED_TOKEN_2 }}
 
 jobs:
   build-and-publish:
