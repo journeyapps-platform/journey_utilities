@@ -4,22 +4,6 @@ import { DBTypeMixin } from '../Type';
 export class SingleChoiceType extends DBTypeMixin(SchemaSingleChoiceType) {
   static DEFAULT_INVALID_VALUE = '< invalid value >';
 
-  valueToJSON(value: any) {
-    if (typeof value == 'number') {
-      return value;
-    } else {
-      return null;
-    }
-  }
-
-  valueFromJSON(value: any) {
-    if (typeof value == 'number') {
-      return value;
-    } else {
-      return null;
-    }
-  }
-
   format(value: any): string {
     const option = this.options[value];
     if (option == null) {
