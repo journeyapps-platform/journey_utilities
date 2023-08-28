@@ -3,9 +3,7 @@ import { XMLPositional } from '../../src/xml';
 import { XMLElement } from '@journeyapps/domparser/types';
 import '../../src/domparser';
 
-declare function expect(
-  cond
-): jasmine.Matchers<any> & {
+declare function expect(cond): jasmine.Matchers<any> & {
   toHave(v);
   toHaveError(v);
   toHaveErrors(v: any[]);

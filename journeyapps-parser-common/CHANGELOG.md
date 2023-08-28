@@ -1,5 +1,11 @@
 # @journeyapps/parser-common
 
+## 8.0.0
+
+### Major Changes
+
+- a047ac1: Remove component classes, since they should be in a different repo
+
 ## 7.2.3
 
 ### Patch Changes

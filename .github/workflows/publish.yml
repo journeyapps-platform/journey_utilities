@@ -21,29 +21,25 @@ jobs:
           ref: ${{github.event.pull_request.head.sha}}
           fetch-depth: 0
 
+      - uses: actions/checkout@v2
+        with:
+          repository: journeyapps-platform/ci-actions
+          token: ${{ secrets.GH_SHARED_TOKEN_2 }}
+          path: .github/ci
+          ref: v1
+
       - name: Setup NodeJS
         uses: actions/setup-node@v2
         with:
-          node-version: 16
+          node-version: 18.16.0
 
-      - uses: pnpm/action-setup@v2.2.4
+      - name: Install PNPM
+        run: npm i pnpm@8 -g
+
+      - name: Install Dependencies
+        uses: ./.github/ci/actions/npm-install
         with:
-          version: 8
-
-      - name: PNPM install
-        run: pnpm install --frozen-lockfile
-
-      - name: Authenticate
-        run: |
-          echo "registry=https://registry.npmjs.org/" >> $HOME/.npmrc
-          echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> $HOME/.npmrc
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - id: is_dev
-        run: |
-          IS_DEV=${{ github.ref != 'refs/heads/master' && github.ref != 'refs/heads/changeset-release/master' }}
-          echo "value=$IS_DEV" >> $GITHUB_OUTPUT
+          client: pnpm
 
       - name: Has changesets
         uses: actions/github-script@v6
@@ -63,12 +59,6 @@ jobs:
 
       - name: Build
         run: pnpm build
-
-      - name: Publish dev packages
-        if: ${{ steps.changesetsCheck.outputs.hasChangesets == 'true' && steps.is_dev.outputs.value == 'true' }}
-        run: |
-          pnpm changeset version --no-git-tag --snapshot dev
-          pnpm changeset publish --tag next
 
       - name: Create Release Pull Request or Publish to npm
         if: ${{ github.ref == 'refs/heads/master' }}

@@ -1,6 +1,6 @@
 {
   "name": "@journeyapps/parser-common",
-  "version": "7.2.3",
+  "version": "8.0.0",
   "description": "Journey Parser library",
   "main": "./dist/src/index.js",
   "typings": "./dist/@types/src/index",
@@ -12,9 +12,9 @@
   },
   "dependencies": {
     "@journeyapps/core-xml": "workspace:*",
-    "@journeyapps/domparser": "^0.3.0",
+    "@journeyapps/domparser": "^0.4.1",
     "@journeyapps/evaluator": "workspace:*",
-    "io-ts": "^1.8.6"
+    "io-ts": "^2.2.20"
   },
   "files": [
     "dist/src",

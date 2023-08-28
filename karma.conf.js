@@ -1,4 +1,6 @@
 const isCI = 'CI' in process.env;
+const webpack = require('webpack');
+const path = require('path');
 module.exports = function (basepath) {
   return function (config) {
     config.set({
@@ -34,6 +36,17 @@ module.exports = function (basepath) {
             }
           ]
         },
+        plugins: [
+          new webpack.ProvidePlugin({
+            Buffer: ['buffer', 'Buffer'],
+            process: 'process/browser'
+          }),
+          // fetch-mock
+          new webpack.NormalModuleReplacementPlugin(
+            /^fetch-mock$/,
+            path.join(__dirname, 'node_modules/fetch-mock/cjs/client.js')
+          )
+        ],
         node: {},
         externals: ['websql', 'fs', 'path'],
         devtool: 'inline-source-map'
