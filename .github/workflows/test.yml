@@ -21,8 +21,6 @@ jobs:
         with:
           node-version: 18.16
 
-      - run: echo 'NODE_OPTIONS="--openssl-legacy-provider"' >> $GITHUB_ENV
-
       - uses: actions/checkout@v2
         with:
           repository: journeyapps-platform/ci-actions

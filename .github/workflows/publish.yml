@@ -33,8 +33,6 @@ jobs:
         with:
           node-version: 18.16.0
 
-      - run: echo 'NODE_OPTIONS="--openssl-legacy-provider"' >> $GITHUB_ENV
-
       - name: Install PNPM
         run: npm i pnpm@8 -g
 

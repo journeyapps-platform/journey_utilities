@@ -440,7 +440,7 @@ function loadDefaultParser() {
   if (typeof document != 'undefined' && typeof document.implementation != 'undefined') {
     configureParser({
       //@ts-ignore
-      implementation: document.implementation as DOMImplementation, 
+      implementation: document.implementation as DOMImplementation,
       //@ts-ignore
       parser: new DOMParser() as XMLDOMParser,
       serializer: new XMLSerializer()
