@@ -1,5 +1,12 @@
 # journeyapps
 
+## 7.3.5
+
+### Patch Changes
+
+- Updated dependencies [2a7fa29]
+  - @journeyapps/db@8.0.4
+
 ## 7.3.4
 
 ### Patch Changes
