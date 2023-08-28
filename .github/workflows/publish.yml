@@ -41,11 +41,6 @@ jobs:
         with:
           client: pnpm
 
-      - id: is_dev
-        run: |
-          IS_DEV=${{ github.ref != 'refs/heads/master' && github.ref != 'refs/heads/changeset-release/master' }}
-          echo "value=$IS_DEV" >> $GITHUB_OUTPUT
-
       - name: Has changesets
         uses: actions/github-script@v6
         id: changesetsCheck
