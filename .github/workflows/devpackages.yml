@@ -38,10 +38,11 @@ jobs:
         with:
           client: pnpm
 
-      - name: Build modules
+      - name: Build
         run: pnpm build
         env:
           NODE_ENV: ${{ github.ref == 'refs/heads/master' && 'production' || 'development' }}
+          NODE_OPTIONS: --openssl-legacy-provider
 
       - name: Publish Dependencies
         uses: ./.github/ci/actions/pnpm-publish

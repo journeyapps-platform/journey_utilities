@@ -53,3 +53,5 @@ jobs:
         uses: GabrielBB/xvfb-action@v1
         with:
           run: pnpm test
+        env:
+          NODE_OPTIONS: --openssl-legacy-provider
