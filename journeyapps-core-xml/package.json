@@ -1,6 +1,6 @@
 {
   "name": "@journeyapps/core-xml",
-  "version": "5.0.2",
+  "version": "5.0.3",
   "description": "Journey XML library",
   "main": "./dist/src/node.js",
   "browser": "./dist/src/index.js",
@@ -16,7 +16,7 @@
     "xmldom": "^0.6.0"
   },
   "devDependencies": {
-    "@journeyapps/core-test-helpers": "^4.1.1"
+    "@journeyapps/core-test-helpers": "^4.1.2"
   },
   "files": [
     "dist/src",

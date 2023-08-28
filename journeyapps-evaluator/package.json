@@ -1,6 +1,6 @@
 {
   "name": "@journeyapps/evaluator",
-  "version": "6.2.3",
+  "version": "6.2.4",
   "description": "Journey Evaluator library",
   "main": "./dist/src/index.js",
   "typings": "./dist/@types/src/index",
@@ -20,6 +20,6 @@
     "dist/@types"
   ],
   "devDependencies": {
-    "@journeyapps/core-test-helpers": "^4.1.1"
+    "@journeyapps/core-test-helpers": "^4.1.2"
   }
 }

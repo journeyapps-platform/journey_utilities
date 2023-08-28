@@ -1,5 +1,15 @@
 # @journeyapps/parser-schema
 
+## 8.0.4
+
+### Patch Changes
+
+- cc89366: Version bump hotfix
+- Updated dependencies [cc89366]
+  - @journeyapps/core-xml@5.0.3
+  - @journeyapps/evaluator@6.2.4
+  - @journeyapps/parser-common@8.0.1
+
 ## 8.0.3
 
 ### Patch Changes

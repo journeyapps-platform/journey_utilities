@@ -1,5 +1,17 @@
 # @journeyapps/db
 
+## 8.0.6
+
+### Patch Changes
+
+- cc89366: Version bump hotfix
+- Updated dependencies [cc89366]
+  - @journeyapps/core-date@5.3.1
+  - @journeyapps/core-xml@5.0.3
+  - @journeyapps/evaluator@6.2.4
+  - @journeyapps/parser-common@8.0.1
+  - @journeyapps/parser-schema@8.0.4
+
 ## 8.0.5
 
 ### Patch Changes
