@@ -1,6 +1,6 @@
 {
   "name": "@journeyapps/db",
-  "version": "8.0.5",
+  "version": "8.0.6",
   "description": "Journey DB library",
   "main": "./dist/index.js",
   "browser": "./dist/browser.js",
@@ -27,7 +27,7 @@
     "xmldom": "^0.6.0"
   },
   "devDependencies": {
-    "@journeyapps/core-test-helpers": "^4.1.1",
+    "@journeyapps/core-test-helpers": "^4.1.2",
     "fetch-mock": "^9.11.0",
     "websql": "^2.0.3",
     "sqlite3": "^5.1.6"

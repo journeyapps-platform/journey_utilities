@@ -1,6 +1,6 @@
 {
   "name": "@journeyapps/parser-schema",
-  "version": "8.0.3",
+  "version": "8.0.4",
   "description": "Journey Parser Schema library",
   "main": "./dist/src/index.js",
   "typings": "./dist/@types/src/index",
@@ -16,7 +16,7 @@
     "@journeyapps/parser-common": "workspace:*"
   },
   "devDependencies": {
-    "@journeyapps/core-test-helpers": "^4.1.1",
+    "@journeyapps/core-test-helpers": "^4.1.2",
     "@journeyapps/domparser": "^0.4.1"
   },
   "files": [

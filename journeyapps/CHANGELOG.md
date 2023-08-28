@@ -1,5 +1,14 @@
 # journeyapps
 
+## 7.3.7
+
+### Patch Changes
+
+- cc89366: Version bump hotfix
+- Updated dependencies [cc89366]
+  - @journeyapps/core-date@5.3.1
+  - @journeyapps/db@8.0.6
+
 ## 7.3.6
 
 ### Patch Changes

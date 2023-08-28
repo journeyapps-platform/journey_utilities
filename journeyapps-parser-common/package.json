@@ -1,6 +1,6 @@
 {
   "name": "@journeyapps/parser-common",
-  "version": "8.0.0",
+  "version": "8.0.1",
   "description": "Journey Parser library",
   "main": "./dist/src/index.js",
   "typings": "./dist/@types/src/index",
@@ -21,6 +21,6 @@
     "dist/@types"
   ],
   "devDependencies": {
-    "@journeyapps/core-test-helpers": "^4.1.1"
+    "@journeyapps/core-test-helpers": "^4.1.2"
   }
 }
