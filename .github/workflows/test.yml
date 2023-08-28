@@ -5,7 +5,7 @@ on:
 
 env:
   SECRETS: ${{ toJSON(secrets) }}
-  GITHUB_TOKEN: ${{ secrets.GH_SHARED_TOKEN_2 }}
+  GITHUB_TOKEN: ${{ secrets.GH_SHARED_TOKEN }}
   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
 jobs:
@@ -19,12 +19,12 @@ jobs:
       - name: Setup NodeJS
         uses: actions/setup-node@v2
         with:
-          node-version: 16
+          node-version: 18.16
 
       - uses: actions/checkout@v2
         with:
           repository: journeyapps-platform/ci-actions
-          token: ${{ secrets.GH_SHARED_TOKEN_2 }}
+          token: ${{ secrets.GH_SHARED_TOKEN }}
           path: .github/ci
           ref: v1
 
@@ -43,9 +43,12 @@ jobs:
 
       - name: Install Dependencies
         run: pnpm install
+
       - uses: browser-actions/setup-chrome@latest
+
       - name: Check Chrome
         run: chrome --version
+
       - name: Run headless test
         uses: GabrielBB/xvfb-action@v1
         with:
