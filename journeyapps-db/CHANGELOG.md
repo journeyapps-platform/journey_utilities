@@ -1,5 +1,11 @@
 # @journeyapps/db
 
+## 8.0.4
+
+### Patch Changes
+
+- 2a7fa29: Fix `single-choice` and `single-choice-integer` types, serialization methods `valueToJSON` and `valueFromJSON`
+
 ## 8.0.3
 
 ### Patch Changes
