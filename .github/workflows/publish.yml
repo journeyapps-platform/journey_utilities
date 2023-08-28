@@ -21,24 +21,24 @@ jobs:
           ref: ${{github.event.pull_request.head.sha}}
           fetch-depth: 0
 
+      - uses: actions/checkout@v2
+        with:
+          repository: journeyapps-platform/ci-actions
+          token: ${{ secrets.SHARED_GH_TOKEN }}
+          path: .github/ci
+          ref: v1
+
       - name: Setup NodeJS
         uses: actions/setup-node@v2
         with:
-          node-version: 16
+          node-version: 18.16.0
+      - name: Install PNPM
+        run: npm i pnpm@8 -g
 
-      - uses: pnpm/action-setup@v2.2.4
+      - name: Install Dependencies
+        uses: ./.github/ci/actions/npm-install
         with:
-          version: 8
-
-      - name: PNPM install
-        run: pnpm install --frozen-lockfile
-
-      - name: Authenticate
-        run: |
-          echo "registry=https://registry.npmjs.org/" >> $HOME/.npmrc
-          echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> $HOME/.npmrc
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          client: pnpm
 
       - id: is_dev
         run: |

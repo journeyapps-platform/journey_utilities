@@ -21,15 +21,25 @@ jobs:
         with:
           node-version: 16
 
-      - uses: pnpm/action-setup@v2.2.4
+      - uses: actions/checkout@v2
         with:
-          version: 8
+          repository: journeyapps-platform/ci-actions
+          token: ${{ secrets.SHARED_GH_TOKEN }}
+          path: .github/ci
+          ref: v1
 
-      - name: Authenticate
-        run: |
-          echo "registry=http://registry.npmjs.org/" >> .npmrc
-          echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> .npmrc
-          pnpm whoami
+      - name: Setup NodeJS
+        uses: actions/setup-node@v2
+        with:
+          node-version: 18.16.0
+
+      - name: Install PNPM
+        run: npm i pnpm@8 -g
+
+      - name: Install Dependencies
+        uses: ./.github/ci/actions/npm-install
+        with:
+          client: pnpm
 
       - name: Install Dependencies
         run: pnpm install
