@@ -5,7 +5,7 @@ on:
 
 env:
   SECRETS: ${{ toJSON(secrets) }}
-  GITHUB_TOKEN: ${{ secrets.GH_SHARED_TOKEN }}
+  GITHUB_TOKEN: ${{ secrets.GH_SHARED_TOKEN_2 }}
   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
 jobs:
@@ -24,7 +24,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           repository: journeyapps-platform/ci-actions
-          token: ${{ secrets.GH_SHARED_TOKEN }}
+          token: ${{ secrets.GH_SHARED_TOKEN_2 }}
           path: .github/ci
           ref: v1
 
