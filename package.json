@@ -1,51 +1,53 @@
 {
-    "version": "2.29.1",
-    "description": "Journey JS library",
-    "private": true,
-    "workspaces": [
-      "journeyapps",
-      "journeyapps-*",
-      "test-helpers"
-    ],
-    "scripts": {
-      "build": "pnpm -r build",
-      "clean": "rm -rf */dist */tsconfig.tsbuildinfo",
-      "test": "pnpm -r test",
-      "watch": "tsc -b -w",
-      "ci:publish": "changeset publish && git push --follow-tags",
-      "ci:version": "changeset version && pnpm install --no-frozen-lockfile"
-    },
-    "devDependencies": {
-      "@changesets/cli": "^2.26.1",
-      "@journeyapps/domparser": "^0.3.0",
-      "@types/jasmine": "^3.10.4",
-      "@types/node": "^16.18.32",
-      "imports-loader": "^0.8.0",
-      "jasmine": "^4.0.2",
-      "jasmine-diff": "^0.1.3",
-      "karma": "^4.4.1",
-      "karma-chrome-launcher": "^3.2.0",
-      "karma-jasmine": "^4.0.2",
-      "karma-mocha-reporter": "^2.2.5",
-      "karma-script-launcher": "^1.0.0",
-      "karma-sourcemap-loader": "^0.3.8",
-      "karma-webpack": "^4.0.2",
-      "node-libs-browser": "^2.0.0",
-      "raw-loader": "^3.1.0",
-      "run-sequence": "^1.2.2",
-      "source-map-loader": "^0.2.4",
-      "source-map-support": "^0.4.15",
-      "ts-loader": "^6.2.0",
-      "typescript": "^4.3.5",
-      "webpack": "^4.41.0",
-      "webpack-cli": "^3.3.9",
-      "webpack-dev-server": "^3.8.1",
-      "webpack-node-externals": "^1.7.2"
-    },
-    "pnpm": {
-      "overrides": {
-        "@journeyapps/core-test-helpers": "link:./test-helpers"
-      }
+  "version": "2.29.1",
+  "description": "Journey JS library",
+  "private": true,
+  "workspaces": [
+    "journeyapps",
+    "journeyapps-*",
+    "test-helpers"
+  ],
+  "scripts": {
+    "build": "pnpm -r build",
+    "clean": "rm -rf */dist */tsconfig.tsbuildinfo",
+    "ncu": "ncu -u && pnpm recursive exec -- ncu -u",
+    "test": "pnpm -r test",
+    "watch": "tsc -b -w",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx}\"",
+    "ci:publish": "changeset publish && git push --follow-tags",
+    "ci:version": "changeset version && pnpm install --no-frozen-lockfile"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.26.2",
+    "@journeyapps-platform/lerno": "2.0.7",
+    "@journeyapps/domparser": "^0.4.1",
+    "@types/jasmine": "^4.3.5",
+    "@types/node": "^20.5.7",
+    "imports-loader": "^4.0.1",
+    "jasmine": "^5.1.0",
+    "jasmine-diff": "^0.1.3",
+    "karma": "^6.4.2",
+    "karma-chrome-launcher": "^3.2.0",
+    "karma-jasmine": "^5.1.0",
+    "karma-mocha-reporter": "^2.2.5",
+    "karma-script-launcher": "^1.0.0",
+    "karma-sourcemap-loader": "^0.4.0",
+    "karma-webpack": "^5.0.0",
+    "node-libs-browser": "^2.2.1",
+    "raw-loader": "^4.0.2",
+    "run-sequence": "^2.2.1",
+    "source-map-loader": "^4.0.1",
+    "source-map-support": "^0.5.21",
+    "ts-loader": "^9.4.4",
+    "typescript": "^5.2.2",
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1",
+    "webpack-node-externals": "^3.0.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "@journeyapps/core-test-helpers": "link:./test-helpers"
     }
   }
-  
+}
