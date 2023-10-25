@@ -1,5 +1,11 @@
 # @journeyapps/db
 
+## 8.0.7
+
+### Patch Changes
+
+- 3cff3c6: Fix display format for `date` and `datetime`,where it would not use the fallback value when set to `null`
+
 ## 8.0.6
 
 ### Patch Changes
