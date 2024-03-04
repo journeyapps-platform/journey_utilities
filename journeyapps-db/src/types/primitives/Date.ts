@@ -41,13 +41,13 @@ export class DateType extends DBTypeMixin(SchemaDateType) {
     }
   }
 
-  format(value: any, format: string = DateType.DEFAULT_FORMAT) {
+  format(value: any, format?: string) {
     // Works for Date and Day objects.
     if (Day.isDay(value)) {
       value = value.toDate();
     }
     const d = moment(value).utc();
-    return d.format(format);
+    return d.format(format ?? DateType.DEFAULT_FORMAT);
   }
 
   cast(value: any) {
