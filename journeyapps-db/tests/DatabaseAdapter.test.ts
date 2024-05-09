@@ -1,23 +1,22 @@
-import { hasWebSQL } from './databaseSetup';
-import { WebSQLAdapter, Query, ObjectType } from '../../dist';
+import { ObjectType, Query, WebSQLAdapter } from '../src';
+import { describe, it, expect, beforeEach } from 'vitest';
 import * as uuid from 'uuid';
 
-if (hasWebSQL()) {
-  describe('WebSQLAdapter', WebSQLAdapterSpecs);
-  describe('WebSQLAdapter - sync', WebSQLAdapterSyncSpecs);
+declare module 'vitest' {
+  export interface TestContext {
+    adapter: WebSQLAdapter;
+  }
 }
 
-function WebSQLAdapterSpecs() {
-  let adapter: WebSQLAdapter;
+beforeEach(async (context) => {
+  const cleared = await WebSQLAdapter.clear();
+  expect(cleared).toEqual([true, true]);
+  context.adapter = new WebSQLAdapter({ name: 'objects', stf: false });
+  await context.adapter.open();
+});
 
-  beforeEach(async function () {
-    const cleared = await WebSQLAdapter.clear();
-    expect(cleared).toEqual([true, true]);
-    adapter = new WebSQLAdapter({ name: 'objects', stf: false });
-    await adapter.open();
-  });
-
-  it('should save and load an object on the adapter', async function () {
+describe('WebSQLAdapter', async () => {
+  it('should save and load an object on the adapter', async ({ adapter }) => {
     await adapter.applyBatch([
       {
         op: 'put',
@@ -39,7 +38,7 @@ function WebSQLAdapterSpecs() {
     });
   });
 
-  it('should get multiple objects from the adapter', async function () {
+  it('should get multiple objects from the adapter', async ({ adapter }) => {
     await adapter.applyBatch([
       {
         op: 'put',
@@ -81,7 +80,7 @@ function WebSQLAdapterSpecs() {
     ]);
   });
 
-  it('should query from the adapter', async function () {
+  it('should query from the adapter', async ({ adapter }) => {
     // We also add some objects with closely-related object types, and check that they're not returned.
     await adapter.applyBatch([
       {
@@ -156,19 +155,10 @@ function WebSQLAdapterSpecs() {
       }
     ]);
   });
-}
+});
 
-function WebSQLAdapterSyncSpecs() {
-  var adapter: WebSQLAdapter;
-
-  beforeEach(async function () {
-    var cleared = await WebSQLAdapter.clear();
-    expect(cleared).toEqual([true, true]);
-    adapter = new WebSQLAdapter({ name: 'objects', stf: true });
-    await adapter.open();
-  });
-
-  it('should perform crud', async function () {
+describe('WebSQLAdapter - sync', async () => {
+  it('should perform crud', async ({ adapter }) => {
     const id = uuid.v1();
     const asset1 = {
       type: 'asset',
@@ -179,7 +169,7 @@ function WebSQLAdapterSyncSpecs() {
     };
     await adapter.applyCrud([{ put: asset1 }]);
 
-    await adapter.get('asset', id).then(function (data) {
+    await adapter.get('asset', id).then((data) => {
       expect(data.id).toBe(id);
       expect(data.attributes).toEqual({ make: 'Nokia', model: '5800' });
     });
@@ -199,7 +189,7 @@ function WebSQLAdapterSyncSpecs() {
       }
     ]);
 
-    await adapter.get('asset', id).then(function (data) {
+    await adapter.get('asset', id).then((data) => {
       expect(data.id).toBe(id);
       expect(data.attributes).toEqual({ make: 'Nokia', model: '5230' });
     });
@@ -208,8 +198,8 @@ function WebSQLAdapterSyncSpecs() {
 
     await adapter.applyCrud([{ delete: { id: id, type: 'asset' } }]);
 
-    await adapter.get('asset', id).then(function (data) {
+    await adapter.get('asset', id).then((data) => {
       expect(data).toBe(null);
     });
   });
-}
+});

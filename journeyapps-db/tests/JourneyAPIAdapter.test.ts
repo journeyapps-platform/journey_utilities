@@ -1,35 +1,47 @@
 import * as fetchMock from 'fetch-mock';
-import { Version } from '@journeyapps/parser-common';
 import {
   ApiCredentials,
   Attachment,
-  Batch,
-  Database,
   DatabaseObject,
+  JourneyAPIAdapter,
   DBSchema as Schema,
-  JourneyAPIAdapter
-} from '../../dist';
+  Database,
+  Batch
+} from '../src';
+import { describe, it, expect, afterEach, beforeEach } from 'vitest';
+import { setupContext } from './setup/databaseSetup';
+
+// @ts-ignore
+import schema3Xml from './fixtures/schema3.xml?raw';
 import { FetchError } from './FetchError';
-import { schema3Xml } from './fixtures';
+
+declare module 'vitest' {
+  export interface TestContext {
+    schema: Schema;
+    adapter: JourneyAPIAdapter;
+  }
+}
+
+const credentials = new ApiCredentials({
+  baseUrl: 'http://test.test/api/v4/testaccount',
+  token: 'testtoken'
+});
 
 describe('JourneyAPIAdapter', function () {
-  let adapter: JourneyAPIAdapter;
-
-  const credentials = new ApiCredentials({
-    baseUrl: 'http://test.test/api/v4/testaccount',
-    token: 'testtoken'
+  beforeEach(async (context) => {
+    const ctx = await setupContext(schema3Xml);
+    context.schema = ctx.schema;
+    context.adapter = new JourneyAPIAdapter(credentials, ctx.schema);
   });
 
-  const v3 = new Version('3.1');
-  const schema = new Schema().loadXml(schema3Xml, { apiVersion: v3 });
-
-  beforeEach(function () {
-    adapter = new JourneyAPIAdapter(credentials, schema);
+  afterEach(function () {
+    expect(fetchMock.calls('unmatched')).toEqual([]);
+    fetchMock.restore();
   });
 
-  it('should get an object', async function () {
-    var url = 'http://test.test/api/v4/testaccount/objects/asset/123.json';
-    var mockData = {
+  it('should get an object', async ({ adapter, schema }) => {
+    const url = 'http://test.test/api/v4/testaccount/objects/asset/123.json';
+    const mockData = {
       id: '123',
       foo: 'bar',
       updated_at: '2016-03-08T15:00:00Z',
@@ -44,15 +56,15 @@ describe('JourneyAPIAdapter', function () {
       }
     };
     fetchMock.once(url, { body: mockData });
-    var data = await adapter.get('asset', '123');
+    const data = await adapter.get('asset', '123');
     expect(fetchMock.called(url)).toBe(true);
     expect(data).toEqual(
-      jasmine.objectContaining({
+      expect.objectContaining({
         id: '123',
         type: 'asset',
         _updated_at: '2016-03-08T15:00:00Z',
         display: 'Test Asset',
-        attributes: jasmine.objectContaining({
+        attributes: expect.objectContaining({
           serial_number: '12345',
           photo: {
             id: '293b13a2-ea22-11e6-bca9-02429101cdef',
@@ -63,7 +75,7 @@ describe('JourneyAPIAdapter', function () {
             }
           }
         }),
-        belongs_to: jasmine.objectContaining({
+        belongs_to: expect.objectContaining({
           room: 'R1'
         })
       })
@@ -77,9 +89,9 @@ describe('JourneyAPIAdapter', function () {
     expect(object.photo.processed('thumbnail').url()).toEqual('http://test.test/media/myphoto-thumbnail.jpg');
   });
 
-  it('should getAll', async function () {
-    var url = 'http://test.test/api/v4/testaccount/objects/asset/query.json';
-    var mockData = {
+  it('should getAll', async function ({ adapter }) {
+    const url = 'http://test.test/api/v4/testaccount/objects/asset/query.json';
+    const mockData = {
       objects: [
         {
           id: '123',
@@ -94,15 +106,15 @@ describe('JourneyAPIAdapter', function () {
     const data = await adapter.getAll('asset', ['123', '246']);
     expect(fetchMock.called(url)).toBe(true);
     expect(data).toEqual([
-      jasmine.objectContaining({
+      expect.objectContaining({
         id: '123',
         type: 'asset',
         _updated_at: '2016-03-08T15:00:00Z',
         display: 'Test Asset',
-        attributes: jasmine.objectContaining({
+        attributes: expect.objectContaining({
           serial_number: '12345'
         }),
-        belongs_to: jasmine.objectContaining({
+        belongs_to: expect.objectContaining({
           room: 'R1'
         })
       }),
@@ -118,21 +130,21 @@ describe('JourneyAPIAdapter', function () {
     });
   });
 
-  it('should return null for a 404', async function () {
-    var url = 'http://test.test/api/v4/testaccount/objects/asset/123.json';
-    var mockData = {
+  it('should return null for a 404', async function ({ adapter }) {
+    const url = 'http://test.test/api/v4/testaccount/objects/asset/123.json';
+    const mockData = {
       type: 'OBJECT_NOT_FOUND',
       title: 'Object not found.',
       detail: "No user found with ID: '123'",
       see: 'https://resources.journeyapps.com/v4/api/errors/OBJECT_NOT_FOUND'
     };
     fetchMock.once(url, { body: mockData, status: 404 });
-    var data = await adapter.get('asset', '123');
+    const data = await adapter.get('asset', '123');
     expect(fetchMock.called(url)).toEqual(true);
     expect(data).toEqual(null);
   });
 
-  it('should retry a get on "socket hang up" error', async function () {
+  it('should retry a get on "socket hang up" error', async ({ adapter }) => {
     const url = 'http://test.test/api/v4/testaccount/objects/asset/123.json';
 
     // simulating https://github.com/nodejs/node/blob/ddedf8eaac7f4914deea10397c5a15824c84626d/lib/internal/errors.js#L581-L586
@@ -160,14 +172,14 @@ describe('JourneyAPIAdapter', function () {
     const data = await adapter.get('asset', '123');
     expect(fetchMock.called(url)).toBe(true);
     expect(data).toEqual(
-      jasmine.objectContaining({
+      expect.objectContaining({
         id: '123',
         _updated_at: '2016-03-08T15:00:00Z'
       })
     );
   });
 
-  it('should retry a get on 504 error', async function () {
+  it('should retry a get on 504 error', async ({ adapter }) => {
     const url = 'http://test.test/api/v4/testaccount/objects/asset/123.json';
 
     fetchMock.once(url, 504);
@@ -186,14 +198,14 @@ describe('JourneyAPIAdapter', function () {
     const data = await adapter.get('asset', '123');
     expect(fetchMock.called(url)).toBe(true);
     expect(data).toEqual(
-      jasmine.objectContaining({
+      expect.objectContaining({
         id: '123',
         _updated_at: '2016-03-08T15:00:00Z'
       })
     );
   });
 
-  it('should fail after 2 tries', async function () {
+  it('should fail after 2 tries', async ({ adapter }) => {
     const url = 'http://test.test/api/v4/testaccount/objects/asset/123.json';
     fetchMock.once(
       {
@@ -219,9 +231,9 @@ describe('JourneyAPIAdapter', function () {
     expect(error.message).toEqual('HTTP Error 504: Gateway Timeout\n');
   });
 
-  it('should get a first object', async function () {
-    var url = 'http://test.test/api/v4/testaccount/objects/asset.json?limit=1&skip=&';
-    var mockData = {
+  it('should get a first object', async ({ adapter, schema }) => {
+    const url = 'http://test.test/api/v4/testaccount/objects/asset.json?limit=1&skip=&';
+    const mockData = {
       objects: [
         {
           id: '123',
@@ -239,9 +251,9 @@ describe('JourneyAPIAdapter', function () {
     expect(asset.serial_number).toBe('12345');
   });
 
-  it('should fetch all the objects, regardless of paging', async function () {
-    var urlFirstPage = 'http://test.test/api/v4/testaccount/objects/asset.json?limit=&skip=&';
-    var urlSecondPage = 'http://test.test/api/v4/testaccount/objects/asset.json?limit=1000&skip=1000&';
+  it('should fetch all the objects, regardless of paging', async ({ adapter, schema }) => {
+    const urlFirstPage = 'http://test.test/api/v4/testaccount/objects/asset.json?limit=&skip=&';
+    const urlSecondPage = 'http://test.test/api/v4/testaccount/objects/asset.json?limit=1000&skip=1000&';
     const MOCK_TOTAL = 1001,
       API_LIMIT = 1000;
 
@@ -254,16 +266,16 @@ describe('JourneyAPIAdapter', function () {
       };
     }
 
-    var firstPage = new Array(API_LIMIT).fill(mockObject());
-    var secondPage = new Array(MOCK_TOTAL % API_LIMIT).fill(mockObject());
+    const firstPage = new Array(API_LIMIT).fill(mockObject());
+    const secondPage = new Array(MOCK_TOTAL % API_LIMIT).fill(mockObject());
 
-    var mockFirstPage = {
+    const mockFirstPage = {
       objects: firstPage,
       count: API_LIMIT,
       total: MOCK_TOTAL,
       more: true
     };
-    var mockSecondPage = {
+    const mockSecondPage = {
       objects: secondPage,
       count: MOCK_TOTAL % API_LIMIT,
       total: MOCK_TOTAL,
@@ -279,9 +291,9 @@ describe('JourneyAPIAdapter', function () {
     expect(results.length).toBe(MOCK_TOTAL);
   });
 
-  it('should handle split batches', async function () {
-    var url = 'http://test.test/api/v4/testaccount/batch.json';
-    var mockResponse1 = {
+  it('should handle split batches', async ({ adapter, schema }) => {
+    const url = 'http://test.test/api/v4/testaccount/batch.json';
+    const mockResponse1 = {
       operations: [
         {
           method: 'put',
@@ -301,7 +313,7 @@ describe('JourneyAPIAdapter', function () {
       },
       { body: mockResponse1 }
     );
-    var mockResponse2 = {
+    const mockResponse2 = {
       operations: [
         {
           method: 'put',
@@ -318,14 +330,14 @@ describe('JourneyAPIAdapter', function () {
       { body: mockResponse2 }
     );
 
-    var batch = new Batch(adapter);
+    const batch = new Batch(adapter);
     const db = Database.getTypedDatabase<{ asset: {} }>(schema, adapter);
 
     adapter.batchLimit = 2;
 
-    var object1 = db.asset.create({ make: 'Test 1' });
-    var object2 = db.asset.create({ make: 'Test 2' });
-    var object3 = db.asset.create({ make: 'Test 3' });
+    const object1 = db.asset.create({ make: 'Test 1' });
+    const object2 = db.asset.create({ make: 'Test 2' });
+    const object3 = db.asset.create({ make: 'Test 3' });
     batch.save(object1);
     batch.save(object2);
     batch.save(object3);
@@ -338,11 +350,11 @@ describe('JourneyAPIAdapter', function () {
 
     expect(fetchMock.called(url)).toBe(true);
 
-    var calls = fetchMock.calls(url);
+    const calls = fetchMock.calls(url);
     expect(calls.length).toBe(2);
 
-    var body1 = JSON.parse(calls[0]['1'].body.toString());
-    var body2 = JSON.parse(calls[1]['1'].body.toString());
+    const body1 = JSON.parse(calls[0]['1'].body.toString());
+    const body2 = JSON.parse(calls[1]['1'].body.toString());
     expect(body1).toEqual({
       operations: [
         {
@@ -377,9 +389,9 @@ describe('JourneyAPIAdapter', function () {
     });
   });
 
-  it('should execute a crud batch', async function () {
-    var url = 'http://test.test/api/v4/testaccount/batch.json';
-    var mockResponse = {
+  it('should execute a crud batch', async ({ adapter, schema }) => {
+    const url = 'http://test.test/api/v4/testaccount/batch.json';
+    const mockResponse = {
       operations: [
         {
           method: 'put',
@@ -395,11 +407,11 @@ describe('JourneyAPIAdapter', function () {
     };
     fetchMock.once(url, { body: mockResponse });
 
-    var batch = new Batch(adapter);
+    const batch = new Batch(adapter);
     const db = Database.getTypedDatabase<{ asset: {} }>(schema, adapter);
 
-    var object1 = db.asset.create({ make: 'Test 1' });
-    var object2 = db.asset.create({ make: 'Test 2' });
+    const object1 = db.asset.create({ make: 'Test 1' });
+    const object2 = db.asset.create({ make: 'Test 2' });
     batch.save(object1);
     batch.save(object2);
 
@@ -434,9 +446,9 @@ describe('JourneyAPIAdapter', function () {
     });
   });
 
-  it('should handle errors in a crud batch', async function () {
-    var url = 'http://test.test/api/v4/testaccount/batch.json';
-    var mockResponse = {
+  it('should handle errors in a crud batch', async ({ adapter, schema }) => {
+    const url = 'http://test.test/api/v4/testaccount/batch.json';
+    const mockResponse = {
       operations: [
         {
           method: 'put',
@@ -479,14 +491,14 @@ describe('JourneyAPIAdapter', function () {
     };
     fetchMock.once(url, { body: mockResponse });
 
-    var batch = new Batch(adapter);
+    const batch = new Batch(adapter);
     const db = Database.getTypedDatabase<{ asset: {} }>(schema, adapter);
 
-    var object1 = db.asset.create({ make: 'Test 1' });
-    var object2 = db.asset.create({ make: 'Test 2' });
-    var object3 = db.asset.create({ make: 'Test 3' });
-    var objectPhantom = db.asset.create({ make: 'Test Phantom' });
-    var objectFail = db.asset.create({ make: 'Test Fail' });
+    const object1 = db.asset.create({ make: 'Test 1' });
+    const object2 = db.asset.create({ make: 'Test 2' });
+    const object3 = db.asset.create({ make: 'Test 3' });
+    const objectPhantom = db.asset.create({ make: 'Test Phantom' });
+    const objectFail = db.asset.create({ make: 'Test Fail' });
 
     batch.save(object1);
     batch.save(object2);
@@ -520,9 +532,9 @@ describe('JourneyAPIAdapter', function () {
     expect(fetchMock.called(url)).toBe(true);
   });
 
-  it('should save an attachment', async function () {
+  it('should save an attachment', async ({ adapter, schema }) => {
     // Note: Attachments contains a lot of inter-related behaviour between the database and adapter,
-    // so we do more of an "integration test" here than an unit test.
+    // so we do more of an "integration test" here than a unit test.
     const url = 'http://test.test/api/v4/testaccount/batch.json';
     const mockPutResponse = {
       operations: [
@@ -634,10 +646,5 @@ describe('JourneyAPIAdapter', function () {
         }
       ]
     });
-  });
-
-  afterEach(function () {
-    expect(fetchMock.calls('unmatched')).toEqual([]);
-    fetchMock.restore();
   });
 });

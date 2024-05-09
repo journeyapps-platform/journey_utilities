@@ -8,10 +8,10 @@
   "appTypings": "./dist/app",
   "scripts": {
     "build": "tsc --build",
-    "test": "tsc -b test && pnpm test:node && pnpm test:browser",
     "clean": "tsc -b test --clean && rm -rf dist test/dist",
-    "test:browser": "karma start karma.conf.js --single-run",
-    "test:node": "jasmine test/dist/all.js"
+    "test": "tsc -b test && pnpm test:node && pnpm test:browser",
+    "test:browser": "vitest --run --config vitest.config.browser.ts ",
+    "test:node": "vitest --run --config vitest.config.unit.ts"
   },
   "dependencies": {
     "@journeyapps/core-date": "workspace:*",
@@ -27,7 +27,6 @@
     "xmldom": "^0.6.0"
   },
   "devDependencies": {
-    "@journeyapps/core-test-helpers": "^4.1.2",
     "fetch-mock": "^9.11.0",
     "websql": "^2.0.3",
     "sqlite3": "^5.1.6"

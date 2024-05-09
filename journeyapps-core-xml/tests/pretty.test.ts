@@ -1,6 +1,6 @@
 import { prettyText } from '../src';
 import * as xml from '../src';
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 
 const SAMPLE_DOC = `<?xml version="1.0" encoding="UTF-8"?>
 <test-doc xmlns:one="ns1">
