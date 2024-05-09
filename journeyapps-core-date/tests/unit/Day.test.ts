@@ -1,13 +1,13 @@
-/* eslint-disable no-new */
-
-import { Day } from '../../src/Day';
-
-const moment = require('moment');
+import { Day } from '../../src';
+import { describe, it, expect, expectTypeOf } from 'vitest';
+import moment from 'moment';
 
 describe('Day', function () {
   it('should be a value and a type', function () {
     // Explicit type annotation, to test that it can be used as a type.
-    var today: Day = new Day();
+    const today: Day = new Day();
+
+    expectTypeOf(today).toEqualTypeOf<Day>();
   });
 
   it('should construct today by default', function () {

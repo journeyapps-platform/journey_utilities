@@ -1,6 +1,7 @@
-import * as xml from '../../src/index';
+import * as xml from '../src';
+import { OrderedIncrementalUpdater } from '../src';
 import { XMLElement } from '@journeyapps/domparser/types';
-import { OrderedIncrementalUpdater } from '../../src/OrderedIncrementalUpdater';
+import { describe, it, expect } from 'vitest';
 
 describe('OrderedIncrementalUpdater', function () {
   function parse(text: string) {

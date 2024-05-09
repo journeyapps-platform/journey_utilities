@@ -1,4 +1,5 @@
-import { isPureDate, pureDate } from '../../src/utils';
+import { isPureDate, pureDate } from '../../src';
+import { describe, it, expect } from 'vitest';
 
 describe('date functions', function () {
   it('should check pure dates', function () {
