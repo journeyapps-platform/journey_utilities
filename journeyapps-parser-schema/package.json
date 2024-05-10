@@ -5,11 +5,16 @@
   "main": "./dist/src/index.js",
   "typings": "./dist/@types/src/index",
   "scripts": {
-    "build": "../node_modules/.bin/tsc --build && rm -rf dist/test/fixtures && cp -R test/fixtures dist/test/fixtures && webpack --config ./test/webpack.config.js",
+    "build": "tsc --build && rm -rf dist/test/fixtures && cp -R test/fixtures dist/test/fixtures && webpack --config ./test/webpack.config.js",
+    "clean": "tsc -b --clean && rm -rf ./dist",
     "test": "pnpm build && pnpm test:node && pnpm test:browser",
     "test:browser": "karma start karma.conf.js --single-run",
     "test:node": "jasmine dist/test/unit/all.bundle.js"
   },
+  "files": [
+    "dist/src",
+    "dist/@types"
+  ],
   "dependencies": {
     "@journeyapps/core-xml": "workspace:*",
     "@journeyapps/evaluator": "workspace:*",
@@ -18,9 +23,5 @@
   "devDependencies": {
     "@journeyapps/core-test-helpers": "^4.1.2",
     "@journeyapps/domparser": "^0.4.1"
-  },
-  "files": [
-    "dist/src",
-    "dist/@types"
-  ]
+  }
 }

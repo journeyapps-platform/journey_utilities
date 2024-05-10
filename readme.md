@@ -1,4 +1,4 @@
-# Journey JS
+# Journey Lib
 
 Journey JavaScript library and database accessor
 
@@ -6,7 +6,7 @@ Journey JavaScript library and database accessor
 
 1. Get the module from yarn
 
-    `yarn add @journeyapps/db`
+    `pnpm add @journeyapps/db`
 
 2. import the helper DB (my_script.js)
 
@@ -28,10 +28,6 @@ Journey JavaScript library and database accessor
 
 ## Code Installation
 
-1. clone and run `yarn` in the root & tools folders
-2. run `yarn build` to build.
-3. run `yarn test` to run all the unit tests.
-
-## Development
-
-See [DEVELOPMENT.md](./docs/DEVELOPMENT.md) for instructions on building and publishing journey-js.
+1. clone and run `pnpm` in the root & tools folders
+2. run `pnpm build` to build.
+3. run `pnpm test` to run all the unit tests.

@@ -3,8 +3,9 @@
   "compilerOptions": {
     "declarationDir": "dist/@types",
     "declaration": true,
+    "composite": true,
     "outDir": "dist",
-    "composite": true
+    "tsBuildInfoFile": "dist/tsconfig.tsbuildinfo"
   },
   "references": [
     { "path": "../journeyapps-core-xml" },

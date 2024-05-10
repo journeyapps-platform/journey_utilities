@@ -5,21 +5,22 @@
   "main": "./dist/src/index.js",
   "typings": "./dist/@types/src/index",
   "scripts": {
-    "build": "../node_modules/.bin/tsc --build",
+    "build": "tsc --build",
+    "clean": "tsc -b --clean && rm -rf dist",
     "test": "pnpm build && pnpm test:node && pnpm test:browser",
     "test:browser": "karma start karma.conf.js --single-run",
     "test:node": "jasmine dist/test/unit/all.js"
   },
+  "files": [
+    "dist/src",
+    "dist/@types"
+  ],
   "dependencies": {
     "@journeyapps/core-xml": "workspace:*",
     "@journeyapps/domparser": "^0.4.1",
     "@journeyapps/evaluator": "workspace:*",
     "io-ts": "^2.2.20"
   },
-  "files": [
-    "dist/src",
-    "dist/@types"
-  ],
   "devDependencies": {
     "@journeyapps/core-test-helpers": "^4.1.2"
   }
