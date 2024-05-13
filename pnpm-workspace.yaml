@@ -6,4 +6,3 @@ packages:
   - 'journeyapps-evaluator'
   - 'journeyapps-parser-common'
   - 'journeyapps-parser-schema'
-  - 'test-helpers'

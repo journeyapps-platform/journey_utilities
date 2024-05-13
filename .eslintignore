@@ -2,16 +2,3 @@ dist
 node_modules
 vendor
 tmp
-
-journeyapps-core/node_modules
-journeyapps-core/dist
-
-journeyapps-core/test/syntax4_0/**/*.js
-journeyapps-core/test/syntax2_1/**/*.js
-journeyapps-core/test/cases/*.js
-
-# TODO: fix syntax for these
-journeyapps-core/test/lint
-
-journeyapps-core/src/lint.js
-journeyapps-core/test/runcases.js

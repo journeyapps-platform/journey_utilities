@@ -5,17 +5,17 @@
   "main": "./dist/src/index.js",
   "typings": "./dist/@types/src/index",
   "scripts": {
-    "build": "../node_modules/.bin/tsc --build",
+    "build": "tsc --build",
+    "clean": "tsc -b --clean && rm -rf ./dist",
     "test": "pnpm build && pnpm test:node && pnpm test:browser",
-    "test:browser": "karma start karma.conf.js --single-run",
-    "test:node": "jasmine dist/test/unit/all.js"
-  },
-  "devDependencies": {
-    "@journeyapps/core-test-helpers": "^4.1.2",
-    "moment": "^2.29.4"
+    "test:browser": "vitest --run --config vitest.config.browser.ts ",
+    "test:node": "vitest --run --config vitest.config.unit.ts"
   },
   "files": [
     "dist/src",
     "dist/@types"
-  ]
+  ],
+  "devDependencies": {
+    "moment": "^2.29.4"
+  }
 }

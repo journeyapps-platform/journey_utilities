@@ -6,12 +6,25 @@
   "browser": "./dist/browser.js",
   "typings": "./dist/index",
   "appTypings": "./dist/app",
+  "exports": {
+    ".": {
+      "types": "./dist/@types/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./browser": {
+      "types": "./dist/@types/browser.d.ts",
+      "default": "./dist/browser.js"
+    },
+    "./appTypings": {
+      "types": "./dist/@types/app.d.ts",
+      "default": "./dist/app.js"
+    }
+  },
   "scripts": {
     "build": "tsc --build",
-    "test": "tsc -b test && pnpm test:node && pnpm test:browser",
-    "clean": "tsc -b test --clean && rm -rf dist test/dist",
-    "test:browser": "karma start karma.conf.js --single-run",
-    "test:node": "jasmine test/dist/all.js"
+    "clean": "tsc -b --clean && rm -rf dist",
+    "test": "pnpm test:node",
+    "test:node": "vitest --run --config vitest.config.unit.ts"
   },
   "dependencies": {
     "@journeyapps/core-date": "workspace:*",
@@ -27,10 +40,9 @@
     "xmldom": "^0.6.0"
   },
   "devDependencies": {
-    "@journeyapps/core-test-helpers": "^4.1.2",
     "fetch-mock": "^9.11.0",
-    "websql": "^2.0.3",
-    "sqlite3": "^5.1.6"
+    "sqlite3": "^5.1.6",
+    "websql": "^2.0.3"
   },
   "files": [
     "dist"
