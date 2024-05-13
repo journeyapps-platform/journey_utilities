@@ -17,6 +17,7 @@
     "ci:version": "changeset version && pnpm install --no-frozen-lockfile"
   },
   "devDependencies": {
+    "@changesets/read": "^0.6.0",
     "@changesets/cli": "^2.26.2",
     "@journeyapps-platform/lerno": "2.0.7",
     "@journeyapps/domparser": "^0.4.1",
