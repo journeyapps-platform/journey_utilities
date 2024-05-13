@@ -178,10 +178,6 @@ importers:
       '@journeyapps/core-xml':
         specifier: workspace:*
         version: link:../journeyapps-core-xml
-    devDependencies:
-      '@journeyapps/core-test-helpers':
-        specifier: link:../test-helpers
-        version: link:../test-helpers
 
   journeyapps-parser-common:
     dependencies:
@@ -198,9 +194,9 @@ importers:
         specifier: ^2.2.20
         version: 2.2.20(fp-ts@2.16.1)
     devDependencies:
-      '@journeyapps/core-test-helpers':
-        specifier: link:../test-helpers
-        version: link:../test-helpers
+      stream-browserify:
+        specifier: ^3.0.0
+        version: 3.0.0
 
   journeyapps-parser-schema:
     dependencies:

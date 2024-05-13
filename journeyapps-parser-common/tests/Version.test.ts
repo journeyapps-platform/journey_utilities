@@ -1,4 +1,5 @@
-import { Version } from '../../src';
+import { describe, it, expect } from 'vitest';
+import { Version } from '../src';
 
 describe('Version', function () {
   it('should construct without a patch', function () {

@@ -8,13 +8,9 @@
     "build": "tsc --build",
     "clean": "tsc -b --clean && rm -rf dist",
     "test": "pnpm build && pnpm test:node && pnpm test:browser",
-    "test:browser": "karma start karma.conf.js --single-run",
-    "test:node": "jasmine dist/test/unit/all.js"
+    "test:browser": "vitest --run --config vitest.config.browser.ts ",
+    "test:node": "vitest --run --config vitest.config.unit.ts"
   },
-  "files": [
-    "dist/src",
-    "dist/@types"
-  ],
   "dependencies": {
     "@journeyapps/core-xml": "workspace:*",
     "@journeyapps/domparser": "^0.4.1",
@@ -22,6 +18,10 @@
     "io-ts": "^2.2.20"
   },
   "devDependencies": {
-    "@journeyapps/core-test-helpers": "^4.1.2"
-  }
+    "stream-browserify": "^3.0.0"
+  },
+  "files": [
+    "dist/src",
+    "dist/@types"
+  ]
 }
