@@ -6,11 +6,24 @@
   "browser": "./dist/browser.js",
   "typings": "./dist/index",
   "appTypings": "./dist/app",
+  "exports": {
+    ".": {
+      "types": "./dist/@types/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./browser": {
+      "types": "./dist/@types/browser.d.ts",
+      "default": "./dist/browser.js"
+    },
+    "./appTypings": {
+      "types": "./dist/@types/app.d.ts",
+      "default": "./dist/app.js"
+    }
+  },
   "scripts": {
     "build": "tsc --build",
-    "clean": "tsc -b test --clean && rm -rf dist test/dist",
-    "test": "tsc -b test && pnpm test:node && pnpm test:browser",
-    "test:browser": "vitest --run --config vitest.config.browser.ts ",
+    "clean": "tsc -b --clean && rm -rf dist",
+    "test": "pnpm test:node",
     "test:node": "vitest --run --config vitest.config.unit.ts"
   },
   "dependencies": {
@@ -28,8 +41,8 @@
   },
   "devDependencies": {
     "fetch-mock": "^9.11.0",
-    "websql": "^2.0.3",
-    "sqlite3": "^5.1.6"
+    "sqlite3": "^5.1.6",
+    "websql": "^2.0.3"
   },
   "files": [
     "dist"
