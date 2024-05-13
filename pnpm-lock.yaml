@@ -4,9 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-overrides:
-  '@journeyapps/core-test-helpers': link:./test-helpers
-
 importers:
 
   .:
@@ -210,14 +207,12 @@ importers:
         specifier: workspace:*
         version: link:../journeyapps-parser-common
     devDependencies:
-      '@journeyapps/core-test-helpers':
-        specifier: link:../test-helpers
-        version: link:../test-helpers
       '@journeyapps/domparser':
         specifier: ^0.4.1
         version: 0.4.1
-
-  test-helpers: {}
+      stream-browserify:
+        specifier: ^3.0.0
+        version: 3.0.0
 
 packages:
 

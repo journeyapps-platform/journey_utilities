@@ -5,11 +5,11 @@
   "main": "./dist/src/index.js",
   "typings": "./dist/@types/src/index",
   "scripts": {
-    "build": "tsc --build && rm -rf dist/test/fixtures && cp -R test/fixtures dist/test/fixtures && webpack --config ./test/webpack.config.js",
+    "build": "tsc --build",
     "clean": "tsc -b --clean && rm -rf ./dist",
     "test": "pnpm build && pnpm test:node && pnpm test:browser",
-    "test:browser": "karma start karma.conf.js --single-run",
-    "test:node": "jasmine dist/test/unit/all.bundle.js"
+    "test:browser": "vitest --run --config vitest.config.browser.ts ",
+    "test:node": "vitest --run --config vitest.config.unit.ts"
   },
   "files": [
     "dist/src",
@@ -21,7 +21,7 @@
     "@journeyapps/parser-common": "workspace:*"
   },
   "devDependencies": {
-    "@journeyapps/core-test-helpers": "^4.1.2",
-    "@journeyapps/domparser": "^0.4.1"
+    "@journeyapps/domparser": "^0.4.1",
+    "stream-browserify": "^3.0.0"
   }
 }

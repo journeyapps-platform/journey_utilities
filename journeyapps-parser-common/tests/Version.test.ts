@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import { Version } from '../src';
 
-describe('Version', function () {
-  it('should construct without a patch', function () {
-    var version = new Version('3.16');
+describe('Version', () => {
+  it('should construct without a patch', () => {
+    const version = new Version('3.16');
     expect(version.major).toBe(3);
     expect(version.minor).toBe(16);
     expect(version.patch).toBe(null);
@@ -13,8 +13,8 @@ describe('Version', function () {
     expect(version.valueOf()).toBe('3.16');
   });
 
-  it('should construct with a patch', function () {
-    var version = new Version('3.16.2');
+  it('should construct with a patch', () => {
+    const version = new Version('3.16.2');
     expect(version.major).toBe(3);
     expect(version.minor).toBe(16);
     expect(version.patch).toBe(2);
@@ -25,7 +25,7 @@ describe('Version', function () {
     expect(new Version('3.16.0').toString()).toBe('3.16.0');
   });
 
-  it('should v3', function () {
+  it('should v3', () => {
     expect(new Version('3.16.2').v3).toBe(true);
     expect(new Version('3.16.2').v2).toBe(false);
     expect(new Version('3.16').v3).toBe(true);
@@ -36,7 +36,7 @@ describe('Version', function () {
     expect(new Version('2.16.0').v2).toBe(true);
   });
 
-  it('should compare', function () {
+  it('should compare', () => {
     expect(new Version('3.16.2').compareTo(new Version('3.16.2'))).toBe(0);
     expect(new Version('3.16.1').compareTo(new Version('3.16.2'))).toBe(-1);
     expect(new Version('3.16.2').compareTo(new Version('3.16.1'))).toBe(1);

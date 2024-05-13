@@ -1,13 +1,16 @@
 import { prettyText, parse } from '@journeyapps/core-xml';
-import { Variable, toDOM, Schema } from '../../src';
 import { FormatString } from '@journeyapps/evaluator';
 import { Version } from '@journeyapps/parser-common';
+import { describe, it, expect } from 'vitest';
+import { Schema, toDOM } from '../src';
 
-const schema3_xml = require('../fixtures/schema3.xml').default;
-const expectedOutput = require('../fixtures/schema_modified.xml').default;
+// @ts-ignore
+import schema3_xml from './fixtures/schema3.xml?raw';
+// @ts-ignore
+import expectedOutput from './fixtures/schema_modified.xml?raw';
 
-describe('Schema toDOM', function () {
-  it('should output a modified schema', function () {
+describe('Schema toDOM', () => {
+  it('should output a modified schema', () => {
     const schema = new Schema();
     schema.loadXml(schema3_xml, {
       apiVersion: new Version('4.0'),
