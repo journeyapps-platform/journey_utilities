@@ -32,10 +32,9 @@ export class FormatString {
    */
   static compile(format: string): TokenExpression[] {
     let start = 0;
+    const tokens: TokenExpression[] = [];
 
-    let tokens: TokenExpression[] = [];
-
-    let len = format.length;
+    const len = format.length;
     while (true) {
       const i = format.indexOf('{', start);
       if (i < 0 || i == len - 1) {
@@ -81,10 +80,10 @@ export class FormatString {
     }
 
     // concatenate any neighbouring constant token expressions
-    let result: TokenExpression[] = [];
+    const result: TokenExpression[] = [];
     let last: ConstantTokenExpression = null;
-    for (var j = 0; j < tokens.length; j++) {
-      var token = tokens[j];
+    for (let j = 0; j < tokens.length; j++) {
+      const token = tokens[j];
       if (token instanceof ConstantTokenExpression) {
         if (last == null) {
           if (token.expression.length > 0) {
@@ -108,10 +107,6 @@ export class FormatString {
     return result;
   }
 
-  toString(): string {
-    return this.expression;
-  }
-
   /**
    * If the format string is constant (i.e. no values need to be evaluated).
    */
@@ -130,14 +125,14 @@ export class FormatString {
       return {};
     }
 
-    var result = into || {};
+    const result = into || {};
 
-    var tokens = this.tokens;
+    const tokens = this.tokens;
 
-    for (var i = 0; i < tokens.length; i++) {
-      var token = tokens[i];
+    for (let i = 0; i < tokens.length; i++) {
+      const token = tokens[i];
       if (token.isShorthand()) {
-        var expression = token.expression;
+        const expression = token.expression;
         extract(type, expression, result, depth);
       }
     }
@@ -145,22 +140,22 @@ export class FormatString {
   }
 
   validate(scopeType: TypeInterface): AttributeValidationError[] {
-    var tokens = this.tokens;
+    const tokens = this.tokens;
 
-    var results: AttributeValidationError[] = [];
+    const results: AttributeValidationError[] = [];
 
-    for (var i = 0; i < tokens.length; i++) {
+    for (let i = 0; i < tokens.length; i++) {
       // validate all shorthand and function token expressions (ignore constant token expressions)
-      var token = tokens[i];
-      var expression = token.expression;
+      const token = tokens[i];
+      let expression = token.expression;
       if (token.isShorthand()) {
-        var warnQuestionMark = false;
+        let warnQuestionMark = false;
         if (expression.length > 0 && expression[0] == '?') {
           expression = expression.substring(1);
           warnQuestionMark = true;
         }
 
-        var type = scopeType.getType(expression);
+        const type = scopeType.getType(expression);
         if (type == null) {
           results.push({
             start: token.start + 1,
@@ -185,8 +180,8 @@ export class FormatString {
   }
 
   validateAndReturnRecordings(scopeType: TypeInterface) {
-    var tokens = this.tokens;
-    var recordings: {
+    const tokens = this.tokens;
+    const recordings: {
       type: string;
       isPrimitiveType: boolean;
       name: string;
@@ -220,13 +215,7 @@ export class FormatString {
     return this.tokens[0].valueOf();
   }
 
-  // This helps speed up dirty-checking.
-  // With this, we can use "by reference" checking in watches.
-  valueOf() {
-    return this.expression;
-  }
-
-  evaluatePromise(scope: FormatStringScope): Promise<string> {
+  async evaluatePromise(scope: FormatStringScope): Promise<string> {
     const tokens = this.tokens;
     let promises = [];
     for (let i = 0; i < tokens.length; i++) {
@@ -239,21 +228,19 @@ export class FormatString {
       }
     }
 
-    return Promise.all(promises).then(function (results) {
-      let result = '';
-      let promiseIndex = 0;
-
-      for (let i = 0; i < tokens.length; i++) {
-        const token = tokens[i];
-        if (token.isConstant()) {
-          result += token.valueOf();
-        } else {
-          result += results[promiseIndex];
-          promiseIndex += 1;
-        }
+    let results = await Promise.all(promises);
+    let result = '';
+    let promiseIndex = 0;
+    for (let i = 0; i < tokens.length; i++) {
+      const token = tokens[i];
+      if (token.isConstant()) {
+        result += token.valueOf();
+      } else {
+        result += results[promiseIndex];
+        promiseIndex += 1;
       }
-      return result;
-    });
+    }
+    return result;
   }
 
   /**
@@ -287,6 +274,16 @@ export class FormatString {
       }
     }
     return result;
+  }
+
+  // This helps speed up dirty-checking.
+  // With this, we can use "by reference" checking in watches.
+  valueOf() {
+    return this.expression;
+  }
+
+  toString(): string {
+    return this.expression;
   }
 
   static parseEnclosingBraces(format: string) {

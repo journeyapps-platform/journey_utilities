@@ -16,14 +16,10 @@ export class FunctionTokenExpression extends TokenExpression {
     const prefix = FunctionTokenExpression.PREFIX;
     let processedExpression = expression.trim();
     if (processedExpression.indexOf(prefix) === 0) {
-      processedExpression = processedExpression.substr(prefix.length);
+      processedExpression = processedExpression.slice(prefix.length);
     }
 
     super(processedExpression, start);
-  }
-
-  stringify() {
-    return `${FunctionTokenExpression.PREFIX}${this.expression}`;
   }
 
   isFunction() {
@@ -34,17 +30,14 @@ export class FunctionTokenExpression extends TokenExpression {
    * Name of function represented by function token expression.
    */
   functionName(): string {
-    return this.expression.substr(0, this.expression.indexOf('('));
+    return this.expression.slice(0, this.expression.indexOf('('));
   }
 
   /**
    * Generate a constant token expression from function token expression.
    * @param {boolean} [includeEscapeTags] if "{" and "}" format string escape tags should be included or not
    */
-  toConstant(includeEscapeTags?: boolean): ConstantTokenExpression {
-    if (typeof includeEscapeTags === 'undefined' || includeEscapeTags === null) {
-      includeEscapeTags = false;
-    }
+  toConstant(includeEscapeTags: boolean = false): ConstantTokenExpression {
     let constantExpression = FunctionTokenExpression.PREFIX + this.expression;
     if (includeEscapeTags) {
       constantExpression = '{' + constantExpression + '}';
@@ -58,5 +51,9 @@ export class FunctionTokenExpression extends TokenExpression {
     // also for other attributes, e.g. show-if. For those cases, we need the
     // original value, not a string, so we can't convert to a string here.
     return value;
+  }
+
+  stringify() {
+    return `${FunctionTokenExpression.PREFIX}${this.expression}`;
   }
 }

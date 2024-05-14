@@ -18,11 +18,8 @@ export class LegacyFunctionTokenExpression extends TokenExpression {
    * Generate a constant token expression from legacy function token expression.
    * @param {boolean} [includeEscapeTags] if "{" and "}" format string escape tags should be included or not
    */
-  toConstant(includeEscapeTags?: boolean): ConstantTokenExpression {
-    if (includeEscapeTags == null) {
-      includeEscapeTags = false;
-    }
-    var constantExpression = this.expression;
+  toConstant(includeEscapeTags: boolean = false): ConstantTokenExpression {
+    let constantExpression = this.expression;
     if (includeEscapeTags) {
       constantExpression = '{' + constantExpression + '}';
     }

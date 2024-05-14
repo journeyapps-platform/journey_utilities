@@ -1,8 +1,8 @@
+import { FormatStringScope } from '../scope/FormatStringScope';
+
 /**
  * Abstract base token expression class.
  */
-import { FormatStringScope } from '../scope/FormatStringScope';
-
 export abstract class TokenExpression {
   expression: string;
   start: number | undefined;
