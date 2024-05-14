@@ -3,7 +3,7 @@
  */
 import { TokenExpression } from './TokenExpression';
 import { ConstantTokenExpression } from './ConstantTokenExpression';
-import { FormatStringScope } from '../FormatStringScope';
+import { FormatStringScope } from '../scope/FormatStringScope';
 
 export class FunctionTokenExpression extends TokenExpression {
   /**

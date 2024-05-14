@@ -1,8 +1,8 @@
 import { FunctionTokenExpression } from './token-expressions/FunctionTokenExpression';
 import { ShorthandTokenExpression } from './token-expressions/ShorthandTokenExpression';
 import { FormatShorthandTokenExpression } from './token-expressions/FormatShorthandTokenExpression';
-import { FormatString } from './FormatString';
-import { TypeInterface } from './TypeInterface';
+import { FormatString } from './token-expressions/FormatString';
+import { TypeInterface } from './types/TypeInterface';
 import { LegacyFunctionTokenExpression } from './token-expressions/LegacyFunctionTokenExpression';
 
 export function getObjectType(parent: any, name: string) {

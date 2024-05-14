@@ -2,7 +2,7 @@
  * Shorthand token expression.
  */
 import { TokenExpression } from './TokenExpression';
-import { FormatStringScope } from '../FormatStringScope';
+import { FormatStringScope } from '../scope/FormatStringScope';
 import { formatValueAsync } from '../tools';
 
 export class ShorthandTokenExpression extends TokenExpression {

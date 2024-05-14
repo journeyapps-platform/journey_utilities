@@ -9,7 +9,7 @@
     "watch": "tsc -b --watch",
     "clean": "tsc -b --clean && rm -rf dist",
     "test": "pnpm build && pnpm test:node && pnpm test:browser",
-    "test:browser": "vitest --run --config vitest.config.browser.ts ",
+    "test:browser": "vitest --run --config vitest.config.browser.ts",
     "test:node": "vitest --run --config vitest.config.unit.ts"
   },
   "files": [

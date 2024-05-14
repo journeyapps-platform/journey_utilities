@@ -1,12 +1,12 @@
-import { TokenExpression } from './token-expressions/TokenExpression';
-import { extract, formatValue } from './tools';
 import { AttributeValidationError } from '@journeyapps/core-xml';
-import { TypeInterface } from './TypeInterface';
-import { FormatStringScope } from './FormatStringScope';
-import { FunctionTokenExpression } from './token-expressions/FunctionTokenExpression';
-import { ConstantTokenExpression } from './token-expressions/ConstantTokenExpression';
-import { ShorthandTokenExpression } from './token-expressions/ShorthandTokenExpression';
-import { FormatShorthandTokenExpression } from './token-expressions/FormatShorthandTokenExpression';
+import { FormatStringScope } from '../scope/FormatStringScope';
+import { extract, formatValue } from '../tools';
+import { TypeInterface } from '../types/TypeInterface';
+import { ConstantTokenExpression } from './ConstantTokenExpression';
+import { FormatShorthandTokenExpression } from './FormatShorthandTokenExpression';
+import { FunctionTokenExpression } from './FunctionTokenExpression';
+import { ShorthandTokenExpression } from './ShorthandTokenExpression';
+import { TokenExpression } from './TokenExpression';
 
 /**
  * Construct a new format string expression.

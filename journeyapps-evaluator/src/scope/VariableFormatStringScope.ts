@@ -5,7 +5,7 @@
  * @param {*} moduleEval
  */
 import { FormatStringScope } from './FormatStringScope';
-import { TypeInterface } from './TypeInterface';
+import { TypeInterface } from '../types/TypeInterface';
 
 export type VariableScope = Record<string, any> & {
   type: TypeInterface;

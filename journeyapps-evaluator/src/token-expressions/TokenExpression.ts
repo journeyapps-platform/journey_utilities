@@ -1,7 +1,7 @@
 /**
  * Abstract base token expression class.
  */
-import { FormatStringScope } from '../FormatStringScope';
+import { FormatStringScope } from '../scope/FormatStringScope';
 
 export abstract class TokenExpression {
   expression: string;
@@ -19,13 +19,7 @@ export abstract class TokenExpression {
     this.isPrimitive = false;
   }
 
-  stringify() {
-    return this.expression;
-  }
-
-  toString(): string {
-    return '[object ' + this.constructor.name + ' <' + this.expression + ', ' + this.start + '>]';
-  }
+  abstract tokenEvaluatePromise(scope: FormatStringScope): Promise<string>;
 
   isConstant(): boolean {
     // not constant by default
@@ -44,5 +38,11 @@ export abstract class TokenExpression {
     return false;
   }
 
-  abstract tokenEvaluatePromise(scope: FormatStringScope): Promise<string>;
+  stringify() {
+    return this.expression;
+  }
+
+  toString(): string {
+    return '[object ' + this.constructor.name + ' <' + this.expression + ', ' + this.start + '>]';
+  }
 }

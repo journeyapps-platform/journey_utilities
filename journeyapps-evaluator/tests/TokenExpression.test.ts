@@ -10,10 +10,10 @@ import {
   TokenExpression
 } from '../src';
 
-describe('TokenExpression', function () {
-  it('should be abstract', function () {
+describe('TokenExpression', () => {
+  it('should be abstract', () => {
     let token = null;
-    const construction = function () {
+    const construction = () => {
       token = new (TokenExpression as any)('xyz', 4);
     };
     expect(construction).toThrowError();
@@ -21,8 +21,8 @@ describe('TokenExpression', function () {
   });
 });
 
-describe('ConstantTokenExpression', function () {
-  it('should construct a TokenExpression', function () {
+describe('ConstantTokenExpression', () => {
+  it('should construct a TokenExpression', () => {
     const token = new ConstantTokenExpression('XYZ', 3);
     expect(token).toBeInstanceOf(TokenExpression);
     expect(token.expression).toEqual('XYZ');
@@ -35,8 +35,8 @@ describe('ConstantTokenExpression', function () {
   });
 });
 
-describe('FunctionTokenExpression', function () {
-  it('should construct a TokenExpression', function () {
+describe('FunctionTokenExpression', () => {
+  it('should construct a TokenExpression', () => {
     const token = new FunctionTokenExpression('$:foo()', 3);
     expect(token).toBeInstanceOf(TokenExpression);
     expect(token.expression).toEqual('foo()');
@@ -47,34 +47,34 @@ describe('FunctionTokenExpression', function () {
     expect(token.isFunction()).toEqual(true);
   });
 
-  it('should have the correct prefix', function () {
+  it('should have the correct prefix', () => {
     // purely for safety, just testing the constant value
     expect(FunctionTokenExpression.PREFIX).toEqual('$:');
   });
 
-  it('should remove the prefix from the expression', function () {
+  it('should remove the prefix from the expression', () => {
     const token = new FunctionTokenExpression('$:foo()', 5);
     expect(token.expression).toEqual('foo()');
     expect(token.start).toEqual(5);
   });
 
-  it('should allow expressions without the prefix', function () {
+  it('should allow expressions without the prefix', () => {
     const token = new FunctionTokenExpression('foo()', 5);
     expect(token.expression).toEqual('foo()');
     expect(token.start).toEqual(5);
   });
 
-  it('should give the function name', function () {
+  it('should give the function name', () => {
     const token = new FunctionTokenExpression('$:foo()', 5);
     expect(token.functionName()).toEqual('foo');
   });
 
-  it('should give the function name where there are arguments', function () {
+  it('should give the function name where there are arguments', () => {
     const token = new FunctionTokenExpression('$:foo(5, "bar")', 5);
     expect(token.functionName()).toEqual('foo');
   });
 
-  it('should be able to convert to a constant token expression without escape tags by default', function () {
+  it('should be able to convert to a constant token expression without escape tags by default', () => {
     const token = new FunctionTokenExpression('$:foo()', 5);
     expect(token.expression).toEqual('foo()'); // safety check
     const constantToken = token.toConstant();
@@ -84,7 +84,7 @@ describe('FunctionTokenExpression', function () {
     expect(constantToken.start).toEqual(5);
   });
 
-  it('should be able to convert to a constant token expression without escape tags', function () {
+  it('should be able to convert to a constant token expression without escape tags', () => {
     const token = new FunctionTokenExpression('$:foo()', 5);
     expect(token.expression).toEqual('foo()'); // safety check
     const constantToken = token.toConstant(false);
@@ -95,7 +95,7 @@ describe('FunctionTokenExpression', function () {
     expect(constantToken.start).toEqual(5);
   });
 
-  it('should be able to convert to a constant token expression with escape tags', function () {
+  it('should be able to convert to a constant token expression with escape tags', () => {
     const token = new FunctionTokenExpression('$:foo()', 5);
     expect(token.expression).toEqual('foo()'); // safety check
     const constantToken = token.toConstant(true);
@@ -106,8 +106,8 @@ describe('FunctionTokenExpression', function () {
   });
 });
 
-describe('LegacyFunctionTokenExpression', function () {
-  it('should construct a TokenExpression', function () {
+describe('LegacyFunctionTokenExpression', () => {
+  it('should construct a TokenExpression', () => {
     const token = new LegacyFunctionTokenExpression('foo', 3);
     expect(token).toBeInstanceOf(TokenExpression);
     expect(token.expression).toEqual('foo');
@@ -118,7 +118,7 @@ describe('LegacyFunctionTokenExpression', function () {
     expect(token.isFunction()).toEqual(true);
   });
 
-  it('should be able to convert to a constant token expression without escape tags by default', function () {
+  it('should be able to convert to a constant token expression without escape tags by default', () => {
     const token = new LegacyFunctionTokenExpression('foo', 5);
     expect(token.expression).toEqual('foo'); // safety check
     const constantToken = token.toConstant();
@@ -128,7 +128,7 @@ describe('LegacyFunctionTokenExpression', function () {
     expect(constantToken.start).toEqual(5);
   });
 
-  it('should be able to convert to a constant token expression without escape tags', function () {
+  it('should be able to convert to a constant token expression without escape tags', () => {
     const token = new LegacyFunctionTokenExpression('foo', 5);
     expect(token.expression).toEqual('foo'); // safety check
     const constantToken = token.toConstant(false);
@@ -138,7 +138,7 @@ describe('LegacyFunctionTokenExpression', function () {
     expect(constantToken.start).toEqual(5);
   });
 
-  it('should be able to convert to a constant token expression with escape tags', function () {
+  it('should be able to convert to a constant token expression with escape tags', () => {
     const token = new LegacyFunctionTokenExpression('foo', 5);
     expect(token.expression).toEqual('foo'); // safety check
     const constantToken = token.toConstant(true);
@@ -149,8 +149,8 @@ describe('LegacyFunctionTokenExpression', function () {
   });
 });
 
-describe('ShorthandTokenExpression', function () {
-  it('should construct a TokenExpression', function () {
+describe('ShorthandTokenExpression', () => {
+  it('should construct a TokenExpression', () => {
     const token = new ShorthandTokenExpression('person.name', 3);
     expect(token).toBeInstanceOf(TokenExpression);
     expect(token.expression).toEqual('person.name');
@@ -162,8 +162,8 @@ describe('ShorthandTokenExpression', function () {
   });
 });
 
-describe('FormatShorthandTokenExpression', function () {
-  it('should construct a TokenExpression', function () {
+describe('FormatShorthandTokenExpression', () => {
+  it('should construct a TokenExpression', () => {
     const token = new FormatShorthandTokenExpression('product.price', '.2f', 3);
     expect(token).toBeInstanceOf(TokenExpression);
     expect(token.expression).toEqual('product.price');
@@ -175,53 +175,53 @@ describe('FormatShorthandTokenExpression', function () {
   });
 });
 
-describe('functionTokenExpression', function () {
-  it('should return null for a null input', function () {
+describe('functionTokenExpression', () => {
+  it('should return null for a null input', () => {
     expect(functionTokenExpression(null)).toBeNull();
   });
 
-  it('should return a function token expression', function () {
+  it('should return a function token expression', () => {
     const token = functionTokenExpression('$:foo()');
     expect(token).toBeInstanceOf(FunctionTokenExpression);
     expect(token.expression).toEqual('foo()');
   });
 
-  it('should return a legacy token expression', function () {
+  it('should return a legacy token expression', () => {
     const token = functionTokenExpression('foo');
     expect(token).toBeInstanceOf(LegacyFunctionTokenExpression);
     expect(token.expression).toEqual('foo');
   });
 
-  it('should return a legacy token expression if explicitly allowed', function () {
+  it('should return a legacy token expression if explicitly allowed', () => {
     const token = functionTokenExpression('foo', true);
     expect(token).toBeInstanceOf(LegacyFunctionTokenExpression);
     expect(token.expression).toEqual('foo');
   });
 
-  it('should return null for a legacy token expression when not allowed', function () {
+  it('should return null for a legacy token expression when not allowed', () => {
     const token = functionTokenExpression('foo', false);
     expect(token).toBeNull();
   });
 });
 
-describe('actionableTokenExpression', function () {
-  it('should return null for a null input', function () {
+describe('actionableTokenExpression', () => {
+  it('should return null for a null input', () => {
     expect(actionableTokenExpression(null)).toBeNull();
   });
 
-  it('should return a function token expression', function () {
+  it('should return a function token expression', () => {
     const token = actionableTokenExpression('$:foo()');
     expect(token).toBeInstanceOf(FunctionTokenExpression);
     expect(token.expression).toEqual('foo()');
   });
 
-  it('should return a shorthand token expression', function () {
+  it('should return a shorthand token expression', () => {
     const token = actionableTokenExpression('person.name');
     expect(token).toBeInstanceOf(ShorthandTokenExpression);
     expect(token.expression).toEqual('person.name');
   });
 
-  it('should return a format shorthand token expression', function () {
+  it('should return a format shorthand token expression', () => {
     const token = actionableTokenExpression('product.price:.2f');
     expect(token).toBeInstanceOf(FormatShorthandTokenExpression);
     expect(token.expression).toEqual('product.price');
