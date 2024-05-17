@@ -1,9 +1,11 @@
-import { FunctionTokenExpression } from './token-expressions/FunctionTokenExpression';
-import { ShorthandTokenExpression } from './token-expressions/ShorthandTokenExpression';
-import { FormatShorthandTokenExpression } from './token-expressions/FormatShorthandTokenExpression';
-import { FormatString } from './token-expressions/FormatString';
-import { TypeInterface } from './types/TypeInterface';
-import { LegacyFunctionTokenExpression } from './token-expressions/LegacyFunctionTokenExpression';
+import { TypeInterface } from './definitions/TypeInterface';
+import {
+  FormatShorthandTokenExpression,
+  FormatString,
+  FunctionTokenExpression,
+  LegacyFunctionTokenExpression,
+  ShorthandTokenExpression
+} from './token-expressions';
 
 /**
  * Create format string.

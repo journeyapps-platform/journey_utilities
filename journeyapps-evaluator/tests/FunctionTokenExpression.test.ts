@@ -13,6 +13,7 @@ describe('FunctionTokenExpression', () => {
     const token = new FunctionTokenExpression('$:foo()', 3);
     expect(token).toBeInstanceOf(TokenExpression);
     expect(token.expression).toEqual('foo()');
+    expect(token.functionName()).toEqual('foo');
     expect(token.start).toEqual(3);
     expect(token.format).toBeNull();
     expect(token.isConstant()).toEqual(false);

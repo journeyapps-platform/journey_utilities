@@ -1,7 +1,7 @@
-import { TypeInterface } from '../types/TypeInterface';
-import { TokenExpression } from './TokenExpression';
-import { FormatStringScope } from '../scope/FormatStringScope';
+import { FormatStringScope } from '../definitions/FormatStringScope';
+import { TypeInterface } from '../definitions/TypeInterface';
 import { formatValue } from '../tools';
+import { TokenExpression } from './TokenExpression';
 
 /**
  * Shorthand token expression.

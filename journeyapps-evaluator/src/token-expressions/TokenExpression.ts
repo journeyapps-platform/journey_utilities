@@ -1,4 +1,4 @@
-import { FormatStringScope } from '../scope/FormatStringScope';
+import { FormatStringScope } from '../definitions/FormatStringScope';
 
 /**
  * Abstract base token expression class.

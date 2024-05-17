@@ -1,11 +1,5 @@
-/**
- * Wrapper for variableScope and moduleEval.
- *
- * @param {*} variableScope
- * @param {*} moduleEval
- */
-import { FormatStringScope } from './FormatStringScope';
-import { TypeInterface } from '../types/TypeInterface';
+import { FormatStringScope } from '../definitions/FormatStringScope';
+import { TypeInterface } from '../definitions/TypeInterface';
 
 export type VariableScope = Record<string, any> & {
   type: TypeInterface;
@@ -60,14 +54,14 @@ function getValue(scope: VariableScope, expression: string, depth?: number): any
     return null;
   }
 
-  var dot = expression.indexOf('.');
+  const dot = expression.indexOf('.');
   if (dot < 0) {
     return cached(scope, expression);
   } else {
-    var head = expression.substring(0, dot); // The first part of the expression
-    var tail = expression.substring(dot + 1); // The rest of the expression
+    const head = expression.substring(0, dot); // The first part of the expression
+    const tail = expression.substring(dot + 1); // The rest of the expression
 
-    var child = cached(scope, head);
+    const child = cached(scope, head);
     if (child === undefined) {
       return undefined;
     } else {

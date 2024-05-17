@@ -1,4 +1,4 @@
-import { TypeInterface } from '../types/TypeInterface';
+import { TypeInterface } from './TypeInterface';
 
 export interface FormatStringScope {
   /**

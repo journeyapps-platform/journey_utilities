@@ -1,10 +1,10 @@
 import { AttributeValidationError } from '@journeyapps/core-xml';
-import { FormatStringScope } from '../scope/FormatStringScope';
+import { FormatStringScope } from '../definitions/FormatStringScope';
+import { TypeInterface } from '../definitions/TypeInterface';
 import { extract, formatValue } from '../tools';
-import { TypeInterface } from '../types/TypeInterface';
 import { ConstantTokenExpression } from './ConstantTokenExpression';
 import { FormatShorthandTokenExpression } from './FormatShorthandTokenExpression';
-import { FunctionTokenExpression } from './FunctionTokenExpression';
+import { FunctionTokenExpression } from './function-token/FunctionTokenExpression';
 import { ShorthandTokenExpression } from './ShorthandTokenExpression';
 import { TokenExpression } from './TokenExpression';
 
@@ -349,6 +349,4 @@ export class FormatString {
   }
 }
 
-// Expose internal functions for tests
-export const _compile = FormatString.compile;
 export const parseEnclosingBraces = FormatString.parseEnclosingBraces;

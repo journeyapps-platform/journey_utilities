@@ -1,9 +1,9 @@
 /**
  * Legacy function token expression.
  */
-import { TokenExpression } from './TokenExpression';
-import { ConstantTokenExpression } from './ConstantTokenExpression';
-import { FormatStringScope } from '../scope/FormatStringScope';
+import { TokenExpression } from '../TokenExpression';
+import { ConstantTokenExpression } from '../ConstantTokenExpression';
+import { FormatStringScope } from '../../definitions/FormatStringScope';
 
 export class LegacyFunctionTokenExpression extends TokenExpression {
   constructor(expression: string, start?: number) {

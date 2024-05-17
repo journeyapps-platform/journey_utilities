@@ -2,8 +2,8 @@
   "name": "@journeyapps/evaluator",
   "version": "6.2.4",
   "description": "Journey Evaluator library",
-  "main": "./dist/src/index.js",
-  "typings": "./dist/@types/src/index",
+  "main": "./dist/index.js",
+  "typings": "./dist/@types/index.d.ts",
   "scripts": {
     "build": "tsc --build",
     "watch": "tsc -b --watch",
@@ -17,6 +17,8 @@
     "dist/@types"
   ],
   "dependencies": {
+    "acorn": "^8.11.3",
+    "acorn-walk": "^8.3.2",
     "@journeyapps/core-xml": "workspace:*"
   },
   "devDependencies": {

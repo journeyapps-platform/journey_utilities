@@ -1,9 +1,6 @@
-/**
- * JavaScript function token expression.
- */
-import { TokenExpression } from './TokenExpression';
-import { ConstantTokenExpression } from './ConstantTokenExpression';
-import { FormatStringScope } from '../scope/FormatStringScope';
+import { TokenExpression } from '../TokenExpression';
+import { ConstantTokenExpression } from '../ConstantTokenExpression';
+import { FormatStringScope } from '../../definitions/FormatStringScope';
 
 export class FunctionTokenExpression extends TokenExpression {
   /**
