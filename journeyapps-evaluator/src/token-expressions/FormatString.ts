@@ -33,7 +33,6 @@ export class FormatString {
   static compile(format: string): TokenExpression[] {
     let start = 0;
     const tokens: TokenExpression[] = [];
-
     const len = format.length;
     while (true) {
       const i = format.indexOf('{', start);
@@ -43,7 +42,10 @@ export class FormatString {
         break;
       }
       // normal text in the gaps between curly braces
-      tokens.push(new ConstantTokenExpression(FormatString.unescape(format.substring(start, i)), start));
+      const text = FormatString.unescape(format.substring(start, i));
+      if (text.length > 0) {
+        tokens.push(new ConstantTokenExpression(text, start));
+      }
       if (format[i + 1] == '{') {
         // Double left brace - escape and continue
         tokens.push(new ConstantTokenExpression('{', start));

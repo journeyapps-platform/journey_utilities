@@ -13,6 +13,10 @@ describe('FormatString', () => {
 
     expect(FormatString.compile('Plain 123')).toEqual([new ConstantTokenExpression('Plain 123', 0)]);
 
+    // Missing end brace
+    expect(FormatString.compile('{person.name')).toEqual([new ConstantTokenExpression('{person.name', 0)]);
+
+    // Escaped value
     expect(FormatString.compile('{{person.name}}')).toEqual([new ConstantTokenExpression('{person.name}', 0)]);
   });
 
@@ -29,11 +33,13 @@ describe('FormatString', () => {
   });
 
   it('should compile mix of TokenExpressions', () => {
-    expect(FormatString.compile('{{some text}} more {serial} {something.other:format}')).toEqual([
+    expect(FormatString.compile('{{some text}} more {serial} {something.other:format} {$:foo("bar")}')).toEqual([
       new ConstantTokenExpression('{some text} more ', 0),
       new ShorthandTokenExpression('serial', 19),
       new ConstantTokenExpression(' ', 27),
-      new FormatShorthandTokenExpression('something.other', 'format', 28)
+      new FormatShorthandTokenExpression('something.other', 'format', 28),
+      new ConstantTokenExpression(' ', 52),
+      new FunctionTokenExpression('foo("bar")', 53)
     ]);
   });
 
