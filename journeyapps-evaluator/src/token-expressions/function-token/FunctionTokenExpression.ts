@@ -2,32 +2,45 @@ import { TokenExpression } from '../TokenExpression';
 import { ConstantTokenExpression } from '../ConstantTokenExpression';
 import { FormatStringScope } from '../../definitions/FormatStringScope';
 
+export interface FunctionTokenExpressionOptions {
+  name?: string;
+  start?: number;
+  arguments?: TokenExpression[];
+}
+
 export class FunctionTokenExpression extends TokenExpression {
   /**
    * Prefix for function token expressions.
    */
   static PREFIX = '$:';
 
-  constructor(expression: string, start?: number) {
+  private args: TokenExpression[];
+  private name: string;
+
+  constructor(expression: string, startOrOptions: number | FunctionTokenExpressionOptions = {}) {
     // remove indicator prefix from expression
     const prefix = FunctionTokenExpression.PREFIX;
-    let processedExpression = expression.trim();
-    if (processedExpression.indexOf(prefix) === 0) {
-      processedExpression = processedExpression.slice(prefix.length);
+    let expr = expression.trim();
+    if (expr.indexOf(prefix) === 0) {
+      expr = expr.slice(prefix.length);
     }
+    const options = typeof startOrOptions === 'number' ? { start: startOrOptions } : startOrOptions;
+    super(expr, options.start);
 
-    super(processedExpression, start);
+    this.args = options.arguments ?? [];
+    this.name = options.name ?? expr.slice(0, expr.indexOf('('));
   }
 
   isFunction() {
     return true;
   }
 
-  /**
-   * Name of function represented by function token expression.
-   */
   functionName(): string {
-    return this.expression.slice(0, this.expression.indexOf('('));
+    return this.name;
+  }
+
+  get arguments() {
+    return this.args;
   }
 
   /**
@@ -51,6 +64,8 @@ export class FunctionTokenExpression extends TokenExpression {
   }
 
   stringify() {
-    return `${FunctionTokenExpression.PREFIX}${this.expression}`;
+    return `${FunctionTokenExpression.PREFIX}${this.functionName()}(${this.arguments
+      .map((arg) => arg.stringify())
+      .join(', ')})`;
   }
 }

@@ -41,9 +41,9 @@ describe('ConstantTokenExpression', () => {
   });
 
   it('should construct PrimitiveConstantTokenExpression', () => {
-    const token = new PrimitiveConstantTokenExpression('true');
+    const token = new PrimitiveConstantTokenExpression(true);
     expect(token.isPrimitive).toEqual(true);
-    expect(token.expression).toEqual('true');
+    expect(token.expression).toEqual(true);
   });
 });
 

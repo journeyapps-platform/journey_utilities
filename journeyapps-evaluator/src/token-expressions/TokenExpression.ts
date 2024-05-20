@@ -22,12 +22,12 @@ export abstract class TokenExpression {
   abstract tokenEvaluatePromise(scope: FormatStringScope): Promise<string>;
 
   isConstant(): boolean {
-    // not constant by default
+    // not `constant` by default
     return false;
   }
 
   isShorthand(): boolean {
-    // not shorthand by default
+    // not `shorthand` by default
     return false;
   }
 

@@ -69,7 +69,7 @@ export class FormatString {
       // test for function token prefix
       if (spec.trim().indexOf(FunctionTokenExpression.PREFIX) === 0) {
         // function token because the function name has "$:" as prefix (leading whitespace is ignored)
-        tokens.push(new FunctionTokenExpression(spec, i));
+        tokens.push(new FunctionTokenExpression(spec, { start: i }));
       } else {
         // shorthand token
         const colon = spec.indexOf(':');

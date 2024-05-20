@@ -8,12 +8,4 @@ export class PrimitiveConstantTokenExpression extends ConstantTokenExpression {
     super(expression, start);
     this.isPrimitive = true;
   }
-
-  /**
-   * Concatenate a token to current token and return a new token.
-   */
-  concat(token: ConstantTokenExpression): PrimitiveConstantTokenExpression {
-    // start value should be start of first token
-    return new PrimitiveConstantTokenExpression(this.expression + token.expression, this.start);
-  }
 }
