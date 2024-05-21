@@ -1,17 +1,13 @@
 /**
  * Legacy function token expression.
  */
-import { TokenExpression } from '../TokenExpression';
+import { TokenExpression, TokenExpressionOptions } from '../TokenExpression';
 import { ConstantTokenExpression } from '../ConstantTokenExpression';
 import { FormatStringScope } from '../../definitions/FormatStringScope';
 
 export class LegacyFunctionTokenExpression extends TokenExpression {
-  constructor(expression: string, start?: number) {
-    super(expression, start);
-  }
-
-  isFunction() {
-    return true;
+  constructor(expression: string, options?: TokenExpressionOptions) {
+    super(expression, { ...options, isFunction: true });
   }
 
   /**
@@ -23,7 +19,7 @@ export class LegacyFunctionTokenExpression extends TokenExpression {
     if (includeEscapeTags) {
       constantExpression = '{' + constantExpression + '}';
     }
-    return new ConstantTokenExpression(constantExpression, this.start);
+    return new ConstantTokenExpression(constantExpression, { start: this.start });
   }
 
   tokenEvaluatePromise(scope: FormatStringScope): Promise<string> {

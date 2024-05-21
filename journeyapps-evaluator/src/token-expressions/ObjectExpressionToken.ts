@@ -1,0 +1,20 @@
+import { FormatStringScope } from '../definitions/FormatStringScope';
+import { TokenExpression, TokenExpressionOptions } from './TokenExpression';
+
+export interface ObjectExpressionTokenOptions extends TokenExpressionOptions {
+  properties?: Record<string, TokenExpression>;
+}
+
+export class ObjectExpressionToken extends TokenExpression<ObjectExpressionTokenOptions, object> {
+  constructor(expression: string, options?: ObjectExpressionTokenOptions) {
+    super(expression, { properties: {}, ...options });
+  }
+
+  get properties(): Record<string, TokenExpression> {
+    return this.options.properties;
+  }
+
+  async tokenEvaluatePromise(scope: FormatStringScope) {
+    return Promise.resolve({});
+  }
+}

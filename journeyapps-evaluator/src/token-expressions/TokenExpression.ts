@@ -1,41 +1,53 @@
 import { FormatStringScope } from '../definitions/FormatStringScope';
 
-/**
- * Abstract base token expression class.
- */
-export abstract class TokenExpression {
-  expression: string;
-  start: number | undefined;
-  format: string | null;
-  isPrimitive: boolean;
+export interface TokenExpressionOptions {
+  start?: number;
+  format?: string;
+  isPrimitive?: boolean;
+  isConstant?: boolean;
+  isShorthand?: boolean;
+  /**
+   * If the token expression is a function that needs to be called or not.
+   */
+  isFunction?: boolean;
+}
 
-  protected constructor(expression: string, start?: number) {
+export abstract class TokenExpression<O extends TokenExpressionOptions = TokenExpressionOptions, V extends any = any> {
+  expression: string;
+  options: O;
+
+  protected constructor(expression: string, options?: O) {
     if (this.constructor === TokenExpression) {
       throw new Error('Cannot instantiate abstract TokenExpression class!');
     }
     this.expression = expression;
-    this.start = start;
-    this.format = null;
-    this.isPrimitive = false;
+    this.options = { isPrimitive: false, isConstant: false, isShorthand: false, isFunction: false, ...options };
   }
 
-  abstract tokenEvaluatePromise(scope: FormatStringScope): Promise<string>;
+  abstract tokenEvaluatePromise(scope: FormatStringScope): Promise<V>;
+
+  get start(): number | null {
+    return this.options.start;
+  }
+
+  get format(): string {
+    return this.options.format;
+  }
+
+  get isPrimitive(): boolean {
+    return this.options.isPrimitive;
+  }
 
   isConstant(): boolean {
-    // not `constant` by default
-    return false;
+    return this.options.isConstant;
   }
 
   isShorthand(): boolean {
-    // not `shorthand` by default
-    return false;
+    return this.options.isShorthand;
   }
 
-  /**
-   * If the token expression is a function that needs to be called or not.
-   */
   isFunction(): boolean {
-    return false;
+    return this.options.isFunction;
   }
 
   stringify() {

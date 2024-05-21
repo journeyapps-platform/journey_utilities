@@ -26,19 +26,27 @@ import {
 } from './token-expressions';
 
 /**
- * Matches format specifiers in expressions in the form of `{value:n}`, `{value:0n}` or `{value:.Xf}`
- * NOTE: only matches format specifiers that are inside a block statement
+ * Matches format specifiers in expressions in the form of `value:n`, `value:0n` or `value:.Xf`
  */
-const MATCH_FORMAT_SPECIFIER = /(?<!['"])(?<!\{)\{[^{}]*[^\$](:(\.?\d+f?))(?=[ }])[^{}]*\}(?!\})(?!['"])/gm;
+const MATCH_FORMAT_SPECIFIER = /(?<!['"])[^{}]*[^\$](:(\.?\d+f?)[^{}]*)(?!['"])/;
+const ENCLOSED_IN_CURLY_BRACKETS = /^{.*}$/;
 
 export class TokenExpressionParser {
   static FORMAT_SPECIFIER_IDENTIFIER = '$format';
 
   private preprocess(input: string): string {
-    // Preprocess format specifiers
-    return input.replace(MATCH_FORMAT_SPECIFIER, (match, group1, group2) => {
-      return match.replace(group1, `; ${TokenExpressionParser.FORMAT_SPECIFIER_IDENTIFIER} = "${group2}"`);
-    });
+    const match = input.match(MATCH_FORMAT_SPECIFIER);
+    if (match) {
+      /** Preprocess format specifiers
+       * value:n -> {value; $format = "n"}
+       */
+      const replaced = input.replace(
+        match[1],
+        `; ${TokenExpressionParser.FORMAT_SPECIFIER_IDENTIFIER} = "${match[2]}"`
+      );
+      return ENCLOSED_IN_CURLY_BRACKETS.test(replaced) ? replaced : `{${replaced}}`;
+    }
+    return input;
   }
 
   parse<T extends TokenExpression = TokenExpression>(source: string): T | null {
@@ -49,7 +57,7 @@ export class TokenExpressionParser {
       traverse(ast, {
         Program: (path) => {
           const node = path.node.body[0] ?? path.node.directives[0];
-          result = this.nodeToTokenExpression(node, source);
+          result = this.nodeToTokenExpression(node, preprocessed);
         }
       });
     } catch (e) {
@@ -73,14 +81,17 @@ export class TokenExpressionParser {
         return null;
       }
       if (node.extra?.format) {
-        return new FormatShorthandTokenExpression(node.name, node.extra?.format as string, node.start);
+        return new FormatShorthandTokenExpression(node.name, {
+          format: node.extra?.format as string,
+          start: node.start
+        });
       }
-      return new ShorthandTokenExpression(node.name, node.start);
+      return new ShorthandTokenExpression(node.name, { start: node.start });
     }
     if (isMemberExpression(node)) {
       const exp = source.slice(node.start, node.end);
       if (node.extra?.format) {
-        return new FormatShorthandTokenExpression(exp, node.extra?.format as string, node.start);
+        return new FormatShorthandTokenExpression(exp, { format: node.extra?.format as string, start: node.start });
       }
       return new ShorthandTokenExpression(exp);
     }
@@ -109,9 +120,9 @@ export class TokenExpressionParser {
         return this.nodeToTokenExpression(child, source);
       }
       if (isExpressionStatement(body)) {
-        const { expression } = body;
-        expression.extra = { ...expression.extra, parent: node, format: this.getFormatSpecifier(formatStm) };
-        return this.nodeToTokenExpression(expression, source);
+        const { expression: child } = body;
+        child.extra = { ...child.extra, parent: node, format: this.getFormatSpecifier(formatStm) };
+        return this.nodeToTokenExpression(child, source);
       }
     }
     if (isLabeledStatement(node)) {

@@ -1,12 +1,13 @@
 import { AttributeValidationError } from '@journeyapps/core-xml';
-import { FormatStringScope } from '../definitions/FormatStringScope';
-import { TypeInterface } from '../definitions/TypeInterface';
-import { extract, formatValue } from '../tools';
-import { ConstantTokenExpression } from './ConstantTokenExpression';
-import { FormatShorthandTokenExpression } from './FormatShorthandTokenExpression';
-import { FunctionTokenExpression } from './function-token/FunctionTokenExpression';
-import { ShorthandTokenExpression } from './ShorthandTokenExpression';
-import { TokenExpression } from './TokenExpression';
+import { FormatStringScope } from './definitions/FormatStringScope';
+import { TypeInterface } from './definitions/TypeInterface';
+import { TokenExpressionParser } from './TokenExpressionParser';
+import { extract, formatValue } from './tools';
+import { ConstantTokenExpression } from './token-expressions/ConstantTokenExpression';
+import { FormatShorthandTokenExpression } from './token-expressions/FormatShorthandTokenExpression';
+import { FunctionTokenExpression } from './token-expressions/function-token/FunctionTokenExpression';
+import { ShorthandTokenExpression } from './token-expressions/ShorthandTokenExpression';
+import { TokenExpression } from './token-expressions/TokenExpression';
 
 /**
  * Construct a new format string expression.
@@ -30,33 +31,36 @@ export class FormatString {
   /**
    * Compile a format string expression into tokens.
    */
-  static compile(format: string): TokenExpression[] {
+  static compile(expression: string): TokenExpression[] {
     let start = 0;
     const tokens: TokenExpression[] = [];
-    const len = format.length;
+    const len = expression.length;
+
+    const parser = new TokenExpressionParser();
+
     while (true) {
-      const i = format.indexOf('{', start);
+      const i = expression.indexOf('{', start);
       if (i < 0 || i == len - 1) {
         // end of string - everything is normal text
-        tokens.push(new ConstantTokenExpression(FormatString.unescape(format.substring(start)), start));
+        tokens.push(new ConstantTokenExpression(FormatString.unescape(expression.substring(start)), start));
         break;
       }
       // normal text in the gaps between curly braces
-      const text = FormatString.unescape(format.substring(start, i));
+      const text = FormatString.unescape(expression.substring(start, i));
       if (text.length > 0) {
         tokens.push(new ConstantTokenExpression(text, start));
       }
-      if (format[i + 1] == '{') {
+      if (expression[i + 1] == '{') {
         // Double left brace - escape and continue
         tokens.push(new ConstantTokenExpression('{', start));
         start = i + 2;
         continue;
       }
 
-      const parsedBraces = FormatString.parseEnclosingBraces(format.substring(i));
+      const parsedBraces = FormatString.parseEnclosingBraces(expression.substring(i));
       if (!parsedBraces) {
         // Brace pair faulty (no closing brace), return as a constant
-        tokens.push(new ConstantTokenExpression(format.substring(i), start));
+        tokens.push(new ConstantTokenExpression(expression.substring(i), start));
         break;
       }
 
@@ -64,21 +68,27 @@ export class FormatString {
       start = i + parsedBraces.length + 1;
 
       // `spec` is everything between the curly braces "{" and "}".
-      const spec = format.substring(i + 1, i + parsedBraces.length);
+      const spec = expression.substring(i + 1, i + parsedBraces.length);
 
-      // test for function token prefix
-      if (spec.trim().indexOf(FunctionTokenExpression.PREFIX) === 0) {
-        // function token because the function name has "$:" as prefix (leading whitespace is ignored)
-        tokens.push(new FunctionTokenExpression(spec, { start: i }));
-      } else {
-        // shorthand token
-        const colon = spec.indexOf(':');
-        if (colon == -1) {
-          tokens.push(new ShorthandTokenExpression(spec, i));
-        } else {
-          tokens.push(new FormatShorthandTokenExpression(spec.substring(0, colon), spec.substring(colon + 1), i));
-        }
+      const parsedToken = parser.parse(spec);
+      if (parsedToken) {
+        parsedToken.start = i;
+        tokens.push(parsedToken);
       }
+
+      // // test for function token prefix
+      // if (spec.trim().indexOf(FunctionTokenExpression.PREFIX) === 0) {
+      //   // function token because the function name has "$:" as prefix (leading whitespace is ignored)
+      //   tokens.push(new FunctionTokenExpression(spec, { start: i }));
+      // } else {
+      //   // shorthand token
+      //   const colon = spec.indexOf(':');
+      //   if (colon == -1) {
+      //     tokens.push(new ShorthandTokenExpression(spec, i));
+      //   } else {
+      //     tokens.push(new FormatShorthandTokenExpression(spec.substring(0, colon), spec.substring(colon + 1), i));
+      //   }
+      // }
     }
 
     // concatenate any neighbouring constant token expressions

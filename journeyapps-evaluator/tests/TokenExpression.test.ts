@@ -22,7 +22,7 @@ describe('TokenExpression', () => {
 
 describe('ConstantTokenExpression', () => {
   it('should construct a TokenExpression', () => {
-    const token = new ConstantTokenExpression('XYZ', 3);
+    const token = new ConstantTokenExpression('XYZ', { start: 3 });
     expect(token).toBeInstanceOf(TokenExpression);
     expect(token.expression).toEqual('XYZ');
     expect(token.valueOf()).toEqual('XYZ');
@@ -34,7 +34,7 @@ describe('ConstantTokenExpression', () => {
   });
 
   it('should concat expression', () => {
-    const token = new ConstantTokenExpression('foo', 3);
+    const token = new ConstantTokenExpression('foo', { start: 3 });
     const token2 = token.concat(new ConstantTokenExpression('bar'));
     expect(token2.expression).toEqual('foobar');
     expect(token2.start).toEqual(3);
@@ -49,7 +49,7 @@ describe('ConstantTokenExpression', () => {
 
 describe('ShorthandTokenExpression', () => {
   it('should construct a TokenExpression', () => {
-    const token = new ShorthandTokenExpression('person.name', 3);
+    const token = new ShorthandTokenExpression('person.name', { start: 3 });
     expect(token).toBeInstanceOf(TokenExpression);
     expect(token.expression).toEqual('person.name');
     expect(token.start).toEqual(3);
@@ -62,7 +62,7 @@ describe('ShorthandTokenExpression', () => {
 
 describe('FormatShorthandTokenExpression', () => {
   it('should construct a TokenExpression', () => {
-    const token = new FormatShorthandTokenExpression('product.price', '.2f', 3);
+    const token = new FormatShorthandTokenExpression('product.price', { format: '.2f', start: 3 });
     expect(token).toBeInstanceOf(TokenExpression);
     expect(token.expression).toEqual('product.price');
     expect(token.start).toEqual(3);

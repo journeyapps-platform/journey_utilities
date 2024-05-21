@@ -1,18 +1,16 @@
 import { FormatStringScope } from '../definitions/FormatStringScope';
 import { TypeInterface } from '../definitions/TypeInterface';
 import { formatValue } from '../tools';
-import { TokenExpression } from './TokenExpression';
+import { TokenExpression, TokenExpressionOptions } from './TokenExpression';
 
 /**
  * Shorthand token expression.
  */
-export class ShorthandTokenExpression extends TokenExpression {
-  constructor(expression: string, start?: number) {
-    super(expression, start);
-  }
-
-  isShorthand() {
-    return true;
+export class ShorthandTokenExpression<
+  O extends TokenExpressionOptions = TokenExpressionOptions
+> extends TokenExpression<O> {
+  constructor(expression: string, options?: O) {
+    super(expression, { ...options, isShorthand: true });
   }
 
   async tokenEvaluatePromise(scope: FormatStringScope) {

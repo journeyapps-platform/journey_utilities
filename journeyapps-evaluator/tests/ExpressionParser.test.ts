@@ -100,14 +100,14 @@ describe('Expression Parsing ', () => {
       '(function(test, consequent, alternate) { return test ? consequent : alternate; })(user, "Yes", "No")'
     );
     expect(result.arguments).toEqual([
-      new ShorthandTokenExpression('user', 3),
+      new ShorthandTokenExpression('user', { start: 3 }),
       new ConstantTokenExpression('Yes'),
       new ConstantTokenExpression('No')
     ]);
   });
 
   it('should parse format specifiers', ({ parser }) => {
-    let result = parser.parse('{value:05}');
+    let result = parser.parse('value:05');
     expect(result).toBeInstanceOf(FormatShorthandTokenExpression);
     expect(result.expression).toEqual('value');
     expect(result.format).toEqual('05');

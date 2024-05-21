@@ -1,16 +1,12 @@
 /**
  * Constant token expression.
  */
-import { TokenExpression } from './TokenExpression';
+import { TokenExpression, TokenExpressionOptions } from './TokenExpression';
 import { FormatStringScope } from '../definitions/FormatStringScope';
 
 export class ConstantTokenExpression extends TokenExpression {
-  constructor(expression: string, start?: number) {
-    super(expression, start);
-  }
-
-  isConstant() {
-    return true;
+  constructor(expression: string, options?: TokenExpressionOptions) {
+    super(expression, { ...options, isConstant: true });
   }
 
   /**
@@ -18,7 +14,7 @@ export class ConstantTokenExpression extends TokenExpression {
    */
   concat(token: ConstantTokenExpression): ConstantTokenExpression {
     // start value should be start of first token
-    return new ConstantTokenExpression(this.expression.concat(token.expression), this.start);
+    return new ConstantTokenExpression(this.expression.concat(token.expression), { start: this.start });
   }
 
   /**
@@ -28,7 +24,7 @@ export class ConstantTokenExpression extends TokenExpression {
     return this.expression;
   }
 
-  async tokenEvaluatePromise(scope: FormatStringScope): Promise<string> {
+  async tokenEvaluatePromise(scope: FormatStringScope) {
     return this.expression;
   }
 }

@@ -1,46 +1,37 @@
-import { TokenExpression } from '../TokenExpression';
+import { TokenExpression, TokenExpressionOptions } from '../TokenExpression';
 import { ConstantTokenExpression } from '../ConstantTokenExpression';
 import { FormatStringScope } from '../../definitions/FormatStringScope';
 
-export interface FunctionTokenExpressionOptions {
+export interface FunctionTokenExpressionOptions extends TokenExpressionOptions {
   name?: string;
-  start?: number;
   arguments?: TokenExpression[];
 }
 
-export class FunctionTokenExpression extends TokenExpression {
+export class FunctionTokenExpression extends TokenExpression<FunctionTokenExpressionOptions> {
   /**
    * Prefix for function token expressions.
    */
   static PREFIX = '$:';
 
-  private args: TokenExpression[];
-  private name: string;
-
-  constructor(expression: string, startOrOptions: number | FunctionTokenExpressionOptions = {}) {
+  constructor(expression: string, options: FunctionTokenExpressionOptions = {}) {
     // remove indicator prefix from expression
     const prefix = FunctionTokenExpression.PREFIX;
     let expr = expression.trim();
     if (expr.indexOf(prefix) === 0) {
       expr = expr.slice(prefix.length);
     }
-    const options = typeof startOrOptions === 'number' ? { start: startOrOptions } : startOrOptions;
-    super(expr, options.start);
+    options.name = options.name ?? expr.slice(0, expr.indexOf('('));
+    options.arguments = options.arguments ?? [];
 
-    this.args = options.arguments ?? [];
-    this.name = options.name ?? expr.slice(0, expr.indexOf('('));
-  }
-
-  isFunction() {
-    return true;
-  }
-
-  functionName(): string {
-    return this.name;
+    super(expr, { ...options, isFunction: true });
   }
 
   get arguments() {
-    return this.args;
+    return this.options.arguments;
+  }
+
+  functionName(): string {
+    return this.options.name;
   }
 
   /**
@@ -52,15 +43,11 @@ export class FunctionTokenExpression extends TokenExpression {
     if (includeEscapeTags) {
       constantExpression = '{' + constantExpression + '}';
     }
-    return new ConstantTokenExpression(constantExpression, this.start);
+    return new ConstantTokenExpression(constantExpression, { start: this.start });
   }
 
-  async tokenEvaluatePromise(scope: FormatStringScope): Promise<string> {
-    const value = await scope.evaluateFunctionExpression(this.expression);
-    // FIXME: FunctionTokenExpression is not only used for FormatStrings, but
-    // also for other attributes, e.g. show-if. For those cases, we need the
-    // original value, not a string, so we can't convert to a string here.
-    return value;
+  async tokenEvaluatePromise(scope: FormatStringScope) {
+    return scope.evaluateFunctionExpression(this.expression);
   }
 
   stringify() {

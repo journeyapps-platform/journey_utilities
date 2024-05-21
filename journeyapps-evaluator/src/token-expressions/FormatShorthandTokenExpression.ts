@@ -2,12 +2,16 @@
  * Shorthand token expression with format specifier.
  */
 import { ShorthandTokenExpression } from './ShorthandTokenExpression';
+import { TokenExpressionOptions } from './TokenExpression';
 
-export class FormatShorthandTokenExpression extends ShorthandTokenExpression {
-  constructor(expression: string, format: string, start?: number) {
+export interface FormatShorthandTokenExpressionOptions extends TokenExpressionOptions {
+  format: string;
+}
+
+export class FormatShorthandTokenExpression extends ShorthandTokenExpression<FormatShorthandTokenExpressionOptions> {
+  constructor(expression: string, options: FormatShorthandTokenExpressionOptions) {
     // wraps ShorthandTokenExpression with format
-    super(expression, start);
-    this.format = format;
+    super(expression, options);
   }
 
   toString() {
