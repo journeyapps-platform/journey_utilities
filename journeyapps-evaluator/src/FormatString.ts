@@ -1,13 +1,9 @@
 import { AttributeValidationError } from '@journeyapps/core-xml';
 import { FormatStringScope } from './definitions/FormatStringScope';
 import { TypeInterface } from './definitions/TypeInterface';
-import { TokenExpressionParser } from './TokenExpressionParser';
+import { TokenExpressionParser } from './parser/TokenExpressionParser';
+import { ConstantTokenExpression, FunctionTokenExpression, TokenExpression } from './token-expressions';
 import { extract, formatValue } from './tools';
-import { ConstantTokenExpression } from './token-expressions/ConstantTokenExpression';
-import { FormatShorthandTokenExpression } from './token-expressions/FormatShorthandTokenExpression';
-import { FunctionTokenExpression } from './token-expressions/function-token/FunctionTokenExpression';
-import { ShorthandTokenExpression } from './token-expressions/ShorthandTokenExpression';
-import { TokenExpression } from './token-expressions/TokenExpression';
 
 /**
  * Construct a new format string expression.
@@ -42,17 +38,17 @@ export class FormatString {
       const i = expression.indexOf('{', start);
       if (i < 0 || i == len - 1) {
         // end of string - everything is normal text
-        tokens.push(new ConstantTokenExpression(FormatString.unescape(expression.substring(start)), start));
+        tokens.push(new ConstantTokenExpression(FormatString.unescape(expression.substring(start)), { start }));
         break;
       }
       // normal text in the gaps between curly braces
       const text = FormatString.unescape(expression.substring(start, i));
       if (text.length > 0) {
-        tokens.push(new ConstantTokenExpression(text, start));
+        tokens.push(new ConstantTokenExpression(text, { start }));
       }
       if (expression[i + 1] == '{') {
         // Double left brace - escape and continue
-        tokens.push(new ConstantTokenExpression('{', start));
+        tokens.push(new ConstantTokenExpression('{', { start }));
         start = i + 2;
         continue;
       }
@@ -60,7 +56,7 @@ export class FormatString {
       const parsedBraces = FormatString.parseEnclosingBraces(expression.substring(i));
       if (!parsedBraces) {
         // Brace pair faulty (no closing brace), return as a constant
-        tokens.push(new ConstantTokenExpression(expression.substring(i), start));
+        tokens.push(new ConstantTokenExpression(expression.substring(i), { start }));
         break;
       }
 

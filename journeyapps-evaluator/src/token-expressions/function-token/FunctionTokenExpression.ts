@@ -1,5 +1,5 @@
 import { TokenExpression, TokenExpressionOptions } from '../TokenExpression';
-import { ConstantTokenExpression } from '../ConstantTokenExpression';
+import { ConstantTokenExpression } from '../constant/ConstantTokenExpression';
 import { FormatStringScope } from '../../definitions/FormatStringScope';
 
 export interface FunctionTokenExpressionOptions extends TokenExpressionOptions {

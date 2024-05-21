@@ -51,7 +51,9 @@ export function actionableTokenExpression(
   if (colon == -1) {
     return new ShorthandTokenExpression(expression);
   }
-  return new FormatShorthandTokenExpression(expression.substring(0, colon), expression.substring(colon + 1));
+  return new FormatShorthandTokenExpression(expression.substring(0, colon), {
+    format: expression.substring(colon + 1)
+  });
 }
 
 /**

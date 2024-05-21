@@ -7,6 +7,7 @@ import {
   PrimitiveConstantTokenExpression,
   ShorthandTokenExpression
 } from '../src';
+import { ObjectExpressionToken } from '../src/token-expressions/ObjectExpressionToken';
 
 describe('FormatString', () => {
   it('should compile ConstantTokenExpressions', () => {
@@ -59,18 +60,48 @@ describe('FormatString', () => {
 
     it('with an object argument', () => {
       expect(FormatString.compile('{ $:foo({myObject: 2}) }')).toEqual([
-        new FunctionTokenExpression('$:foo({myObject: 2})', { start: 0 })
+        new FunctionTokenExpression('$:foo({myObject: 2})', {
+          start: 0,
+          arguments: [
+            new ObjectExpressionToken('{myObject: 2}', {
+              properties: { myObject: new PrimitiveConstantTokenExpression(2) }
+            })
+          ]
+        })
       ]);
 
-      // expect(FormatString.compile('{ $:foo({myObject: {b: 1}}) }')).toEqual([
-      //   new FunctionTokenExpression('$:foo({myObject: {b: 1}})', 0)
-      // ]);
-      //
-      // expect(FormatString.compile("{ $:fn({a: '}'}) }")).toEqual([new FunctionTokenExpression("$:fn({a: '}'})", 0)]);
-      //
-      // expect(FormatString.compile("{ $:fn({a: '{', b: '}'}) }")).toEqual([
-      //   new FunctionTokenExpression("$:fn({a: '{', b: '}'})", 0)
-      // ]);
+      expect(FormatString.compile('{ $:foo({myObject: {b: 1}}) }')).toEqual([
+        new FunctionTokenExpression('$:foo({myObject: {b: 1}})', {
+          start: 0,
+          arguments: [
+            new ObjectExpressionToken('{myObject: {b: 1}}', {
+              properties: {
+                myObject: new ObjectExpressionToken('{b: 1}', {
+                  properties: { b: new PrimitiveConstantTokenExpression(1) }
+                })
+              }
+            })
+          ]
+        })
+      ]);
+
+      expect(FormatString.compile("{ $:fn({a: '}'}) }")).toEqual([
+        new FunctionTokenExpression("$:fn({a: '}'})", {
+          start: 0,
+          arguments: [new ObjectExpressionToken("{a: '}'}", { properties: { a: new ConstantTokenExpression('}') } })]
+        })
+      ]);
+
+      expect(FormatString.compile("{ $:fn({a: '{', b: '}'}) }")).toEqual([
+        new FunctionTokenExpression("$:fn({a: '{', b: '}'})", {
+          start: 0,
+          arguments: [
+            new ObjectExpressionToken("{a: '{', b: '}'}", {
+              properties: { a: new ConstantTokenExpression('{'), b: new ConstantTokenExpression('}') }
+            })
+          ]
+        })
+      ]);
     });
 
     it('with a "{" argument', () => {

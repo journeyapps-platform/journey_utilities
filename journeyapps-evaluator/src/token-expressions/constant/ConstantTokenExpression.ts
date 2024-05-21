@@ -1,8 +1,8 @@
 /**
  * Constant token expression.
  */
-import { TokenExpression, TokenExpressionOptions } from './TokenExpression';
-import { FormatStringScope } from '../definitions/FormatStringScope';
+import { TokenExpression, TokenExpressionOptions } from '../TokenExpression';
+import { FormatStringScope } from '../../definitions/FormatStringScope';
 
 export class ConstantTokenExpression extends TokenExpression {
   constructor(expression: string, options?: TokenExpressionOptions) {

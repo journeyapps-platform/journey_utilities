@@ -2,7 +2,7 @@
  * Legacy function token expression.
  */
 import { TokenExpression, TokenExpressionOptions } from '../TokenExpression';
-import { ConstantTokenExpression } from '../ConstantTokenExpression';
+import { ConstantTokenExpression } from '../constant/ConstantTokenExpression';
 import { FormatStringScope } from '../../definitions/FormatStringScope';
 
 export class LegacyFunctionTokenExpression extends TokenExpression {

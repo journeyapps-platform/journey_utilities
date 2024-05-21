@@ -30,8 +30,12 @@ export abstract class TokenExpression<O extends TokenExpressionOptions = TokenEx
     return this.options.start;
   }
 
-  get format(): string {
-    return this.options.format;
+  set start(start: number) {
+    this.options.start = start;
+  }
+
+  get format(): string | null {
+    return this.options.format ?? null;
   }
 
   get isPrimitive(): boolean {

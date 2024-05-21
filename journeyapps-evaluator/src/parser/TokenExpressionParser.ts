@@ -1,6 +1,6 @@
 import * as babelParser from '@babel/parser';
-import traverse, { Node } from '@babel/traverse';
 import {
+  Node,
   ConditionalExpression,
   isAssignmentExpression,
   isBlockStatement,
@@ -13,6 +13,8 @@ import {
   isLabeledStatement,
   isLiteral,
   isMemberExpression,
+  isObjectExpression,
+  isObjectProperty,
   isStringLiteral,
   Statement
 } from '@babel/types';
@@ -23,7 +25,8 @@ import {
   PrimitiveConstantTokenExpression,
   ShorthandTokenExpression,
   TokenExpression
-} from './token-expressions';
+} from '../token-expressions';
+import { ObjectExpressionToken } from '../token-expressions/ObjectExpressionToken';
 
 /**
  * Matches format specifiers in expressions in the form of `value:n`, `value:0n` or `value:.Xf`
@@ -38,7 +41,7 @@ export class TokenExpressionParser {
     const match = input.match(MATCH_FORMAT_SPECIFIER);
     if (match) {
       /** Preprocess format specifiers
-       * value:n -> {value; $format = "n"}
+       * value:0n -> {value; $format = "0n"}
        */
       const replaced = input.replace(
         match[1],
@@ -49,18 +52,17 @@ export class TokenExpressionParser {
     return input;
   }
 
+  // TODO: Better lifecycle control and dispose it afterwards
   parse<T extends TokenExpression = TokenExpression>(source: string): T | null {
     let result: TokenExpression | null = null;
     const preprocessed = this.preprocess(source);
     try {
       const ast = babelParser.parse(preprocessed);
-      traverse(ast, {
-        Program: (path) => {
-          const node = path.node.body[0] ?? path.node.directives[0];
-          result = this.nodeToTokenExpression(node, preprocessed);
-        }
-      });
+      const { program } = ast;
+      const node = program.body[0] ?? program.directives[0];
+      result = this.nodeToTokenExpression(node, preprocessed);
     } catch (e) {
+      // TODO: Better error handling
       console.error(e);
     }
     return result as T;
@@ -102,6 +104,15 @@ export class TokenExpressionParser {
     }
     if (isConditionalExpression(node)) {
       return this.parseConditionalExpression(node, source);
+    }
+    if (isObjectExpression(node)) {
+      const props = {};
+      for (const prop of node.properties) {
+        if (isObjectProperty(prop) && isIdentifier(prop.key)) {
+          props[prop.key.name] = this.nodeToTokenExpression(prop.value, source);
+        }
+      }
+      return new ObjectExpressionToken(source.slice(node.start, node.end), { properties: props });
     }
     if (isBlockStatement(node)) {
       // If parent is also a BlockStatement means we have an escaped FormatString, e.g. {{value}}

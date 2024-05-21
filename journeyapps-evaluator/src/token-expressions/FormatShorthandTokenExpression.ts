@@ -8,6 +8,9 @@ export interface FormatShorthandTokenExpressionOptions extends TokenExpressionOp
   format: string;
 }
 
+/**
+ * asset.price:.2f
+ */
 export class FormatShorthandTokenExpression extends ShorthandTokenExpression<FormatShorthandTokenExpressionOptions> {
   constructor(expression: string, options: FormatShorthandTokenExpressionOptions) {
     // wraps ShorthandTokenExpression with format
