@@ -13,17 +13,15 @@ export class FunctionTokenExpression extends TokenExpression<FunctionTokenExpres
    */
   static PREFIX = '$:';
 
-  constructor(expression: string, options: FunctionTokenExpressionOptions = {}) {
+  constructor(expression: string, options?: FunctionTokenExpressionOptions) {
+    super(expression.trim(), { ...options, isFunction: true });
     // remove indicator prefix from expression
     const prefix = FunctionTokenExpression.PREFIX;
-    let expr = expression.trim();
-    if (expr.indexOf(prefix) === 0) {
-      expr = expr.slice(prefix.length);
+    if (this.expression.indexOf(prefix) === 0) {
+      this.expression = this.expression.slice(prefix.length);
     }
-    options.name = options.name ?? expr.slice(0, expr.indexOf('('));
-    options.arguments = options.arguments ?? [];
-
-    super(expr, { ...options, isFunction: true });
+    this.options.name = this.options.name ?? this.expression.slice(0, this.expression.indexOf('('));
+    this.options.arguments = this.options.arguments ?? [];
   }
 
   get arguments() {
@@ -51,8 +49,6 @@ export class FunctionTokenExpression extends TokenExpression<FunctionTokenExpres
   }
 
   stringify() {
-    return `${FunctionTokenExpression.PREFIX}${this.functionName()}(${this.arguments
-      .map((arg) => arg.stringify())
-      .join(', ')})`;
+    return `${this.functionName()}(${this.arguments.map((arg) => arg.stringify()).join(', ')})`;
   }
 }

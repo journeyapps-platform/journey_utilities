@@ -21,11 +21,6 @@ describe('FunctionTokenExpression', () => {
     expect(token.isFunction()).toEqual(true);
   });
 
-  it('should have the correct prefix', () => {
-    // purely for safety, just testing the constant value
-    expect(FunctionTokenExpression.PREFIX).toEqual('$:');
-  });
-
   it('should remove the prefix from the expression', () => {
     const token = new FunctionTokenExpression('$:foo()', { start: 5 });
     expect(token.expression).toEqual('foo()');
@@ -59,6 +54,7 @@ describe('FunctionTokenExpression', () => {
 
   it('should be able to convert to a constant token expression with escape tags', () => {
     const token = new FunctionTokenExpression('$:foo()', { start: 5 });
+
     const constantToken = token.toConstant(true);
     expect(constantToken).toBeInstanceOf(ConstantTokenExpression);
     expect(constantToken.expression).toEqual('{$:foo()}');

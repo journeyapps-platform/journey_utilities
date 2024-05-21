@@ -12,7 +12,7 @@ export class MemberExpressionParser extends AbstractExpressionParser<MemberExpre
     const exp = event.source.slice(node.start, node.end);
     const format: string = node.extra?.format as string;
     if (!!format) {
-      return new FormatShorthandTokenExpression(exp, { format: format, start: node.start });
+      return new FormatShorthandTokenExpression(exp, { format: format });
     }
     return new ShorthandTokenExpression(exp);
   }

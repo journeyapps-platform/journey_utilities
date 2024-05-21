@@ -100,7 +100,7 @@ describe('Expression Parsing ', () => {
       '(function(test, consequent, alternate) { return test ? consequent : alternate; })(user, "Yes", "No")'
     );
     expect(result.arguments).toEqual([
-      new ShorthandTokenExpression('user', { start: 3 }),
+      new ShorthandTokenExpression('user'),
       new ConstantTokenExpression('Yes'),
       new ConstantTokenExpression('No')
     ]);

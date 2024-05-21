@@ -12,11 +12,10 @@ export class IdentifierExpressionParser extends AbstractExpressionParser<Identif
     }
     if (node.extra?.format) {
       return new FormatShorthandTokenExpression(node.name, {
-        format: node.extra?.format as string,
-        start: node.start
+        format: node.extra?.format as string
       });
     }
-    return new ShorthandTokenExpression(node.name, { start: node.start });
+    return new ShorthandTokenExpression(node.name);
   }
 }
 

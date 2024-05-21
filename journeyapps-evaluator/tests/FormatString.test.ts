@@ -131,7 +131,10 @@ describe('FormatString', () => {
 
     it('with mix of TokenExpressions', () => {
       expect(FormatString.compile('{$:foo(2)} {b}')).toEqual([
-        new FunctionTokenExpression('$:foo(2)', { start: 0, arguments: [new PrimitiveConstantTokenExpression(2)] }),
+        new FunctionTokenExpression('$:foo(2)', {
+          start: 0,
+          arguments: [new PrimitiveConstantTokenExpression(2)]
+        }),
         new ConstantTokenExpression(' ', { start: 10 }),
         new ShorthandTokenExpression('b', { start: 11 })
       ]);

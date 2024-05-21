@@ -24,6 +24,15 @@ export class TokenExpressionParser {
   factories: AbstractExpressionParserFactory[];
   static FORMAT_SPECIFIER_IDENTIFIER = '$format';
 
+  // Implement static instance getter
+  static instance: TokenExpressionParser;
+  static get(): TokenExpressionParser {
+    if (!this.instance) {
+      this.instance = new TokenExpressionParser();
+    }
+    return this.instance;
+  }
+
   constructor() {
     this.factories = [];
     this.registerFactory(new BlockStatementParserFactory());
@@ -67,6 +76,7 @@ export class TokenExpressionParser {
     return null;
   }
 
+  // TODO Implement preprocessor system, most likely as part of the ExpressionParserFactory
   private preprocess(input: string): string {
     const match = input.match(MATCH_FORMAT_SPECIFIER);
     if (match) {

@@ -12,7 +12,10 @@ export class CallExpressionParser extends AbstractExpressionParser<CallExpressio
     const { source, parseNode } = event;
     const name = source.slice(node.callee.start, node.callee.end);
     const args = node.arguments.map((arg) => parseNode(arg, source));
-    return new FunctionTokenExpression(source.slice(node.start, node.end), { name: name, arguments: args });
+    return new FunctionTokenExpression(source.slice(node.start, node.end), {
+      name: name,
+      arguments: args
+    });
   }
 }
 

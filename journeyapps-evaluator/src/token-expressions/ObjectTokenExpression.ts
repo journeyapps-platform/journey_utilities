@@ -19,6 +19,6 @@ export class ObjectTokenExpression extends TokenExpression<ObjectExpressionToken
   }
 
   async tokenEvaluatePromise(scope: FormatStringScope) {
-    return Promise.resolve({});
+    return scope.evaluateFunctionExpression(this.expression);
   }
 }

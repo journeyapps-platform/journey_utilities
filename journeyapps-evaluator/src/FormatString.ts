@@ -28,11 +28,11 @@ export class FormatString {
    * Compile a format string expression into tokens.
    */
   static compile(expression: string): TokenExpression[] {
+    const parser = TokenExpressionParser.get();
+
     let start = 0;
     const tokens: TokenExpression[] = [];
     const len = expression.length;
-
-    const parser = new TokenExpressionParser();
 
     while (true) {
       const i = expression.indexOf('{', start);
