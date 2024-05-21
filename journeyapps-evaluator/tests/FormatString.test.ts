@@ -4,10 +4,10 @@ import {
   FormatShorthandTokenExpression,
   FormatString,
   FunctionTokenExpression,
+  ObjectTokenExpression,
   PrimitiveConstantTokenExpression,
   ShorthandTokenExpression
 } from '../src';
-import { ObjectExpressionToken } from '../src/token-expressions/ObjectExpressionToken';
 
 describe('FormatString', () => {
   it('should compile ConstantTokenExpressions', () => {
@@ -63,7 +63,7 @@ describe('FormatString', () => {
         new FunctionTokenExpression('$:foo({myObject: 2})', {
           start: 0,
           arguments: [
-            new ObjectExpressionToken('{myObject: 2}', {
+            new ObjectTokenExpression('{myObject: 2}', {
               properties: { myObject: new PrimitiveConstantTokenExpression(2) }
             })
           ]
@@ -74,9 +74,9 @@ describe('FormatString', () => {
         new FunctionTokenExpression('$:foo({myObject: {b: 1}})', {
           start: 0,
           arguments: [
-            new ObjectExpressionToken('{myObject: {b: 1}}', {
+            new ObjectTokenExpression('{myObject: {b: 1}}', {
               properties: {
-                myObject: new ObjectExpressionToken('{b: 1}', {
+                myObject: new ObjectTokenExpression('{b: 1}', {
                   properties: { b: new PrimitiveConstantTokenExpression(1) }
                 })
               }
@@ -88,7 +88,7 @@ describe('FormatString', () => {
       expect(FormatString.compile("{ $:fn({a: '}'}) }")).toEqual([
         new FunctionTokenExpression("$:fn({a: '}'})", {
           start: 0,
-          arguments: [new ObjectExpressionToken("{a: '}'}", { properties: { a: new ConstantTokenExpression('}') } })]
+          arguments: [new ObjectTokenExpression("{a: '}'}", { properties: { a: new ConstantTokenExpression('}') } })]
         })
       ]);
 
@@ -96,7 +96,7 @@ describe('FormatString', () => {
         new FunctionTokenExpression("$:fn({a: '{', b: '}'})", {
           start: 0,
           arguments: [
-            new ObjectExpressionToken("{a: '{', b: '}'}", {
+            new ObjectTokenExpression("{a: '{', b: '}'}", {
               properties: { a: new ConstantTokenExpression('{'), b: new ConstantTokenExpression('}') }
             })
           ]

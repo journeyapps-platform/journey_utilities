@@ -1,5 +1,8 @@
+export * from './parsers';
+export * from './TokenExpressionParser';
+
+export * from './FormatString';
 export * from './token-expressions';
-export * from './parser/TokenExpressionParser';
 
 export * from './definitions/TypeInterface';
 export * from './definitions/ObjectRefInterface';

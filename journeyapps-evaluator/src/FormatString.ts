@@ -1,8 +1,8 @@
 import { AttributeValidationError } from '@journeyapps/core-xml';
 import { FormatStringScope } from './definitions/FormatStringScope';
 import { TypeInterface } from './definitions/TypeInterface';
-import { TokenExpressionParser } from './parser/TokenExpressionParser';
 import { ConstantTokenExpression, FunctionTokenExpression, TokenExpression } from './token-expressions';
+import { TokenExpressionParser } from './TokenExpressionParser';
 import { extract, formatValue } from './tools';
 
 /**

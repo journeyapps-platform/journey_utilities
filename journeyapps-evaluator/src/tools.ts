@@ -1,7 +1,7 @@
 import { TypeInterface } from './definitions/TypeInterface';
+import { FormatString } from './FormatString';
 import {
   FormatShorthandTokenExpression,
-  FormatString,
   FunctionTokenExpression,
   LegacyFunctionTokenExpression,
   ShorthandTokenExpression

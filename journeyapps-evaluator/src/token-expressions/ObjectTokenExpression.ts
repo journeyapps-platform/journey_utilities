@@ -9,7 +9,7 @@ export interface ObjectExpressionTokenOptions extends TokenExpressionOptions {
  * Expression that represents an object literal.
  * Example {a: user.name, b: "foo"}
  */
-export class ObjectExpressionToken extends TokenExpression<ObjectExpressionTokenOptions, object> {
+export class ObjectTokenExpression extends TokenExpression<ObjectExpressionTokenOptions, object> {
   constructor(expression: string, options: ObjectExpressionTokenOptions) {
     super(expression, options);
   }
