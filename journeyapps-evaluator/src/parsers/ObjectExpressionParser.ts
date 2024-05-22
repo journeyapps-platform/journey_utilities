@@ -1,15 +1,10 @@
-import { Node, isIdentifier, isObjectExpression, isObjectProperty, ObjectExpression } from '@babel/types';
+import { Node, isIdentifier, isObjectExpression, isObjectProperty, ObjectExpression, isType } from '@babel/types';
 import { ObjectTokenExpression } from '../token-expressions';
-import {
-  AbstractExpressionParser,
-  AbstractExpressionParserFactory,
-  ExpressionNodeEvent
-} from './AbstractExpressionParser';
+import { AbstractExpressionParser, ExpressionParserFactory, ExpressionNodeEvent } from './AbstractExpressionParser';
 
 export class ObjectExpressionParser extends AbstractExpressionParser<ObjectExpression, ObjectTokenExpression> {
-  parse(event: ExpressionNodeEvent): ObjectTokenExpression {
-    const { node } = this;
-    const { source, parseNode } = event;
+  parse(event: ExpressionNodeEvent<ObjectExpression>): ObjectTokenExpression {
+    const { node, source, parseNode } = event;
 
     const props = {};
     for (const prop of node.properties) {
@@ -22,11 +17,12 @@ export class ObjectExpressionParser extends AbstractExpressionParser<ObjectExpre
   }
 }
 
-export class ObjectExpressionParserFactory extends AbstractExpressionParserFactory {
-  getParser(node: Node) {
-    if (isObjectExpression(node)) {
-      return new ObjectExpressionParser({ node });
-    }
-    return null;
+export class ObjectExpressionParserFactory extends ExpressionParserFactory<ObjectExpressionParser> {
+  constructor() {
+    super('ObjectExpression');
+  }
+
+  getParser() {
+    return new ObjectExpressionParser();
   }
 }

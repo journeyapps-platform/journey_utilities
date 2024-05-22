@@ -38,7 +38,10 @@ export class FormatString {
       const i = expression.indexOf('{', start);
       if (i < 0 || i == len - 1) {
         // end of string - everything is normal text
-        tokens.push(new ConstantTokenExpression(FormatString.unescape(expression.substring(start)), { start }));
+        const rest = FormatString.unescape(expression.substring(start));
+        if (rest.length > 0) {
+          tokens.push(new ConstantTokenExpression(rest, { start }));
+        }
         break;
       }
       // normal text in the gaps between curly braces
@@ -65,6 +68,10 @@ export class FormatString {
 
       // `spec` is everything between the curly braces "{" and "}".
       const spec = expression.substring(i + 1, i + parsedBraces.length);
+
+      if (spec.indexOf('?') === 0) {
+        throw new Error('Usage of ? in expressions is not supported.');
+      }
 
       const parsedToken = parser.parse(spec);
       if (parsedToken) {
@@ -94,9 +101,7 @@ export class FormatString {
       const token = tokens[j];
       if (token instanceof ConstantTokenExpression) {
         if (last == null) {
-          if (token.expression.length > 0) {
-            last = token;
-          }
+          last = token;
         } else {
           last = last.concat(token);
         }
@@ -261,7 +266,7 @@ export class FormatString {
     for (let i = 0; i < tokens.length; i++) {
       const token = tokens[i];
       if (token.isConstant()) {
-        result += token.valueOf();
+        result += `${token.valueOf()}`;
       } else if (token.isFunction()) {
         // Not supported - return the original expression
         result += (token as FunctionTokenExpression).toConstant(true).valueOf();

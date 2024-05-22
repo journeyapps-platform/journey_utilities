@@ -1,8 +1,8 @@
 import * as babelParser from '@babel/parser';
 import { Node } from '@babel/types';
+import { memoize } from 'lodash';
 import {
-  AbstractExpressionParser,
-  AbstractExpressionParserFactory,
+  ExpressionParserFactory,
   BlockStatementParserFactory,
   CallExpressionParserFactory,
   ConditionalExpressionParserFactory,
@@ -10,7 +10,9 @@ import {
   IdentifierExpressionParserFactory,
   LiteralExpressionParserFactory,
   MemberExpressionParserFactory,
-  ObjectExpressionParserFactory
+  NodeType,
+  ObjectExpressionParserFactory,
+  AbstractExpressionParser
 } from './parsers';
 import { TokenExpression } from './token-expressions';
 
@@ -21,7 +23,7 @@ const MATCH_FORMAT_SPECIFIER = /(?<!['"])[^{}]*[^\$](:(\.?\d+f?)[^{}]*)(?!['"])/
 const ENCLOSED_IN_CURLY_BRACKETS = /^{.*}$/;
 
 export class TokenExpressionParser {
-  factories: AbstractExpressionParserFactory[];
+  factories: ExpressionParserFactory[];
   static FORMAT_SPECIFIER_IDENTIFIER = '$format';
 
   // Implement static instance getter
@@ -54,27 +56,22 @@ export class TokenExpressionParser {
   }
 
   parseNode(node: Node, source: string): TokenExpression | null {
-    const parser = this.getParser(node);
-    if (!parser) {
-      throw new Error(`No Parser found for node: ${node.type}`);
-    }
-
-    return parser.parse({ source, parseNode: this.parseNode.bind(this) });
+    const parser = this.getParser(node.type);
+    return parser.parse({ node: node, source, parseNode: this.parseNode.bind(this) });
   }
 
-  registerFactory(factory: AbstractExpressionParserFactory) {
+  registerFactory(factory: ExpressionParserFactory) {
     this.factories.push(factory);
   }
 
-  getParser(node: Node): AbstractExpressionParser | null {
+  getParser = memoize((nodeType: NodeType): AbstractExpressionParser => {
     for (const factory of this.factories) {
-      const parser = factory.getParser(node);
-      if (parser) {
-        return parser;
+      if (factory.canParse(nodeType)) {
+        return factory.getParser();
       }
     }
-    return null;
-  }
+    throw new Error(`No parser found for node type ${nodeType}`);
+  });
 
   // TODO Implement preprocessor system, most likely as part of the ExpressionParserFactory
   private preprocess(input: string): string {

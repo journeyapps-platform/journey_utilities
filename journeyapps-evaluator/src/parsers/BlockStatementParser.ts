@@ -1,5 +1,6 @@
 import {
   Node,
+  isType,
   BlockStatement,
   isLabeledStatement,
   isExpressionStatement,
@@ -9,16 +10,11 @@ import {
   isStringLiteral
 } from '@babel/types';
 import { ConstantTokenExpression } from '../token-expressions';
-import {
-  AbstractExpressionParser,
-  AbstractExpressionParserFactory,
-  ExpressionNodeEvent
-} from './AbstractExpressionParser';
+import { AbstractExpressionParser, ExpressionParserFactory, ExpressionNodeEvent } from './AbstractExpressionParser';
 
 export class BlockStatementParser extends AbstractExpressionParser<BlockStatement> {
-  parse(event: ExpressionNodeEvent) {
-    const { node } = this;
-    const { source, parseNode } = event;
+  parse(event: ExpressionNodeEvent<BlockStatement>) {
+    const { node, source, parseNode } = event;
     // If parent is also a BlockStatement means we have an escaped FormatString, e.g. {{value}}
     // and it will be handled by `ExpressionStatement` lower down
     if (isBlockStatement(node.extra?.parent as Node)) {
@@ -53,11 +49,11 @@ export class BlockStatementParser extends AbstractExpressionParser<BlockStatemen
   }
 }
 
-export class BlockStatementParserFactory extends AbstractExpressionParserFactory {
-  getParser(node: Node) {
-    if (isBlockStatement(node)) {
-      return new BlockStatementParser({ node });
-    }
-    return null;
+export class BlockStatementParserFactory extends ExpressionParserFactory<BlockStatementParser> {
+  constructor() {
+    super('BlockStatement');
+  }
+  getParser() {
+    return new BlockStatementParser();
   }
 }

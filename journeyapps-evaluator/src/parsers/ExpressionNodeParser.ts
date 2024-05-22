@@ -7,17 +7,13 @@ import {
   LabeledStatement,
   Node
 } from '@babel/types';
-import {
-  AbstractExpressionParser,
-  AbstractExpressionParserFactory,
-  ExpressionNodeEvent
-} from './AbstractExpressionParser';
+import { AbstractExpressionParser, ExpressionParserFactory, ExpressionNodeEvent } from './AbstractExpressionParser';
 
 export type ExpressionType = ExpressionStatement | Directive | LabeledStatement;
 
 export class ExpressionNodeParser extends AbstractExpressionParser<ExpressionType> {
-  parse(event: ExpressionNodeEvent) {
-    const { node } = this;
+  parse(event: ExpressionNodeEvent<ExpressionType>) {
+    const { node } = event;
     let expression: Node;
     if (isLabeledStatement(node)) {
       expression = node.body;
@@ -31,11 +27,12 @@ export class ExpressionNodeParser extends AbstractExpressionParser<ExpressionTyp
   }
 }
 
-export class ExpressionNodeParserFactory extends AbstractExpressionParserFactory {
-  getParser(node: Node) {
-    if (isLabeledStatement(node) || isDirective(node) || isExpressionStatement(node)) {
-      return new ExpressionNodeParser({ node });
-    }
-    return null;
+export class ExpressionNodeParserFactory extends ExpressionParserFactory<ExpressionNodeParser> {
+  constructor() {
+    super(['Directive', 'LabeledStatement', 'ExpressionStatement']);
+  }
+
+  getParser() {
+    return new ExpressionNodeParser();
   }
 }
