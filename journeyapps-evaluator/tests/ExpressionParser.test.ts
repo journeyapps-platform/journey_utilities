@@ -73,6 +73,14 @@ describe('Expression Parsing ', () => {
     result = parser.parse('$:myVar.foo()');
     expect(result).toBeInstanceOf(FunctionTokenExpression);
     expect(result.expression).toEqual('myVar.foo()');
+
+    result = parser.parse('$:myVar');
+    expect(result).toBeInstanceOf(FunctionTokenExpression);
+    expect(result.expression).toEqual('myVar');
+
+    result = parser.parse('$:journey.version');
+    expect(result).toBeInstanceOf(FunctionTokenExpression);
+    expect(result.expression).toEqual('journey.version');
   });
 
   it('should parse FunctionTokenExpression with arguments', ({ parser }) => {

@@ -1,21 +1,32 @@
 import { isLabeledStatement, Identifier, Node } from '@babel/types';
-import { FormatShorthandTokenExpression, ShorthandTokenExpression } from '../token-expressions';
+import {
+  FormatShorthandTokenExpression,
+  FunctionTokenExpression,
+  ShorthandTokenExpression
+} from '../token-expressions';
 import { AbstractExpressionParser, ExpressionParserFactory, ExpressionNodeEvent } from './AbstractExpressionParser';
+import { inFunctionExpression } from './utils';
 
-export class IdentifierExpressionParser extends AbstractExpressionParser<Identifier, ShorthandTokenExpression> {
-  parse(event: ExpressionNodeEvent<Identifier>): ShorthandTokenExpression {
+export type IdentifierExpressionParsedType =
+  | FunctionTokenExpression
+  | ShorthandTokenExpression
+  | FormatShorthandTokenExpression;
+
+export class IdentifierExpressionParser extends AbstractExpressionParser<Identifier, IdentifierExpressionParsedType> {
+  parse(event: ExpressionNodeEvent<Identifier>) {
     const { node } = event;
-    // Our `$:` syntax is parsed as a `LabeledStatement` with
-    // `$` parsed as an `Identifier` which we skip
     if (isLabeledStatement(node.extra?.parent as Node)) {
       return null;
     }
-    if (node.extra?.format) {
-      return new FormatShorthandTokenExpression(node.name, {
-        format: node.extra?.format as string
-      });
+    if (inFunctionExpression(node)) {
+      return new FunctionTokenExpression(node.name);
     }
-    return new ShorthandTokenExpression(node.name);
+    const format = node.extra?.format as string;
+    return format != null
+      ? new FormatShorthandTokenExpression(node.name, {
+          format: format
+        })
+      : new ShorthandTokenExpression(node.name);
   }
 }
 

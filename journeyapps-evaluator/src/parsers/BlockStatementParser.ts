@@ -20,6 +20,7 @@ export class BlockStatementParser extends AbstractExpressionParser<BlockStatemen
     if (isBlockStatement(node.extra?.parent as Node)) {
       return null;
     }
+    // TODO: FormatStatement extraction should be handled by a mutator
     const [body, formatStm] = node.body;
     if (isBlockStatement(body)) {
       return new ConstantTokenExpression(source.slice(body.start, body.end));
