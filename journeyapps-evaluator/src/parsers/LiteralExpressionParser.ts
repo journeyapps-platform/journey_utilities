@@ -9,9 +9,9 @@ export class LiteralExpressionParser extends AbstractExpressionParser<LiteralExp
   parse(event: ExpressionNodeEvent<LiteralExpression>) {
     const { node } = event;
     if (isStringLiteral(node) || isDirectiveLiteral(node)) {
-      return new ConstantTokenExpression(node.value);
+      return new ConstantTokenExpression({ expression: node.value });
     } else if ('value' in node) {
-      return new PrimitiveConstantTokenExpression(node.value);
+      return new PrimitiveConstantTokenExpression({ expression: node.value });
     }
   }
 }

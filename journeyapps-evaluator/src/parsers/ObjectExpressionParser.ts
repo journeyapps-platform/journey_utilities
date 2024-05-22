@@ -1,6 +1,6 @@
-import { Node, isIdentifier, isObjectExpression, isObjectProperty, ObjectExpression, isType } from '@babel/types';
+import { isIdentifier, isObjectProperty, ObjectExpression } from '@babel/types';
 import { ObjectTokenExpression } from '../token-expressions';
-import { AbstractExpressionParser, ExpressionParserFactory, ExpressionNodeEvent } from './AbstractExpressionParser';
+import { AbstractExpressionParser, ExpressionNodeEvent, ExpressionParserFactory } from './AbstractExpressionParser';
 
 export class ObjectExpressionParser extends AbstractExpressionParser<ObjectExpression, ObjectTokenExpression> {
   parse(event: ExpressionNodeEvent<ObjectExpression>): ObjectTokenExpression {
@@ -13,7 +13,7 @@ export class ObjectExpressionParser extends AbstractExpressionParser<ObjectExpre
       }
     }
 
-    return new ObjectTokenExpression(source.slice(node.start, node.end), { properties: props });
+    return new ObjectTokenExpression({ expression: source.slice(node.start, node.end), properties: props });
   }
 }
 

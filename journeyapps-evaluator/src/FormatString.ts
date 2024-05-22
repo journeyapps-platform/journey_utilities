@@ -15,7 +15,7 @@ export class FormatString {
   tokens: TokenExpression[];
 
   constructor(expression: string) {
-    this.expression = expression || '';
+    this.expression = expression;
     this.tokens = FormatString.compile(this.expression);
     this.type = FormatString.TYPE;
   }
@@ -40,18 +40,18 @@ export class FormatString {
         // end of string - everything is normal text
         const rest = FormatString.unescape(expression.substring(start));
         if (rest.length > 0) {
-          tokens.push(new ConstantTokenExpression(rest, { start }));
+          tokens.push(new ConstantTokenExpression({ expression: rest, start }));
         }
         break;
       }
       // normal text in the gaps between curly braces
       const text = FormatString.unescape(expression.substring(start, i));
       if (text.length > 0) {
-        tokens.push(new ConstantTokenExpression(text, { start }));
+        tokens.push(new ConstantTokenExpression({ expression: text, start }));
       }
       if (expression[i + 1] == '{') {
         // Double left brace - escape and continue
-        tokens.push(new ConstantTokenExpression('{', { start }));
+        tokens.push(new ConstantTokenExpression({ expression: '{', start }));
         start = i + 2;
         continue;
       }
@@ -59,7 +59,7 @@ export class FormatString {
       const parsedBraces = FormatString.parseEnclosingBraces(expression.substring(i));
       if (!parsedBraces) {
         // Brace pair faulty (no closing brace), return as a constant
-        tokens.push(new ConstantTokenExpression(expression.substring(i), { start }));
+        tokens.push(new ConstantTokenExpression({ expression: expression.substring(i), start }));
         break;
       }
 
@@ -78,20 +78,6 @@ export class FormatString {
         parsedToken.start = i;
         tokens.push(parsedToken);
       }
-
-      // // test for function token prefix
-      // if (spec.trim().indexOf(FunctionTokenExpression.PREFIX) === 0) {
-      //   // function token because the function name has "$:" as prefix (leading whitespace is ignored)
-      //   tokens.push(new FunctionTokenExpression(spec, { start: i }));
-      // } else {
-      //   // shorthand token
-      //   const colon = spec.indexOf(':');
-      //   if (colon == -1) {
-      //     tokens.push(new ShorthandTokenExpression(spec, i));
-      //   } else {
-      //     tokens.push(new FormatShorthandTokenExpression(spec.substring(0, colon), spec.substring(colon + 1), i));
-      //   }
-      // }
     }
 
     // concatenate any neighbouring constant token expressions

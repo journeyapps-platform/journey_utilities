@@ -8,15 +8,22 @@ export interface FunctionTokenExpressionOptions extends TokenExpressionOptions {
 }
 
 export class FunctionTokenExpression extends TokenExpression<FunctionTokenExpressionOptions> {
+  static TYPE = 'function-token-expression';
+
+  static isInstanceOf(obj: any): obj is FunctionTokenExpression {
+    return obj?.type === FunctionTokenExpression.TYPE;
+  }
+
   /**
    * Prefix for function token expressions.
    */
   static PREFIX = '$:';
 
-  constructor(expression: string, options?: FunctionTokenExpressionOptions) {
-    super(expression.trim(), { ...options, isFunction: true });
+  constructor(options: FunctionTokenExpressionOptions) {
+    super(FunctionTokenExpression.TYPE, { ...options, isFunction: true });
     // remove indicator prefix from expression
     const prefix = FunctionTokenExpression.PREFIX;
+    this.expression = this.expression.trim();
     if (this.expression.indexOf(prefix) === 0) {
       this.expression = this.expression.slice(prefix.length);
     }
@@ -41,7 +48,7 @@ export class FunctionTokenExpression extends TokenExpression<FunctionTokenExpres
     if (includeEscapeTags) {
       constantExpression = '{' + constantExpression + '}';
     }
-    return new ConstantTokenExpression(constantExpression, { start: this.start });
+    return new ConstantTokenExpression({ expression: constantExpression, start: this.start });
   }
 
   async tokenEvaluatePromise(scope: FormatStringScope) {

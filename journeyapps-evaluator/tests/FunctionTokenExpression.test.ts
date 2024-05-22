@@ -10,7 +10,7 @@ import {
 
 describe('FunctionTokenExpression', () => {
   it('should construct a TokenExpression', () => {
-    const token = new FunctionTokenExpression('$:foo()', { start: 3 });
+    const token = new FunctionTokenExpression({ expression: '$:foo()', start: 3 });
     expect(token).toBeInstanceOf(TokenExpression);
     expect(token.expression).toEqual('foo()');
     expect(token.functionName()).toEqual('foo');
@@ -22,29 +22,29 @@ describe('FunctionTokenExpression', () => {
   });
 
   it('should remove the prefix from the expression', () => {
-    const token = new FunctionTokenExpression('$:foo()', { start: 5 });
+    const token = new FunctionTokenExpression({ expression: '$:foo()', start: 5 });
     expect(token.expression).toEqual('foo()');
     expect(token.start).toEqual(5);
   });
 
   it('should allow expressions without the prefix', () => {
-    const token = new FunctionTokenExpression('foo()', { start: 5 });
+    const token = new FunctionTokenExpression({ expression: 'foo()', start: 5 });
     expect(token.expression).toEqual('foo()');
     expect(token.start).toEqual(5);
   });
 
   it('should give the function name', () => {
-    const token = new FunctionTokenExpression('$:foo()');
+    const token = new FunctionTokenExpression({ expression: '$:foo()' });
     expect(token.functionName()).toEqual('foo');
   });
 
   it('should give the function name where there are arguments', () => {
-    const token = new FunctionTokenExpression('$:foo(5, "bar")', { start: 5 });
+    const token = new FunctionTokenExpression({ expression: '$:foo(5, "bar")', start: 5 });
     expect(token.functionName()).toEqual('foo');
   });
 
   it('should be able to convert to a constant token expression without escape tags by default', () => {
-    const token = new FunctionTokenExpression('$:foo()', { start: 5 });
+    const token = new FunctionTokenExpression({ expression: '$:foo()', start: 5 });
     const constantToken = token.toConstant();
     expect(constantToken).toBeInstanceOf(ConstantTokenExpression);
     expect(constantToken.expression).toEqual('$:foo()');
@@ -53,7 +53,7 @@ describe('FunctionTokenExpression', () => {
   });
 
   it('should be able to convert to a constant token expression with escape tags', () => {
-    const token = new FunctionTokenExpression('$:foo()', { start: 5 });
+    const token = new FunctionTokenExpression({ expression: '$:foo()', start: 5 });
 
     const constantToken = token.toConstant(true);
     expect(constantToken).toBeInstanceOf(ConstantTokenExpression);
@@ -94,7 +94,7 @@ describe('FunctionTokenExpression', () => {
 
 describe('LegacyFunctionTokenExpression', () => {
   it('should construct a TokenExpression', () => {
-    const token = new LegacyFunctionTokenExpression('foo', { start: 3 });
+    const token = new LegacyFunctionTokenExpression({ expression: 'foo', start: 3 });
     expect(token).toBeInstanceOf(TokenExpression);
     expect(token.expression).toEqual('foo');
     expect(token.start).toEqual(3);
@@ -105,7 +105,7 @@ describe('LegacyFunctionTokenExpression', () => {
   });
 
   it('should be able to convert to a constant token expression without escape tags by default', () => {
-    const token = new LegacyFunctionTokenExpression('foo', { start: 5 });
+    const token = new LegacyFunctionTokenExpression({ expression: 'foo', start: 5 });
     const constantToken = token.toConstant();
     expect(constantToken).toBeInstanceOf(ConstantTokenExpression);
     expect(constantToken.expression).toEqual('foo');
@@ -114,7 +114,7 @@ describe('LegacyFunctionTokenExpression', () => {
   });
 
   it('should be able to convert to a constant token expression with escape tags', () => {
-    const token = new LegacyFunctionTokenExpression('foo', { start: 5 });
+    const token = new LegacyFunctionTokenExpression({ expression: 'foo', start: 5 });
     const constantToken = token.toConstant(true);
     expect(constantToken).toBeInstanceOf(ConstantTokenExpression);
     expect(constantToken.expression).toEqual('{foo}');

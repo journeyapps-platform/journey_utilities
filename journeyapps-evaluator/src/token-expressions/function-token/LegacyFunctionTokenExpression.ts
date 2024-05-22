@@ -6,8 +6,9 @@ import { ConstantTokenExpression } from '../constant/ConstantTokenExpression';
 import { FormatStringScope } from '../../definitions/FormatStringScope';
 
 export class LegacyFunctionTokenExpression extends TokenExpression {
-  constructor(expression: string, options?: TokenExpressionOptions) {
-    super(expression, { ...options, isFunction: true });
+  static TYPE = 'legacy-function-expression';
+  constructor(options: TokenExpressionOptions) {
+    super(LegacyFunctionTokenExpression.TYPE, { ...options, isFunction: true });
   }
 
   /**
@@ -19,7 +20,7 @@ export class LegacyFunctionTokenExpression extends TokenExpression {
     if (includeEscapeTags) {
       constantExpression = '{' + constantExpression + '}';
     }
-    return new ConstantTokenExpression(constantExpression, { start: this.start });
+    return new ConstantTokenExpression({ expression: constantExpression, start: this.start });
   }
 
   tokenEvaluatePromise(scope: FormatStringScope): Promise<string> {

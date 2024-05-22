@@ -26,11 +26,11 @@ export function functionTokenExpression(expression: string, allowLegacy: boolean
     return null;
   }
   if (expression.trim().indexOf(FunctionTokenExpression.PREFIX) === 0) {
-    return new FunctionTokenExpression(expression);
+    return new FunctionTokenExpression({ expression });
   }
   if (allowLegacy) {
     // assume legacy function token expression (if allowed) at this point
-    return new LegacyFunctionTokenExpression(expression);
+    return new LegacyFunctionTokenExpression({ expression });
   }
   return null;
 }
@@ -45,13 +45,14 @@ export function actionableTokenExpression(
     return null;
   }
   if (expression.trim().indexOf(FunctionTokenExpression.PREFIX) === 0) {
-    return new FunctionTokenExpression(expression);
+    return new FunctionTokenExpression({ expression });
   }
   const colon = expression.indexOf(':');
   if (colon == -1) {
-    return new ShorthandTokenExpression(expression);
+    return new ShorthandTokenExpression({ expression });
   }
-  return new FormatShorthandTokenExpression(expression.substring(0, colon), {
+  return new FormatShorthandTokenExpression({
+    expression: expression.substring(0, colon),
     format: expression.substring(colon + 1)
   });
 }

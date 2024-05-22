@@ -10,8 +10,9 @@ export interface ObjectExpressionTokenOptions extends TokenExpressionOptions {
  * Example {a: user.name, b: "foo"}
  */
 export class ObjectTokenExpression extends TokenExpression<ObjectExpressionTokenOptions, object> {
-  constructor(expression: string, options: ObjectExpressionTokenOptions) {
-    super(expression, options);
+  static TYPE = 'object-expression';
+  constructor(options: ObjectExpressionTokenOptions) {
+    super(ObjectTokenExpression.TYPE, options);
   }
 
   get properties(): Record<string, TokenExpression> {

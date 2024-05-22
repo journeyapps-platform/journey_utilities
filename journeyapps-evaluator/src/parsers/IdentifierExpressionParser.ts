@@ -18,15 +18,14 @@ export class IdentifierExpressionParser extends AbstractExpressionParser<Identif
     if (isLabeledStatement(node.extra?.parent as Node)) {
       return null;
     }
+    const { name: expression } = node;
     if (inFunctionExpression(node)) {
-      return new FunctionTokenExpression(node.name);
+      return new FunctionTokenExpression({ expression: expression });
     }
     const format = node.extra?.format as string;
     return format != null
-      ? new FormatShorthandTokenExpression(node.name, {
-          format: format
-        })
-      : new ShorthandTokenExpression(node.name);
+      ? new FormatShorthandTokenExpression({ expression: expression, format: format })
+      : new ShorthandTokenExpression({ expression: expression });
   }
 }
 

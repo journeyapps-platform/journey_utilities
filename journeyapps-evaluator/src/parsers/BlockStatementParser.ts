@@ -23,7 +23,7 @@ export class BlockStatementParser extends AbstractExpressionParser<BlockStatemen
     // TODO: FormatStatement extraction should be handled by a mutator
     const [body, formatStm] = node.body;
     if (isBlockStatement(body)) {
-      return new ConstantTokenExpression(source.slice(body.start, body.end));
+      return new ConstantTokenExpression({ expression: source.slice(body.start, body.end) });
     }
     if (isLabeledStatement(body)) {
       // Example `{$:foo()}`

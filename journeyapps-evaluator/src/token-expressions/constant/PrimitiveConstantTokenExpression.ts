@@ -4,15 +4,29 @@
 import { ConstantTokenExpression } from './ConstantTokenExpression';
 import { TokenExpressionOptions } from '../TokenExpression';
 
+export interface PrimitiveConstantTokenExpressionOptions extends TokenExpressionOptions {
+  expression: any;
+}
+
 export class PrimitiveConstantTokenExpression extends ConstantTokenExpression {
-  constructor(expression: any, options?: TokenExpressionOptions) {
-    super(expression, { ...options, isPrimitive: true });
+  static TYPE = 'primitive-constant-expression';
+
+  static isInstanceOf(obj: any): obj is PrimitiveConstantTokenExpression {
+    return obj?.type === PrimitiveConstantTokenExpression.TYPE;
+  }
+
+  constructor(options: PrimitiveConstantTokenExpressionOptions) {
+    super({ ...options, isPrimitive: true });
   }
 
   /**
-   * Get the value of the constant token expression.
+   * Concatenate a token to current token and return a new token.
    */
-  valueOf(): any {
-    return this.expression;
+  concat(token: ConstantTokenExpression): ConstantTokenExpression {
+    // start value should be start of first token
+    return new ConstantTokenExpression({
+      expression: `${this.expression}`.concat(token.expression),
+      start: this.start
+    });
   }
 }

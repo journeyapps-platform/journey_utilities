@@ -88,18 +88,18 @@ describe('Expression Parsing ', () => {
     expect(result.functionName()).toEqual('foo');
     const args = result.arguments;
     expect(args).toEqual([
-      new ConstantTokenExpression('bar'),
-      new PrimitiveConstantTokenExpression(3),
-      new PrimitiveConstantTokenExpression(true)
+      new ConstantTokenExpression({ expression: 'bar' }),
+      new PrimitiveConstantTokenExpression({ expression: 3 }),
+      new PrimitiveConstantTokenExpression({ expression: true })
     ]);
 
     result = parser.parse<FunctionTokenExpression>('(function (input){ return input + "bar" })("foo")');
     expect(result.functionName()).toEqual('function (input){ return input + "bar" }');
-    expect(result.arguments).toEqual([new ConstantTokenExpression('foo')]);
+    expect(result.arguments).toEqual([new ConstantTokenExpression({ expression: 'foo' })]);
 
     result = parser.parse<FunctionTokenExpression>('foo(user.name.first)');
     expect(result.functionName()).toEqual('foo');
-    expect(result.arguments).toEqual([new ShorthandTokenExpression('user.name.first')]);
+    expect(result.arguments).toEqual([new ShorthandTokenExpression({ expression: 'user.name.first' })]);
   });
 
   it('should parse in-line expression to FunctionTokenExpression', ({ parser }) => {
@@ -108,9 +108,9 @@ describe('Expression Parsing ', () => {
       '(function(test, consequent, alternate) { return test ? consequent : alternate; })(user, "Yes", "No")'
     );
     expect(result.arguments).toEqual([
-      new ShorthandTokenExpression('user'),
-      new ConstantTokenExpression('Yes'),
-      new ConstantTokenExpression('No')
+      new ShorthandTokenExpression({ expression: 'user' }),
+      new ConstantTokenExpression({ expression: 'Yes' }),
+      new ConstantTokenExpression({ expression: 'No' })
     ]);
   });
 

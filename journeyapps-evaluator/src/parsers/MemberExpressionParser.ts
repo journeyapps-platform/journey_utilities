@@ -15,16 +15,15 @@ export type MemberExpressionParsedType =
 export class MemberExpressionParser extends AbstractExpressionParser<MemberExpression, MemberExpressionParsedType> {
   parse(event: ExpressionNodeEvent<MemberExpression>) {
     const { node, source } = event;
-    const exp = source.slice(node.start, node.end);
+    const expr = source.slice(node.start, node.end);
 
     if (inFunctionExpression(node)) {
-      return new FunctionTokenExpression(exp);
+      return new FunctionTokenExpression({ expression: expr });
     }
     const format: string = node.extra?.format as string;
-    if (!!format) {
-      return new FormatShorthandTokenExpression(exp, { format: format });
-    }
-    return new ShorthandTokenExpression(exp);
+    return format != null
+      ? new FormatShorthandTokenExpression({ expression: expr, format: format })
+      : new ShorthandTokenExpression({ expression: expr });
   }
 }
 

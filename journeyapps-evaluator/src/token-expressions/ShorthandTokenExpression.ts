@@ -9,8 +9,9 @@ import { TokenExpression, TokenExpressionOptions } from './TokenExpression';
 export class ShorthandTokenExpression<
   O extends TokenExpressionOptions = TokenExpressionOptions
 > extends TokenExpression<O> {
-  constructor(expression: string, options?: O) {
-    super(expression, { ...options, isShorthand: true });
+  static TYPE = 'shorthand-expression';
+  constructor(options: O) {
+    super(ShorthandTokenExpression.TYPE, { ...options, isShorthand: true });
   }
 
   async tokenEvaluatePromise(scope: FormatStringScope) {
