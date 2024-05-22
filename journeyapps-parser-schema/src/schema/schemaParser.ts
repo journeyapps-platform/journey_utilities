@@ -408,7 +408,7 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
         fmtString = displayElement.textContent;
         attribute = false;
       }
-      object.displayFormat = new FormatString(fmtString);
+      object.displayFormat = new FormatString({ expression: fmtString });
       if (options.recordSource) {
         object.displaySource = displayElement;
       }
@@ -430,7 +430,7 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
       });
     } else if (displayElements.length === 0) {
       errorHandler.pushError(element, '<display> is required');
-      object.displayFormat = new FormatString('');
+      object.displayFormat = new FormatString({ expression: '' });
     } else {
       errorHandler.pushError(displayElements[1], 'Only one <display> element is allowed', 'warning');
     }
@@ -702,7 +702,7 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
       parseElement(notificationElement, syntax, errorHandler);
 
       const notifyUserObject = {
-        message: new FormatString(getAttribute(notificationElement, 'message')),
+        message: new FormatString({ expression: getAttribute(notificationElement, 'message') }),
         recipient: getAttribute(notificationElement, 'recipient-field'),
         received: getAttribute(notificationElement, 'received-field'),
         badgeCount: getAttribute(notificationElement, 'badge-count-field')
@@ -1126,7 +1126,7 @@ export function jsonParser(schema: Schema) {
       const object = schema.newObjectType();
       object.name = name;
       object.label = objectData.label;
-      object.displayFormat = new FormatString(objectData.display);
+      object.displayFormat = new FormatString({ expression: objectData.display });
 
       Object.keys(objectData.attributes).forEach(function (attributeName) {
         const attributeData = objectData.attributes[attributeName];
