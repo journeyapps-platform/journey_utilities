@@ -61,15 +61,13 @@ describe('FormatString', () => {
 
   describe('should compile FunctionTokenExpressions', () => {
     it('with no arguments', () => {
-      expect(FormatString.compile('{$:foo()}')).toEqual([
-        new FunctionTokenExpression({ expression: '$:foo()', start: 0 })
-      ]);
+      expect(FormatString.compile('{foo()}')).toEqual([new FunctionTokenExpression({ expression: 'foo()', start: 0 })]);
     });
 
     it('with an primitive argument', () => {
       expect(FormatString.compile('{$:foo(2)}')).toEqual([
         new FunctionTokenExpression({
-          expression: '$:foo(2)',
+          expression: 'foo(2)',
           start: 0,
           arguments: [new PrimitiveConstantTokenExpression({ expression: 2 })]
         })
@@ -79,7 +77,7 @@ describe('FormatString', () => {
     it('with an object argument', () => {
       expect(FormatString.compile('{ $:foo({myObject: 2}) }')).toEqual([
         new FunctionTokenExpression({
-          expression: '$:foo({myObject: 2})',
+          expression: 'foo({myObject: 2})',
           start: 0,
           arguments: [
             new ObjectTokenExpression({
@@ -92,7 +90,7 @@ describe('FormatString', () => {
 
       expect(FormatString.compile('{ $:foo({myObject: {b: 1}}) }')).toEqual([
         new FunctionTokenExpression({
-          expression: '$:foo({myObject: {b: 1}})',
+          expression: 'foo({myObject: {b: 1}})',
           start: 0,
           arguments: [
             new ObjectTokenExpression({
@@ -110,7 +108,7 @@ describe('FormatString', () => {
 
       expect(FormatString.compile("{ $:fn({a: '}'}) }")).toEqual([
         new FunctionTokenExpression({
-          expression: "$:fn({a: '}'})",
+          expression: "fn({a: '}'})",
           start: 0,
           arguments: [
             new ObjectTokenExpression({
@@ -123,7 +121,7 @@ describe('FormatString', () => {
 
       expect(FormatString.compile("{ $:fn({a: '{', b: '}'}) }")).toEqual([
         new FunctionTokenExpression({
-          expression: "$:fn({a: '{', b: '}'})",
+          expression: "fn({a: '{', b: '}'})",
           start: 0,
           arguments: [
             new ObjectTokenExpression({
@@ -142,7 +140,7 @@ describe('FormatString', () => {
       // Ignore brackets in strings
       expect(FormatString.compile('{ $:foo("{") }')).toEqual([
         new FunctionTokenExpression({
-          expression: '$:foo("{")',
+          expression: 'foo("{")',
           start: 0,
           arguments: [new ConstantTokenExpression({ expression: '{' })]
         })
@@ -150,7 +148,7 @@ describe('FormatString', () => {
 
       expect(FormatString.compile("{ $:foo('{turtles}') }")).toEqual([
         new FunctionTokenExpression({
-          expression: "$:foo('{turtles}')",
+          expression: "foo('{turtles}')",
           start: 0,
           arguments: [new ConstantTokenExpression({ expression: '{turtles}' })]
         })
@@ -171,7 +169,7 @@ describe('FormatString', () => {
     it('with mix of TokenExpressions', () => {
       expect(FormatString.compile('{$:foo(2)} {b}')).toEqual([
         new FunctionTokenExpression({
-          expression: '$:foo(2)',
+          expression: 'foo(2)',
           start: 0,
           arguments: [new PrimitiveConstantTokenExpression({ expression: 2 })]
         }),
@@ -182,12 +180,12 @@ describe('FormatString', () => {
       expect(FormatString.compile('{person.name} {$:foo()}')).toEqual([
         new ShorthandTokenExpression({ expression: 'person.name', start: 0 }),
         new ConstantTokenExpression({ expression: ' ', start: 13 }),
-        new FunctionTokenExpression({ expression: '$:foo()', start: 14 })
+        new FunctionTokenExpression({ expression: 'foo()', start: 14 })
       ]);
 
       expect(FormatString.compile('A B C {$:foo()} X Y Z')).toEqual([
         new ConstantTokenExpression({ expression: 'A B C ', start: 0 }),
-        new FunctionTokenExpression({ expression: '$:foo()', start: 6 }),
+        new FunctionTokenExpression({ expression: 'foo()', start: 6 }),
         new ConstantTokenExpression({ expression: ' X Y Z', start: 15 })
       ]);
     });

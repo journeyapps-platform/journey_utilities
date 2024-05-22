@@ -14,6 +14,7 @@ export default defineConfig({
       stream: 'stream-browserify'
     },
     globals: true,
+    include: ['./tests/**/*.test.ts'],
     reporters: 'verbose',
     browser: {
       name: 'chrome',
