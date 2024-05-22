@@ -3,8 +3,8 @@
   "version": "5.0.3",
   "description": "Journey XML library",
   "main": "./dist/src/node.js",
-  "browser": "./dist/src/index.js",
-  "typings": "./dist/@types/src/index",
+  "browser": "./dist/index.js",
+  "typings": "./dist/@types/index.d.ts",
   "scripts": {
     "build": "../node_modules/.bin/tsc --build",
     "clean": "tsc -b --clean && rm -rf ./dist",
@@ -13,8 +13,7 @@
     "test:node": "vitest --run --config vitest.config.unit.ts"
   },
   "files": [
-    "dist/src",
-    "dist/@types",
+    "dist",
     "domparser.js"
   ],
   "dependencies": {

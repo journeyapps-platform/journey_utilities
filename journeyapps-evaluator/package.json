@@ -13,8 +13,7 @@
     "test:node": "vitest --run --config vitest.config.unit.ts"
   },
   "files": [
-    "dist/src",
-    "dist/@types"
+    "dist"
   ],
   "dependencies": {
     "@babel/types": "^7.24.5",

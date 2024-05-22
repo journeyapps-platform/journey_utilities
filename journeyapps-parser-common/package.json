@@ -2,8 +2,8 @@
   "name": "@journeyapps/parser-common",
   "version": "8.0.1",
   "description": "Journey Parser library",
-  "main": "./dist/src/index.js",
-  "typings": "./dist/@types/src/index",
+  "main": "./dist/index.js",
+  "typings": "./dist/@types/index.d.ts",
   "scripts": {
     "build": "tsc --build",
     "clean": "tsc -b --clean && rm -rf dist",
@@ -21,7 +21,6 @@
     "stream-browserify": "^3.0.0"
   },
   "files": [
-    "dist/src",
-    "dist/@types"
+    "dist"
   ]
 }
