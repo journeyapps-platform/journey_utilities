@@ -5,6 +5,10 @@ import { ConstantTokenExpression, FunctionTokenExpression, TokenExpression } fro
 import { TokenExpressionParser } from './TokenExpressionParser';
 import { extract, formatValue } from './tools';
 
+export interface FormatStringOptions {
+  expression: string;
+}
+
 /**
  * Construct a new format string expression.
  */
@@ -14,14 +18,14 @@ export class FormatString {
   expression: string;
   tokens: TokenExpression[];
 
-  constructor(expression: string) {
-    this.expression = expression;
-    this.tokens = FormatString.compile(this.expression);
-    this.type = FormatString.TYPE;
-  }
-
   static isInstanceOf(val: any): val is FormatString {
     return val?.type === FormatString.TYPE;
+  }
+
+  constructor(options: FormatStringOptions) {
+    this.expression = options.expression;
+    this.tokens = FormatString.compile(this.expression);
+    this.type = FormatString.TYPE;
   }
 
   /**

@@ -18,6 +18,7 @@ export abstract class TokenExpression<O extends TokenExpressionOptions = TokenEx
   type: string;
   expression: string;
   options: O;
+  isPrimitive: boolean;
 
   protected constructor(type: string, options: O) {
     if (this.constructor === TokenExpression) {
@@ -26,6 +27,7 @@ export abstract class TokenExpression<O extends TokenExpressionOptions = TokenEx
     this.type = type;
     this.options = { isPrimitive: false, isConstant: false, isShorthand: false, isFunction: false, ...options };
     this.expression = this.options.expression;
+    this.isPrimitive = this.options.isPrimitive;
   }
 
   abstract tokenEvaluatePromise(scope: FormatStringScope): Promise<V>;
@@ -40,10 +42,6 @@ export abstract class TokenExpression<O extends TokenExpressionOptions = TokenEx
 
   get format(): string | null {
     return this.options.format ?? null;
-  }
-
-  get isPrimitive(): boolean {
-    return this.options.isPrimitive;
   }
 
   isConstant(): boolean {

@@ -14,7 +14,7 @@ export function formatString(expression: string): FormatString | null {
   if (expression == null) {
     return null;
   } else {
-    return new FormatString(expression);
+    return new FormatString({ expression });
   }
 }
 

@@ -38,7 +38,7 @@ describe('Schema toDOM', () => {
     schema.objects.worker.attributes.name.label = 'Full Name';
 
     // Change display
-    schema.objects.building.displayFormat = new FormatString('Updated');
+    schema.objects.building.displayFormat = new FormatString({ expression: 'Updated' });
 
     // Delete field
     delete schema.objects.room.attributes.name;
