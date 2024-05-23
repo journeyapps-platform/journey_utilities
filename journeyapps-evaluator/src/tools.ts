@@ -26,7 +26,7 @@ export function functionTokenExpression(expression: string, allowLegacy: boolean
     return null;
   }
   if (expression.trim().indexOf(FunctionTokenExpression.PREFIX) === 0) {
-    return new FunctionTokenExpression({ expression });
+    return FunctionTokenExpression.parse(expression);
   }
   if (allowLegacy) {
     // assume legacy function token expression (if allowed) at this point
@@ -45,7 +45,7 @@ export function actionableTokenExpression(
     return null;
   }
   if (expression.trim().indexOf(FunctionTokenExpression.PREFIX) === 0) {
-    return new FunctionTokenExpression({ expression });
+    return FunctionTokenExpression.parse(expression);
   }
   const colon = expression.indexOf(':');
   if (colon == -1) {

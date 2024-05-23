@@ -4,6 +4,12 @@ import { TypeInterface } from './definitions/TypeInterface';
 import { ConstantTokenExpression, FunctionTokenExpression, TokenExpression } from './token-expressions';
 import { TokenExpressionParser } from './TokenExpressionParser';
 import { extract, formatValue } from './tools';
+import { BlockStatementTransformer, FormatSpecifierTransformer, SourceTransformer } from './transformers';
+
+export const DEFAULT_FORMAT_STRING_TRANSFORMERS: (typeof SourceTransformer)[] = [
+  FormatSpecifierTransformer,
+  BlockStatementTransformer
+];
 
 export interface FormatStringOptions {
   expression: string;
@@ -77,7 +83,7 @@ export class FormatString {
         throw new Error('Usage of ? in expressions is not supported.');
       }
 
-      const parsedToken = parser.parse(spec);
+      const parsedToken = parser.parse({ source: spec, transformers: DEFAULT_FORMAT_STRING_TRANSFORMERS });
       if (parsedToken) {
         parsedToken.start = i;
         tokens.push(parsedToken);

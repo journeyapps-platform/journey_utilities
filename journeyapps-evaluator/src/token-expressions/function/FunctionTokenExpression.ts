@@ -1,3 +1,4 @@
+import { TokenExpressionParser } from '../../TokenExpressionParser';
 import { TokenExpression, TokenExpressionOptions } from '../TokenExpression';
 import { ConstantTokenExpression } from '../constant/ConstantTokenExpression';
 import { FormatStringScope } from '../../definitions/FormatStringScope';
@@ -18,6 +19,10 @@ export class FunctionTokenExpression extends TokenExpression<FunctionTokenExpres
    * Prefix for function token expressions.
    */
   static PREFIX = '$:';
+
+  static parse(source: string) {
+    return TokenExpressionParser.get().parse<FunctionTokenExpression>({ source });
+  }
 
   constructor(options: FunctionTokenExpressionOptions) {
     super(FunctionTokenExpression.TYPE, { ...options, isFunction: true });

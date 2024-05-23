@@ -3,30 +3,30 @@ import { Node } from '@babel/types';
 import { memoize } from 'lodash';
 import LRUCache from 'lru-cache';
 import {
-  ExpressionParserFactory,
+  AbstractExpressionParser,
   BlockStatementParserFactory,
   CallExpressionParserFactory,
   ConditionalExpressionParserFactory,
   ExpressionNodeParserFactory,
+  ExpressionParserFactory,
   IdentifierExpressionParserFactory,
   LiteralExpressionParserFactory,
   MemberExpressionParserFactory,
   NodeType,
-  ObjectExpressionParserFactory,
-  AbstractExpressionParser
+  ObjectExpressionParserFactory
 } from './parsers';
-import { FunctionTokenExpression, TokenExpression } from './token-expressions';
+import { TokenExpression } from './token-expressions';
+import { BlockStatementTransformer, FormatSpecifierTransformer, SourceTransformer } from './transformers';
 
-/**
- * Matches format specifiers in expressions in the form of `value:n`, `value:0n` or `value:.Xf`
- */
-const FORMAT_SPECIFIER_IDENTIFIER = '$format';
-const MATCH_FORMAT_SPECIFIER = /(?<!['"])[^{}]*[^\$](:(\.?\d+f?)[^{}]*)(?!['"])/;
-const ENCLOSED_IN_CURLY_BRACKETS = /^{.*}$/;
+export interface TokenExpressionParseEvent {
+  source: string;
+  transformers?: (typeof SourceTransformer)[];
+}
 
 export class TokenExpressionParser {
-  factories: ExpressionParserFactory[];
   cache: LRUCache<string, TokenExpression>;
+  factories: ExpressionParserFactory[];
+  transformers: Record<string, SourceTransformer>;
 
   static instance: TokenExpressionParser;
   static get(): TokenExpressionParser {
@@ -37,8 +37,10 @@ export class TokenExpressionParser {
   }
 
   constructor() {
-    this.factories = [];
     this.cache = new LRUCache({ max: 1000 });
+
+    // Parser factories
+    this.factories = [];
     this.registerFactory(new BlockStatementParserFactory());
     this.registerFactory(new CallExpressionParserFactory());
     this.registerFactory(new ConditionalExpressionParserFactory());
@@ -47,19 +49,23 @@ export class TokenExpressionParser {
     this.registerFactory(new LiteralExpressionParserFactory());
     this.registerFactory(new MemberExpressionParserFactory());
     this.registerFactory(new ObjectExpressionParserFactory());
+
+    // Transformers
+    this.transformers = {};
+    this.registerTransformer(new BlockStatementTransformer());
+    this.registerTransformer(new FormatSpecifierTransformer());
   }
 
   // TODO: Better lifecycle control and dispose it afterwards
-  parse<T extends TokenExpression = TokenExpression>(source: string): T | null {
-    const preprocessed = this.preprocess(source);
-
+  parse<T extends TokenExpression = TokenExpression>(event: TokenExpressionParseEvent): T | null {
+    const source = this.transformSource(event);
     if (this.cache.has(source)) {
       return this.cache.get(source) as T;
     }
 
-    const { program } = babelParser.parse(preprocessed);
+    const { program } = babelParser.parse(source);
     const node = program.body[0] ?? program.directives[0];
-    const parsed = this.parseNode(node, preprocessed);
+    const parsed = this.parseNode(node, source);
     this.cache.set(source, parsed);
 
     return parsed as T;
@@ -74,28 +80,30 @@ export class TokenExpressionParser {
     this.factories.push(factory);
   }
 
+  registerTransformer(transformer: SourceTransformer) {
+    this.transformers[transformer.type] = transformer;
+  }
+
   getParser = memoize((nodeType: NodeType): AbstractExpressionParser => {
     for (const factory of this.factories) {
       if (factory.canParse(nodeType)) {
         return factory.getParser();
       }
     }
-    throw new Error(`No parser found for node type ${nodeType}`);
+    throw new Error(`No parser found for node type '${nodeType}'`);
   });
 
-  // TODO Implement preprocessor system, most likely as part of the ExpressionParserFactory
-  private preprocess(input: string): string {
-    if (input.indexOf(':') === -1) {
-      return input;
+  transformSource(event: TokenExpressionParseEvent): string {
+    const transformers = event.transformers ?? [];
+    let transformed = event.source;
+    for (const transformerType of transformers) {
+      const transformer = this.transformers[transformerType.TYPE];
+      if (!transformer) {
+        throw new Error(`No transformer found for type '${transformerType}'`);
+      }
+      transformed = transformer.transform({ source: transformed });
     }
-    const match = input.match(MATCH_FORMAT_SPECIFIER);
-    if (match) {
-      /** Preprocess format specifiers
-       * value:0n -> {value; $format = "0n"}
-       */
-      const replaced = input.replace(match[1], `; ${FORMAT_SPECIFIER_IDENTIFIER} = "${match[2]}"`);
-      return ENCLOSED_IN_CURLY_BRACKETS.test(replaced) ? replaced : `{${replaced}}`;
-    }
-    return input;
+
+    return transformed;
   }
 }

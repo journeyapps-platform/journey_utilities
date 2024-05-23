@@ -1,10 +1,10 @@
 export * from './TokenExpression';
 export * from './ObjectTokenExpression';
-export * from './ShorthandTokenExpression';
-export * from './FormatShorthandTokenExpression';
+export * from './shorthand/ShorthandTokenExpression';
+export * from './shorthand/FormatShorthandTokenExpression';
 
 export * from './constant/PrimitiveConstantTokenExpression';
 export * from './constant/ConstantTokenExpression';
 
-export * from './function-token/FunctionTokenExpression';
-export * from './function-token/LegacyFunctionTokenExpression';
+export * from './function/FunctionTokenExpression';
+export * from './function/LegacyFunctionTokenExpression';

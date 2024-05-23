@@ -13,8 +13,8 @@ export class ParseErrors {
   }
 
   pushErrors(newErrors: (ValidationError | XMLError)[]) {
-    for (var i = 0; i < newErrors.length; i++) {
-      var err = newErrors[i];
+    for (let i = 0; i < newErrors.length; i++) {
+      const err = newErrors[i];
       this.errors.push(err);
     }
   }

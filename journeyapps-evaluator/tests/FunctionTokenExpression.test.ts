@@ -5,42 +5,41 @@ import {
   functionTokenExpression,
   FunctionTokenExpression,
   LegacyFunctionTokenExpression,
+  PrimitiveConstantTokenExpression,
   TokenExpression
 } from '../src';
 
 describe('FunctionTokenExpression', () => {
-  it('should construct a TokenExpression', () => {
-    const token = new FunctionTokenExpression({ expression: '$:foo()', start: 3 });
-    expect(token).toBeInstanceOf(TokenExpression);
+  it('should parse expression without prefix', () => {
+    const token = FunctionTokenExpression.parse('foo()');
     expect(token.expression).toEqual('foo()');
     expect(token.functionName()).toEqual('foo');
-    expect(token.start).toEqual(3);
+    expect(token.arguments).toEqual([]);
     expect(token.format).toBeNull();
     expect(token.isConstant()).toEqual(false);
     expect(token.isShorthand()).toEqual(false);
     expect(token.isFunction()).toEqual(true);
   });
 
-  it('should remove the prefix from the expression', () => {
-    const token = new FunctionTokenExpression({ expression: '$:foo()', start: 5 });
+  it('should parse expression with prefix', () => {
+    const token = FunctionTokenExpression.parse('$:foo()');
     expect(token.expression).toEqual('foo()');
-    expect(token.start).toEqual(5);
-  });
-
-  it('should allow expressions without the prefix', () => {
-    const token = new FunctionTokenExpression({ expression: 'foo()', start: 5 });
-    expect(token.expression).toEqual('foo()');
-    expect(token.start).toEqual(5);
-  });
-
-  it('should give the function name', () => {
-    const token = new FunctionTokenExpression({ expression: '$:foo()' });
     expect(token.functionName()).toEqual('foo');
+    expect(token.arguments).toEqual([]);
+    expect(token.format).toBeNull();
+    expect(token.isConstant()).toEqual(false);
+    expect(token.isShorthand()).toEqual(false);
+    expect(token.isFunction()).toEqual(true);
   });
 
-  it('should give the function name where there are arguments', () => {
-    const token = new FunctionTokenExpression({ expression: '$:foo(5, "bar")', start: 5 });
+  it('should parse expression with arguments', () => {
+    const token = FunctionTokenExpression.parse('$:foo(5, "bar")');
+    expect(token.expression).toEqual('foo(5, "bar")');
     expect(token.functionName()).toEqual('foo');
+    expect(token.arguments).toEqual([
+      new PrimitiveConstantTokenExpression({ expression: 5 }),
+      new ConstantTokenExpression({ expression: 'bar' })
+    ]);
   });
 
   it('should be able to convert to a constant token expression without escape tags by default', () => {
@@ -54,7 +53,6 @@ describe('FunctionTokenExpression', () => {
 
   it('should be able to convert to a constant token expression with escape tags', () => {
     const token = new FunctionTokenExpression({ expression: '$:foo()', start: 5 });
-
     const constantToken = token.toConstant(true);
     expect(constantToken).toBeInstanceOf(ConstantTokenExpression);
     expect(constantToken.expression).toEqual('{$:foo()}');

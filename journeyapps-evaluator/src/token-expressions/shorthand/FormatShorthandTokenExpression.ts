@@ -2,7 +2,7 @@
  * Shorthand token expression with format specifier.
  */
 import { ShorthandTokenExpression } from './ShorthandTokenExpression';
-import { TokenExpressionOptions } from './TokenExpression';
+import { TokenExpressionOptions } from '../TokenExpression';
 
 export interface FormatShorthandTokenExpressionOptions extends TokenExpressionOptions {
   format: string;
