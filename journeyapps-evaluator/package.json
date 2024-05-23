@@ -19,7 +19,7 @@
     "@babel/types": "^7.24.5",
     "@babel/parser": "^7.24.5",
     "@journeyapps/core-xml": "workspace:*",
-    "lru-cache": "^10.2.2",
+    "lru-cache": "^7.18.3",
     "lodash": "^4.17.21"
   },
   "devDependencies": {

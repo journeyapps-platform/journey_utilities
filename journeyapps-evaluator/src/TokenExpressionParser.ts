@@ -1,7 +1,7 @@
 import * as babelParser from '@babel/parser';
 import { Node } from '@babel/types';
 import { memoize } from 'lodash';
-import { LRUCache } from 'lru-cache';
+import LRUCache = require('lru-cache');
 import {
   ExpressionParserFactory,
   BlockStatementParserFactory,
@@ -15,7 +15,7 @@ import {
   ObjectExpressionParserFactory,
   AbstractExpressionParser
 } from './parsers';
-import { TokenExpression } from './token-expressions';
+import { FunctionTokenExpression, TokenExpression } from './token-expressions';
 
 /**
  * Matches format specifiers in expressions in the form of `value:n`, `value:0n` or `value:.Xf`
@@ -85,6 +85,9 @@ export class TokenExpressionParser {
 
   // TODO Implement preprocessor system, most likely as part of the ExpressionParserFactory
   private preprocess(input: string): string {
+    if (input.indexOf(':') === -1 || input.indexOf(FunctionTokenExpression.PREFIX) === -1) {
+      return input;
+    }
     const match = input.match(MATCH_FORMAT_SPECIFIER);
     if (match) {
       /** Preprocess format specifiers
