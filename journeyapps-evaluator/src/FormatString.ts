@@ -23,7 +23,7 @@ export class FormatString {
   }
 
   constructor(options: FormatStringOptions) {
-    this.expression = options.expression;
+    this.expression = options.expression || '';
     this.tokens = FormatString.compile(this.expression);
     this.type = FormatString.TYPE;
   }

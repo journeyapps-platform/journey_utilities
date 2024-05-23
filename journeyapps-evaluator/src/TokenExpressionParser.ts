@@ -1,6 +1,7 @@
 import * as babelParser from '@babel/parser';
 import { Node } from '@babel/types';
 import { memoize } from 'lodash';
+import { LRUCache } from 'lru-cache';
 import {
   ExpressionParserFactory,
   BlockStatementParserFactory,
@@ -19,14 +20,14 @@ import { TokenExpression } from './token-expressions';
 /**
  * Matches format specifiers in expressions in the form of `value:n`, `value:0n` or `value:.Xf`
  */
+const FORMAT_SPECIFIER_IDENTIFIER = '$format';
 const MATCH_FORMAT_SPECIFIER = /(?<!['"])[^{}]*[^\$](:(\.?\d+f?)[^{}]*)(?!['"])/;
 const ENCLOSED_IN_CURLY_BRACKETS = /^{.*}$/;
 
 export class TokenExpressionParser {
   factories: ExpressionParserFactory[];
-  static FORMAT_SPECIFIER_IDENTIFIER = '$format';
+  cache: LRUCache<string, TokenExpression>;
 
-  // Implement static instance getter
   static instance: TokenExpressionParser;
   static get(): TokenExpressionParser {
     if (!this.instance) {
@@ -37,6 +38,7 @@ export class TokenExpressionParser {
 
   constructor() {
     this.factories = [];
+    this.cache = new LRUCache({ max: 1000 });
     this.registerFactory(new BlockStatementParserFactory());
     this.registerFactory(new CallExpressionParserFactory());
     this.registerFactory(new ConditionalExpressionParserFactory());
@@ -50,9 +52,17 @@ export class TokenExpressionParser {
   // TODO: Better lifecycle control and dispose it afterwards
   parse<T extends TokenExpression = TokenExpression>(source: string): T | null {
     const preprocessed = this.preprocess(source);
+
+    if (this.cache.has(source)) {
+      return this.cache.get(source) as T;
+    }
+
     const { program } = babelParser.parse(preprocessed);
     const node = program.body[0] ?? program.directives[0];
-    return this.parseNode(node, preprocessed) as T;
+    const parsed = this.parseNode(node, preprocessed);
+    this.cache.set(source, parsed);
+
+    return parsed as T;
   }
 
   parseNode(node: Node, source: string): TokenExpression | null {
@@ -80,10 +90,7 @@ export class TokenExpressionParser {
       /** Preprocess format specifiers
        * value:0n -> {value; $format = "0n"}
        */
-      const replaced = input.replace(
-        match[1],
-        `; ${TokenExpressionParser.FORMAT_SPECIFIER_IDENTIFIER} = "${match[2]}"`
-      );
+      const replaced = input.replace(match[1], `; ${FORMAT_SPECIFIER_IDENTIFIER} = "${match[2]}"`);
       return ENCLOSED_IN_CURLY_BRACKETS.test(replaced) ? replaced : `{${replaced}}`;
     }
     return input;
