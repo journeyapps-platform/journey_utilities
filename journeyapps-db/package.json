@@ -4,8 +4,8 @@
   "description": "Journey DB library",
   "main": "./dist/index.js",
   "browser": "./dist/browser.js",
-  "typings": "./dist/index",
-  "appTypings": "./dist/app",
+  "typings": "./dist/@types/index.d.ts",
+  "appTypings": "./dist/@types/app.d.ts",
   "exports": {
     ".": {
       "types": "./dist/@types/index.d.ts",
