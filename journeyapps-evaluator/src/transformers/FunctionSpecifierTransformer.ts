@@ -9,11 +9,6 @@ export class FunctionSpecifierTransformer extends SourceTransformer {
   }
 
   transform(source: string): string {
-    // remove indicator prefix from expression
-    const trimmed = source.trim();
-    if (trimmed.startsWith(FunctionTokenExpression.PREFIX)) {
-      return trimmed.slice(FunctionTokenExpression.PREFIX.length);
-    }
-    return trimmed;
+    return FunctionTokenExpression.trimPrefix(source);
   }
 }

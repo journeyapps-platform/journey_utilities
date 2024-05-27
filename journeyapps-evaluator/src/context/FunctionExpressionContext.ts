@@ -16,8 +16,7 @@ export class FunctionExpressionContext extends ParseContext {
 
 export class FunctionExpressionContextFactory extends ParseContextFactory<FunctionExpressionContext> {
   inferParseContext(source: string): FunctionExpressionContext | null {
-    const trimmed = source.trim();
-    if (trimmed.startsWith(FunctionTokenExpression.PREFIX)) {
+    if (FunctionTokenExpression.hasPrefix(source.trim())) {
       return new FunctionExpressionContext();
     }
 

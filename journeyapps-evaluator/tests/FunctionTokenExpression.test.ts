@@ -42,6 +42,14 @@ describe('FunctionTokenExpression', () => {
     ]);
   });
 
+  it('should parse expression without brackets', () => {
+    const token = FunctionTokenExpression.parse('$:foo');
+    expect(token).toBeInstanceOf(FunctionTokenExpression);
+    expect(token.expression).toEqual('foo');
+    expect(token.functionName()).toEqual('foo');
+    expect(token.stringify()).toEqual('foo()');
+  });
+
   it('should be able to convert to a constant token expression without escape tags by default', () => {
     const token = new FunctionTokenExpression({ expression: '$:foo()', start: 5 });
     const constantToken = token.toConstant();

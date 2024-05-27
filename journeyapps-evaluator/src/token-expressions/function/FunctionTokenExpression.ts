@@ -30,15 +30,11 @@ export class FunctionTokenExpression extends TokenExpression<FunctionTokenExpres
 
   constructor(options: FunctionTokenExpressionOptions) {
     super(FunctionTokenExpression.TYPE, { ...options, isFunction: true });
-    // remove indicator prefix from expression
-    this.expression = this.expression.trim();
-    if (this.expression.startsWith(FunctionTokenExpression.PREFIX)) {
-      this.expression = this.expression.slice(FunctionTokenExpression.PREFIX.length);
-    }
+    this.expression = FunctionTokenExpression.trimPrefix(this.expression);
 
     if (!this.options.name) {
       const startBracket = this.expression.indexOf('(');
-      this.options.name = this.expression.slice(0, startBracket > 0 ? startBracket : this.expression.length);
+      this.setFunctionName(this.expression.slice(0, startBracket > 0 ? startBracket : this.expression.length));
     }
 
     this.options.arguments = this.options.arguments ?? [];
@@ -50,6 +46,14 @@ export class FunctionTokenExpression extends TokenExpression<FunctionTokenExpres
 
   functionName(): string {
     return this.options.name;
+  }
+
+  setFunctionName(name: string) {
+    this.options.name = name;
+  }
+
+  async tokenEvaluatePromise(scope: FormatStringScope) {
+    return scope.evaluateFunctionExpression(this.expression);
   }
 
   /**
@@ -64,11 +68,22 @@ export class FunctionTokenExpression extends TokenExpression<FunctionTokenExpres
     return new ConstantTokenExpression({ expression: constantExpression, start: this.start });
   }
 
-  async tokenEvaluatePromise(scope: FormatStringScope) {
-    return scope.evaluateFunctionExpression(this.expression);
+  stringify(prefix: boolean = false) {
+    return `${prefix ? FunctionTokenExpression.PREFIX : ''}${this.functionName()}(${this.arguments
+      .map((arg) => arg.stringify())
+      .join(', ')})`;
   }
 
-  stringify() {
-    return `${this.functionName()}(${this.arguments.map((arg) => arg.stringify()).join(', ')})`;
+  static trimPrefix(expression: string): string {
+    // remove indicator prefix from expression
+    expression = expression.trim();
+    if (FunctionTokenExpression.hasPrefix(expression)) {
+      return expression.slice(FunctionTokenExpression.PREFIX.length);
+    }
+    return expression;
+  }
+
+  static hasPrefix(expression: string): boolean {
+    return expression.startsWith(FunctionTokenExpression.PREFIX);
   }
 }

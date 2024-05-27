@@ -23,6 +23,10 @@ export class ConstantTokenExpression extends TokenExpression {
     return new ConstantTokenExpression({ expression: this.expression.concat(token.expression), start: this.start });
   }
 
+  async tokenEvaluatePromise(scope: FormatStringScope) {
+    return this.expression;
+  }
+
   /**
    * Get the value of the constant token expression.
    */
@@ -30,7 +34,7 @@ export class ConstantTokenExpression extends TokenExpression {
     return this.expression;
   }
 
-  async tokenEvaluatePromise(scope: FormatStringScope) {
-    return this.expression;
+  stringify(): string {
+    return `'${this.expression}'`;
   }
 }
