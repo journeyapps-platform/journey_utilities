@@ -29,4 +29,8 @@ export class PrimitiveConstantTokenExpression extends ConstantTokenExpression {
       start: this.start
     });
   }
+
+  stringify(): string {
+    return `${this.expression}`;
+  }
 }
