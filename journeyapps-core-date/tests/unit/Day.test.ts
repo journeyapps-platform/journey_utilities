@@ -1,5 +1,6 @@
 import { Day } from '../../src';
 import { describe, it, expect, expectTypeOf } from 'vitest';
+// @ts-ignore
 import moment from 'moment';
 
 describe('Day', function () {

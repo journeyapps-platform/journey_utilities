@@ -1,5 +1,5 @@
-import { FormatStringScope } from '../definitions/FormatStringScope';
-import { TypeInterface } from '../definitions/TypeInterface';
+import { FormatStringScope } from './FormatStringScope';
+import { TypeInterface } from './TypeInterface';
 
 export type VariableScope = Record<string, any> & {
   type: TypeInterface;
