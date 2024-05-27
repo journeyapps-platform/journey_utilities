@@ -1,12 +1,11 @@
 import { Node, Aliases, isType } from '@babel/types';
 import { TokenExpression } from '../token-expressions';
+import { ParseNodeEvent } from '../TokenExpressionParser';
 
 export type NodeType = Node['type'] | keyof Aliases;
 
-export interface ExpressionNodeEvent<N extends Node = Node> {
-  source: string;
-  node: N;
-  parseNode(node: Node, source: string): TokenExpression | null;
+export interface ExpressionNodeParseEvent<N extends Node = Node> extends ParseNodeEvent<N> {
+  parseNode(event: ParseNodeEvent): TokenExpression | null;
 }
 
 export interface AbstractExpressionParserOptions {}
@@ -15,7 +14,7 @@ export abstract class AbstractExpressionParser<
   N extends Node = Node,
   T extends TokenExpression = TokenExpression,
   O extends AbstractExpressionParserOptions = AbstractExpressionParserOptions,
-  E extends ExpressionNodeEvent<N> = ExpressionNodeEvent<N>
+  E extends ExpressionNodeParseEvent<N> = ExpressionNodeParseEvent<N>
 > {
   options: O;
 

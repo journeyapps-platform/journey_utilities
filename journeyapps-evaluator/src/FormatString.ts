@@ -1,15 +1,10 @@
 import { AttributeValidationError } from '@journeyapps/core-xml';
+import { FormatStringContext } from './context/FormatStringContext';
 import { FormatStringScope } from './definitions/FormatStringScope';
 import { TypeInterface } from './definitions/TypeInterface';
 import { ConstantTokenExpression, FunctionTokenExpression, TokenExpression } from './token-expressions';
 import { TokenExpressionParser } from './TokenExpressionParser';
 import { extract, formatValue } from './tools';
-import { BlockStatementTransformer, FormatSpecifierTransformer, SourceTransformer } from './transformers';
-
-export const DEFAULT_FORMAT_STRING_TRANSFORMERS: (typeof SourceTransformer)[] = [
-  FormatSpecifierTransformer,
-  BlockStatementTransformer
-];
 
 export interface FormatStringOptions {
   expression: string;
@@ -55,9 +50,9 @@ export class FormatString {
         break;
       }
       // normal text in the gaps between curly braces
-      const text = FormatString.unescape(expression.substring(start, i));
-      if (text.length > 0) {
-        tokens.push(new ConstantTokenExpression({ expression: text, start }));
+      const betweenText = FormatString.unescape(expression.substring(start, i));
+      if (betweenText.length > 0) {
+        tokens.push(new ConstantTokenExpression({ expression: betweenText, start }));
       }
       if (expression[i + 1] == '{') {
         // Double left brace - escape and continue
@@ -83,7 +78,7 @@ export class FormatString {
         throw new Error('Usage of ? in expressions is not supported.');
       }
 
-      const parsedToken = parser.parse({ source: spec, transformers: DEFAULT_FORMAT_STRING_TRANSFORMERS });
+      const parsedToken = parser.parse({ source: spec, context: new FormatStringContext() });
       if (parsedToken) {
         parsedToken.start = i;
         tokens.push(parsedToken);
@@ -340,6 +335,10 @@ export class FormatString {
     return null;
   }
 
+  /**
+   * Removes one set of curly braces from the string.
+   * Example {{foo}} -> {foo}
+   */
   static unescape(s: string) {
     let start = 0;
     let result = '';

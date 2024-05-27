@@ -1,13 +1,13 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import {
   ConstantTokenExpression,
-  DEFAULT_FORMAT_STRING_TRANSFORMERS,
   FormatShorthandTokenExpression,
   FunctionTokenExpression,
   PrimitiveConstantTokenExpression,
   ShorthandTokenExpression,
   TokenExpressionParser
 } from '../src';
+import { FormatStringContext } from '../src/context/FormatStringContext';
 
 declare module 'vitest' {
   export interface TestContext {
@@ -116,17 +116,17 @@ describe('Expression Parsing ', () => {
   });
 
   it('should parse format specifiers', ({ parser }) => {
-    let result = parser.parse({ source: 'value:05', transformers: DEFAULT_FORMAT_STRING_TRANSFORMERS });
+    let result = parser.parse({ source: 'value:05', context: new FormatStringContext() });
     expect(result).toBeInstanceOf(FormatShorthandTokenExpression);
     expect(result.expression).toEqual('value');
     expect(result.format).toEqual('05');
 
-    result = parser.parse({ source: '{value:.2f}', transformers: DEFAULT_FORMAT_STRING_TRANSFORMERS });
+    result = parser.parse({ source: '{value:.2f}', context: new FormatStringContext() });
     expect(result).toBeInstanceOf(FormatShorthandTokenExpression);
     expect(result.expression).toEqual('value');
     expect(result.format).toEqual('.2f');
 
-    result = parser.parse({ source: '{product.price:.2f}', transformers: DEFAULT_FORMAT_STRING_TRANSFORMERS });
+    result = parser.parse({ source: '{product.price:.2f}', context: new FormatStringContext() });
     expect(result).toBeInstanceOf(FormatShorthandTokenExpression);
     expect(result.expression).toEqual('product.price');
     expect(result.format).toEqual('.2f');

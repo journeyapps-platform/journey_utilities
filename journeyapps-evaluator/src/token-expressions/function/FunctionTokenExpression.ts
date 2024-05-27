@@ -1,3 +1,4 @@
+import { FunctionExpressionContext } from '../../context/FunctionExpressionContext';
 import { TokenExpressionParser } from '../../TokenExpressionParser';
 import { TokenExpression, TokenExpressionOptions } from '../TokenExpression';
 import { ConstantTokenExpression } from '../constant/ConstantTokenExpression';
@@ -21,18 +22,25 @@ export class FunctionTokenExpression extends TokenExpression<FunctionTokenExpres
   static PREFIX = '$:';
 
   static parse(source: string) {
-    return TokenExpressionParser.get().parse<FunctionTokenExpression>({ source });
+    return TokenExpressionParser.get().parse<FunctionTokenExpression>({
+      source,
+      context: new FunctionExpressionContext()
+    });
   }
 
   constructor(options: FunctionTokenExpressionOptions) {
     super(FunctionTokenExpression.TYPE, { ...options, isFunction: true });
     // remove indicator prefix from expression
-    const prefix = FunctionTokenExpression.PREFIX;
     this.expression = this.expression.trim();
-    if (this.expression.indexOf(prefix) === 0) {
-      this.expression = this.expression.slice(prefix.length);
+    if (this.expression.startsWith(FunctionTokenExpression.PREFIX)) {
+      this.expression = this.expression.slice(FunctionTokenExpression.PREFIX.length);
     }
-    this.options.name = this.options.name ?? this.expression.slice(0, this.expression.indexOf('('));
+
+    if (!this.options.name) {
+      const startBracket = this.expression.indexOf('(');
+      this.options.name = this.expression.slice(0, startBracket > 0 ? startBracket : this.expression.length);
+    }
+
     this.options.arguments = this.options.arguments ?? [];
   }
 

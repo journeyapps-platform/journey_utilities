@@ -48,7 +48,7 @@ export function actionableTokenExpression(
     return FunctionTokenExpression.parse(expression);
   }
   const colon = expression.indexOf(':');
-  if (colon == -1) {
+  if (colon === -1) {
     return new ShorthandTokenExpression({ expression });
   }
   return new FormatShorthandTokenExpression({

@@ -1,11 +1,15 @@
 import { isLabeledStatement, Identifier, Node } from '@babel/types';
+import { FunctionExpressionContext } from '../context/FunctionExpressionContext';
 import {
   FormatShorthandTokenExpression,
   FunctionTokenExpression,
   ShorthandTokenExpression
 } from '../token-expressions';
-import { AbstractExpressionParser, ExpressionParserFactory, ExpressionNodeEvent } from './AbstractExpressionParser';
-import { inFunctionExpression } from './utils';
+import {
+  AbstractExpressionParser,
+  ExpressionParserFactory,
+  ExpressionNodeParseEvent
+} from './AbstractExpressionParser';
 
 export type IdentifierExpressionParsedType =
   | FunctionTokenExpression
@@ -13,13 +17,13 @@ export type IdentifierExpressionParsedType =
   | FormatShorthandTokenExpression;
 
 export class IdentifierExpressionParser extends AbstractExpressionParser<Identifier, IdentifierExpressionParsedType> {
-  parse(event: ExpressionNodeEvent<Identifier>) {
-    const { node } = event;
+  parse(event: ExpressionNodeParseEvent<Identifier>) {
+    const { node, context } = event;
     if (isLabeledStatement(node.extra?.parent as Node)) {
       return null;
     }
     const { name: expression } = node;
-    if (inFunctionExpression(node)) {
+    if (FunctionExpressionContext.isInstanceOf(context)) {
       return new FunctionTokenExpression({ expression: expression });
     }
     const format = node.extra?.format as string;

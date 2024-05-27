@@ -1,52 +1,42 @@
-import {
-  Node,
-  isType,
-  BlockStatement,
-  isLabeledStatement,
-  isExpressionStatement,
-  isBlockStatement,
-  Statement,
-  isAssignmentExpression,
-  isStringLiteral
-} from '@babel/types';
+import { Node, BlockStatement, isLabeledStatement, isExpressionStatement, isBlockStatement } from '@babel/types';
+import { FormatStringContext } from '../context/FormatStringContext';
 import { ConstantTokenExpression } from '../token-expressions';
-import { AbstractExpressionParser, ExpressionParserFactory, ExpressionNodeEvent } from './AbstractExpressionParser';
+import {
+  AbstractExpressionParser,
+  ExpressionParserFactory,
+  ExpressionNodeParseEvent
+} from './AbstractExpressionParser';
 
 export class BlockStatementParser extends AbstractExpressionParser<BlockStatement> {
-  parse(event: ExpressionNodeEvent<BlockStatement>) {
-    const { node, source, parseNode } = event;
+  parse(event: ExpressionNodeParseEvent<BlockStatement>) {
+    const { node, source, context, parseNode } = event;
     // If parent is also a BlockStatement means we have an escaped FormatString, e.g. {{value}}
     // and it will be handled by `ExpressionStatement` lower down
     if (isBlockStatement(node.extra?.parent as Node)) {
       return null;
     }
-    // TODO: FormatStatement extraction should be handled by a mutator
     const [body, formatStm] = node.body;
     if (isBlockStatement(body)) {
       return new ConstantTokenExpression({ expression: source.slice(body.start, body.end) });
     }
+    // Example `{$:foo()}`
     if (isLabeledStatement(body)) {
-      // Example `{$:foo()}`
       const { body: child } = body;
       child.extra = { ...child.extra, parent: node };
-      return parseNode(child, source);
+      return parseNode({ ...event, node: child });
     }
+    // Example `{item.price}`
     if (isExpressionStatement(body)) {
       const { expression: child } = body;
-      child.extra = { ...child.extra, parent: node, format: this.getFormatSpecifier(formatStm) };
-      return parseNode(child, source);
-    }
-  }
+      child.extra = { ...child.extra, parent: node };
 
-  getFormatSpecifier(stm: Statement | null): string {
-    if (!isExpressionStatement(stm)) {
-      return;
+      // Example `{item.price; $format = ".2f"}
+      if (FormatStringContext.isInstanceOf(context)) {
+        child.extra.format = context.getFormatSpecifier(formatStm);
+      }
+
+      return parseNode({ ...event, node: child });
     }
-    const { expression } = stm;
-    if (!isAssignmentExpression(expression)) {
-      return;
-    }
-    return isStringLiteral(expression.right) ? expression.right.value : null;
   }
 }
 

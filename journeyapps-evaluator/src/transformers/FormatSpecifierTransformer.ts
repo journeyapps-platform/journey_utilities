@@ -1,4 +1,4 @@
-import { SourceTransformer, TransformSourceEvent } from './SourceTransformer';
+import { SourceTransformer } from './SourceTransformer';
 
 /**
  * Matches format specifiers in expressions in the form of `value:n`, `value:0n` or `value:.2f`
@@ -9,15 +9,14 @@ const MATCH_FORMAT_SPECIFIER = /(?<!['"])[^{}]*[^\$](:(\.?\d+f?)[^{}]*)(?!['"])/
  * value:0n -> {value; $format = "0n"}
  */
 export class FormatSpecifierTransformer extends SourceTransformer {
-  static TYPE = 'format-specifier';
+  static TYPE = 'format-specifier-transformer';
   static SOURCE_IDENTIFIER = `$format`;
 
   constructor() {
     super(FormatSpecifierTransformer.TYPE);
   }
 
-  transform(event: TransformSourceEvent): string {
-    const { source } = event;
+  transform(source: string): string {
     // Regex matching is expensive, so we first check if the source at least contains a colon
     if (source.indexOf(':') === -1) {
       return source;

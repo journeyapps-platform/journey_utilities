@@ -1,12 +1,16 @@
 import { DirectiveLiteral, isDirectiveLiteral, isStringLiteral, Literal } from '@babel/types';
 
 import { ConstantTokenExpression, PrimitiveConstantTokenExpression } from '../token-expressions';
-import { AbstractExpressionParser, ExpressionParserFactory, ExpressionNodeEvent } from './AbstractExpressionParser';
+import {
+  AbstractExpressionParser,
+  ExpressionParserFactory,
+  ExpressionNodeParseEvent
+} from './AbstractExpressionParser';
 
 export type LiteralExpression = Literal | DirectiveLiteral;
 
 export class LiteralExpressionParser extends AbstractExpressionParser<LiteralExpression, ConstantTokenExpression> {
-  parse(event: ExpressionNodeEvent<LiteralExpression>) {
+  parse(event: ExpressionNodeParseEvent<LiteralExpression>) {
     const { node } = event;
     if (isStringLiteral(node) || isDirectiveLiteral(node)) {
       return new ConstantTokenExpression({ expression: node.value });

@@ -1,4 +1,4 @@
-import { SourceTransformer, TransformSourceEvent } from './SourceTransformer';
+import { SourceTransformer } from './SourceTransformer';
 
 const ENCLOSED_IN_CURLY_BRACKETS = /^{.*}$/;
 
@@ -6,13 +6,12 @@ const ENCLOSED_IN_CURLY_BRACKETS = /^{.*}$/;
  * Wraps source code in a block statement if it is not already
  */
 export class BlockStatementTransformer extends SourceTransformer {
-  static TYPE = 'to-block-statement';
+  static TYPE = 'block-statement-transformer';
   constructor() {
     super(BlockStatementTransformer.TYPE);
   }
 
-  transform(event: TransformSourceEvent): string {
-    const { source } = event;
+  transform(source: string): string {
     return !ENCLOSED_IN_CURLY_BRACKETS.test(source) ? `{${source}}` : source;
   }
 }

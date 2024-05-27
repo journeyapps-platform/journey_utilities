@@ -1,15 +1,19 @@
 import { ConditionalExpression } from '@babel/types';
 import { FunctionTokenExpression } from '../token-expressions';
-import { AbstractExpressionParser, ExpressionParserFactory, ExpressionNodeEvent } from './AbstractExpressionParser';
+import {
+  AbstractExpressionParser,
+  ExpressionParserFactory,
+  ExpressionNodeParseEvent
+} from './AbstractExpressionParser';
 
 export class ConditionalExpressionParser extends AbstractExpressionParser<
   ConditionalExpression,
   FunctionTokenExpression
 > {
-  parse(event: ExpressionNodeEvent<ConditionalExpression>): FunctionTokenExpression {
+  parse(event: ExpressionNodeParseEvent<ConditionalExpression>): FunctionTokenExpression {
     const { node, source, parseNode } = event;
     const { test, consequent, alternate } = node;
-    const args = [test, consequent, alternate].map((arg) => parseNode(arg, source));
+    const args = [test, consequent, alternate].map((arg) => parseNode({ node: arg, source }));
     const argStrings = [
       source.slice(test.start, test.end),
       source.slice(consequent.start, consequent.end),

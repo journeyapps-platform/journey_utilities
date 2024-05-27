@@ -91,6 +91,14 @@ describe('FunctionTokenExpression', () => {
 });
 
 describe('LegacyFunctionTokenExpression', () => {
+  it('should parse expression', () => {
+    const token = FunctionTokenExpression.parse('onChange');
+    expect(token).toBeInstanceOf(FunctionTokenExpression);
+    expect(token.functionName()).toEqual('onChange');
+    expect(token.arguments).toEqual([]);
+    expect(token.stringify()).toEqual('onChange()');
+  });
+
   it('should construct a TokenExpression', () => {
     const token = new LegacyFunctionTokenExpression({ expression: 'foo', start: 3 });
     expect(token).toBeInstanceOf(TokenExpression);
