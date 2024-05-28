@@ -22,14 +22,19 @@ export class FunctionTokenExpression extends TokenExpression<FunctionTokenExpres
   static PREFIX = '$:';
 
   static parse(source: string) {
-    return TokenExpressionParser.get().parse<FunctionTokenExpression>({
+    const token = TokenExpressionParser.get().parse<FunctionTokenExpression>({
       source,
       context: new FunctionExpressionContext()
     });
+    token.rawExpression = source.trim();
+    return token;
   }
+
+  rawExpression: string;
 
   constructor(options: FunctionTokenExpressionOptions) {
     super(FunctionTokenExpression.TYPE, { ...options, isFunction: true });
+    this.rawExpression = this.expression.trim();
     this.expression = FunctionTokenExpression.trimPrefix(this.expression);
 
     if (!this.options.name) {
@@ -52,6 +57,10 @@ export class FunctionTokenExpression extends TokenExpression<FunctionTokenExpres
     this.options.name = name;
   }
 
+  isShorthand(): boolean {
+    return this.options.isShorthand && !FunctionTokenExpression.hasPrefix(this.rawExpression);
+  }
+
   async tokenEvaluatePromise(scope: FormatStringScope) {
     return scope.evaluateFunctionExpression(this.expression);
   }
@@ -61,15 +70,18 @@ export class FunctionTokenExpression extends TokenExpression<FunctionTokenExpres
    * @param {boolean} [includeEscapeTags] if "{" and "}" format string escape tags should be included or not
    */
   toConstant(includeEscapeTags: boolean = false): ConstantTokenExpression {
-    let constantExpression = FunctionTokenExpression.PREFIX + this.expression;
+    let constantExpression = `${FunctionTokenExpression.PREFIX}${this.expression}`;
     if (includeEscapeTags) {
       constantExpression = '{' + constantExpression + '}';
     }
     return new ConstantTokenExpression({ expression: constantExpression, start: this.start });
   }
 
-  stringify(prefix: boolean = false) {
-    return `${prefix ? FunctionTokenExpression.PREFIX : ''}${this.functionName()}(${this.arguments
+  stringify() {
+    if (this.isShorthand()) {
+      return this.functionName();
+    }
+    return `${FunctionTokenExpression.PREFIX}${this.functionName()}(${this.arguments
       .map((arg) => arg.stringify())
       .join(', ')})`;
   }

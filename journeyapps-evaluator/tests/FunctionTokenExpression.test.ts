@@ -46,8 +46,18 @@ describe('FunctionTokenExpression', () => {
     const token = FunctionTokenExpression.parse('$:foo');
     expect(token).toBeInstanceOf(FunctionTokenExpression);
     expect(token.expression).toEqual('foo');
+    expect(token.isShorthand()).toEqual(false);
     expect(token.functionName()).toEqual('foo');
-    expect(token.stringify()).toEqual('foo()');
+    expect(token.stringify()).toEqual('$:foo()');
+  });
+
+  it('should parse expression without function specifier or brackets', () => {
+    const token = FunctionTokenExpression.parse('foo');
+    expect(token).toBeInstanceOf(FunctionTokenExpression);
+    expect(token.expression).toEqual('foo');
+    expect(token.isShorthand()).toEqual(true);
+    expect(token.functionName()).toEqual('foo');
+    expect(token.stringify()).toEqual('foo');
   });
 
   it('should be able to convert to a constant token expression without escape tags by default', () => {
@@ -99,14 +109,6 @@ describe('FunctionTokenExpression', () => {
 });
 
 describe('LegacyFunctionTokenExpression', () => {
-  it('should parse expression', () => {
-    const token = FunctionTokenExpression.parse('onChange');
-    expect(token).toBeInstanceOf(FunctionTokenExpression);
-    expect(token.functionName()).toEqual('onChange');
-    expect(token.arguments).toEqual([]);
-    expect(token.stringify()).toEqual('onChange()');
-  });
-
   it('should construct a TokenExpression', () => {
     const token = new LegacyFunctionTokenExpression({ expression: 'foo', start: 3 });
     expect(token).toBeInstanceOf(TokenExpression);

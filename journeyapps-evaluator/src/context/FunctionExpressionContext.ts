@@ -1,5 +1,4 @@
 import { FunctionTokenExpression } from '../token-expressions';
-import { FunctionSpecifierTransformer } from '../transformers/FunctionSpecifierTransformer';
 import { ParseContext, ParseContextFactory } from './ParseContext';
 
 export class FunctionExpressionContext extends ParseContext {
@@ -10,7 +9,7 @@ export class FunctionExpressionContext extends ParseContext {
   }
 
   constructor() {
-    super(FunctionExpressionContext.TYPE, { transformers: [new FunctionSpecifierTransformer()] });
+    super(FunctionExpressionContext.TYPE);
   }
 }
 
