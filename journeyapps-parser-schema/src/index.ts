@@ -7,6 +7,8 @@ export * from './schema/TypeFactory';
 export * from './types/Type';
 export * from './types/EnumOption';
 export * from './types/Variable';
+export * from './types/Param';
+export * from './types/FunctionType';
 export * from './types/NestedType';
 export * from './types/ObjectType';
 export * from './types/Relationship';

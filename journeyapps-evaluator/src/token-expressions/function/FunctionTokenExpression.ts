@@ -82,7 +82,13 @@ export class FunctionTokenExpression extends TokenExpression<FunctionTokenExpres
       return this.functionName();
     }
     return `${FunctionTokenExpression.PREFIX}${this.functionName()}(${this.arguments
-      .map((arg) => arg.stringify())
+      .map((arg) => {
+        const res = arg.stringify();
+        if (arg.isFunction()) {
+          return FunctionTokenExpression.trimPrefix(res);
+        }
+        return res;
+      })
       .join(', ')})`;
   }
 
