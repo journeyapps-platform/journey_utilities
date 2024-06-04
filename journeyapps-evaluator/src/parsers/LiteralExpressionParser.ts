@@ -1,6 +1,11 @@
-import { DirectiveLiteral, isDirectiveLiteral, isStringLiteral, Literal } from '@babel/types';
+import { DirectiveLiteral, isDirectiveLiteral, isStringLiteral, isNullLiteral, Literal } from '@babel/types';
+import { FunctionExpressionContext } from '../context/FunctionExpressionContext';
 
-import { ConstantTokenExpression, PrimitiveConstantTokenExpression } from '../token-expressions';
+import {
+  ConstantTokenExpression,
+  FunctionTokenExpression,
+  PrimitiveConstantTokenExpression
+} from '../token-expressions';
 import {
   AbstractExpressionParser,
   ExpressionParserFactory,
@@ -9,12 +14,31 @@ import {
 
 export type LiteralExpression = Literal | DirectiveLiteral;
 
-export class LiteralExpressionParser extends AbstractExpressionParser<LiteralExpression, ConstantTokenExpression> {
+export type ParsedLiteralExpressionType =
+  | ConstantTokenExpression
+  | FunctionTokenExpression
+  | PrimitiveConstantTokenExpression;
+
+export class LiteralExpressionParser extends AbstractExpressionParser<LiteralExpression, ParsedLiteralExpressionType> {
   parse(event: ExpressionNodeParseEvent<LiteralExpression>) {
-    const { node } = event;
+    const { node, context } = event;
+    const inFunctionContext = FunctionExpressionContext.isInstanceOf(context);
     if (isStringLiteral(node) || isDirectiveLiteral(node)) {
+      if (inFunctionContext) {
+        return new FunctionTokenExpression({ expression: `'${node.value}'`, isShorthand: true });
+      }
       return new ConstantTokenExpression({ expression: node.value });
-    } else if ('value' in node) {
+    }
+    if (isNullLiteral(node)) {
+      if (inFunctionContext) {
+        return new FunctionTokenExpression({ expression: 'null', isShorthand: true });
+      }
+      return new ConstantTokenExpression({ expression: 'null' });
+    }
+    if ('value' in node) {
+      if (inFunctionContext) {
+        return new FunctionTokenExpression({ expression: `${node.value}`, isShorthand: true });
+      }
       return new PrimitiveConstantTokenExpression({ expression: node.value });
     }
   }

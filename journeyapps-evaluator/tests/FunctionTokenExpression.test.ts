@@ -42,13 +42,37 @@ describe('FunctionTokenExpression', () => {
     ]);
   });
 
+  it('should parse $:null expression', () => {
+    const token = FunctionTokenExpression.parse('$:null');
+    expect(token).toBeInstanceOf(FunctionTokenExpression);
+    expect(token.expression).toEqual('null');
+    expect(token.isShorthand()).toEqual(true);
+    expect(token.stringify()).toEqual('null');
+  });
+
+  it('should parse $:true expression', () => {
+    const token = FunctionTokenExpression.parse('$:true');
+    expect(token).toBeInstanceOf(FunctionTokenExpression);
+    expect(token.expression).toEqual('true');
+    expect(token.isShorthand()).toEqual(true);
+    expect(token.stringify()).toEqual('true');
+  });
+
+  it("should parse $:'string' expression", () => {
+    const token = FunctionTokenExpression.parse("$:'string'");
+    expect(token).toBeInstanceOf(FunctionTokenExpression);
+    expect(token.expression).toEqual("'string'");
+    expect(token.isShorthand()).toEqual(true);
+    expect(token.stringify()).toEqual("'string'");
+  });
+
   it('should parse expression without brackets', () => {
     const token = FunctionTokenExpression.parse('$:foo');
     expect(token).toBeInstanceOf(FunctionTokenExpression);
     expect(token.expression).toEqual('foo');
-    expect(token.isShorthand()).toEqual(false);
+    expect(token.isShorthand()).toEqual(true);
     expect(token.functionName()).toEqual('foo');
-    expect(token.stringify()).toEqual('$:foo()');
+    expect(token.stringify()).toEqual('foo');
   });
 
   it('should parse expression without function specifier or brackets', () => {

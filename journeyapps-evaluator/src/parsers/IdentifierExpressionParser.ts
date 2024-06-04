@@ -11,12 +11,12 @@ import {
   ExpressionNodeParseEvent
 } from './AbstractExpressionParser';
 
-export type IdentifierExpressionParsedType =
+export type ParsedIdentifierExpressionType =
   | FunctionTokenExpression
   | ShorthandTokenExpression
   | FormatShorthandTokenExpression;
 
-export class IdentifierExpressionParser extends AbstractExpressionParser<Identifier, IdentifierExpressionParsedType> {
+export class IdentifierExpressionParser extends AbstractExpressionParser<Identifier, ParsedIdentifierExpressionType> {
   parse(event: ExpressionNodeParseEvent<Identifier>) {
     const { node, context } = event;
     if (isLabeledStatement(node.extra?.parent as Node)) {

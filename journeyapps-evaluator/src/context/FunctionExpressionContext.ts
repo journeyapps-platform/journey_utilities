@@ -2,7 +2,7 @@ import { FunctionTokenExpression } from '../token-expressions';
 import { ParseContext, ParseContextFactory } from './ParseContext';
 
 export class FunctionExpressionContext extends ParseContext {
-  static TYPE = 'function-expression-context';
+  static readonly TYPE = 'function-expression-context';
 
   static isInstanceOf(context: ParseContext | null): context is FunctionExpressionContext {
     return context?.type === FunctionExpressionContext.TYPE;

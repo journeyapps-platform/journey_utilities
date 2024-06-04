@@ -6,7 +6,7 @@ export interface ParseContextOptions {
 
 export abstract class ParseContext {
   options: ParseContextOptions;
-  constructor(readonly type: string, options?: ParseContextOptions) {
+  protected constructor(readonly type: string, options?: ParseContextOptions) {
     this.options = { transformers: [], ...options };
   }
 

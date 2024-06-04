@@ -3,7 +3,7 @@ import { BlockStatementTransformer, FormatSpecifierTransformer } from '../transf
 import { ParseContext, ParseContextFactory } from './ParseContext';
 
 export class FormatStringContext extends ParseContext {
-  static TYPE = 'format-string-context';
+  static readonly TYPE = 'format-string-context';
 
   static isInstanceOf(context: ParseContext | null): context is FormatStringContext {
     return context?.type === FormatStringContext.TYPE;

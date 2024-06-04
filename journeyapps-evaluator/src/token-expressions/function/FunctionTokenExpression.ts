@@ -26,6 +26,10 @@ export class FunctionTokenExpression extends TokenExpression<FunctionTokenExpres
       source,
       context: new FunctionExpressionContext()
     });
+    if (token == null) {
+      console.error(`Failed to parse function token expression: ${source}`);
+      return null;
+    }
     token.rawExpression = source.trim();
     return token;
   }
@@ -34,7 +38,7 @@ export class FunctionTokenExpression extends TokenExpression<FunctionTokenExpres
 
   constructor(options: FunctionTokenExpressionOptions) {
     super(FunctionTokenExpression.TYPE, { ...options, isFunction: true });
-    this.rawExpression = this.expression.trim();
+    this.rawExpression = this.expression?.trim();
     this.expression = FunctionTokenExpression.trimPrefix(this.expression);
 
     if (!this.options.name) {
@@ -58,7 +62,7 @@ export class FunctionTokenExpression extends TokenExpression<FunctionTokenExpres
   }
 
   isShorthand(): boolean {
-    return this.options.isShorthand && !FunctionTokenExpression.hasPrefix(this.rawExpression);
+    return this.options.isShorthand;
   }
 
   async tokenEvaluatePromise(scope: FormatStringScope) {
