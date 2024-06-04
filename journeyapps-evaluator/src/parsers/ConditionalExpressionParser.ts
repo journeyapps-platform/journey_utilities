@@ -19,10 +19,9 @@ export class ConditionalExpressionParser extends AbstractExpressionParser<
       source.slice(consequent.start, consequent.end),
       source.slice(alternate.start, alternate.end)
     ];
-    const expression = `(function(test, consequent, alternate) { return test ? consequent : alternate; })(${argStrings.join(
-      ', '
-    )})`;
-    return new FunctionTokenExpression({ expression: expression, arguments: args });
+    const fnName = `(function(test, consequent, alternate) { return test ? consequent : alternate; })`;
+    const expression = `${fnName}(${argStrings.join(', ')})`;
+    return new FunctionTokenExpression({ expression: expression, name: fnName, arguments: args });
   }
 }
 
