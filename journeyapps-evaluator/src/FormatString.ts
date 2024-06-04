@@ -29,6 +29,25 @@ export class FormatString {
     this.type = FormatString.TYPE;
   }
 
+  static fromTokens(tokens: TokenExpression[]): FormatString {
+    const result = new FormatString({ expression: '' });
+    result.tokens = [];
+    let start = 0;
+    tokens.forEach((token) => {
+      token.start = start;
+      if (token.isConstant() && !token.isPrimitive) {
+        result.expression += token.expression;
+        start += token.expression.length;
+      } else {
+        const exp = `{${token.stringify()}}`;
+        result.expression += exp;
+        start += exp.length;
+      }
+      result.tokens.push(token);
+    });
+    return result;
+  }
+
   /**
    * Compile a format string expression into tokens.
    */

@@ -18,6 +18,10 @@ export class FormatShorthandTokenExpression extends ShorthandTokenExpression<For
     this.type = FormatShorthandTokenExpression.TYPE;
   }
 
+  stringify(): string {
+    return `${super.stringify()}:${this.options.format}`;
+  }
+
   toString() {
     return '[object ' + this.constructor.name + ' <' + this.expression + ', ' + this.start + ', ' + this.format + '>]';
   }

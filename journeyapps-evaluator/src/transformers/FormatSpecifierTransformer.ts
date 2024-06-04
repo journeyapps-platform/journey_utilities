@@ -6,7 +6,7 @@ import { SourceTransformer } from './SourceTransformer';
 const MATCH_FORMAT_SPECIFIER = /(?<!['"])[^{}]*[^\$](:(\.?\d+f?)[^{}]*)(?!['"])/;
 
 /** Transforms format specifiers in source code;
- * value:0n -> {value; $format = "0n"}
+ * value:0n -> value; $format = "0n"
  */
 export class FormatSpecifierTransformer extends SourceTransformer {
   static TYPE = 'format-specifier-transformer';

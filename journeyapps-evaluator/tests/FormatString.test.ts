@@ -15,7 +15,7 @@ describe('FormatString', () => {
       new ConstantTokenExpression({ expression: 'Plain text', start: 0 })
     ]);
 
-    expect(FormatString.compile('Plain 123')).toEqual([
+    expect(FormatString.compile('Plain {123}')).toEqual([
       new ConstantTokenExpression({ expression: 'Plain 123', start: 0 })
     ]);
 
@@ -45,7 +45,7 @@ describe('FormatString', () => {
   });
 
   it('should compile mix of TokenExpressions', () => {
-    expect(FormatString.compile('{{some text}} more {serial} {something.other:.2f} {$:foo("bar")}')).toEqual([
+    expect(FormatString.compile('{{some text}} more {serial} {something.other:.2f} {$:foo("bar")} +VAT')).toEqual([
       new ConstantTokenExpression({ expression: '{some text} more ', start: 0 }),
       new ShorthandTokenExpression({ expression: 'serial', start: 19 }),
       new ConstantTokenExpression({ expression: ' ', start: 27 }),
@@ -55,8 +55,36 @@ describe('FormatString', () => {
         expression: 'foo("bar")',
         start: 50,
         arguments: [new ConstantTokenExpression({ expression: 'bar' })]
-      })
+      }),
+      new ConstantTokenExpression({ expression: ' +VAT', start: 64 })
     ]);
+  });
+
+  it('should compile from Tokens', () => {
+    let result = FormatString.fromTokens([new ConstantTokenExpression({ expression: 'Plain text' })]);
+    expect(result.expression).toEqual('Plain text');
+
+    result = FormatString.fromTokens([
+      new ConstantTokenExpression({ expression: 'Hello ' }),
+      new ShorthandTokenExpression({ expression: 'person.name' })
+    ]);
+    expect(result.expression).toEqual('Hello {person.name}');
+    expect(result.tokens[1].start).toEqual(6);
+
+    result = FormatString.fromTokens([
+      new FunctionTokenExpression({
+        expression: "foo('bar')",
+        arguments: [new ConstantTokenExpression({ expression: 'bar' })]
+      }),
+      new ConstantTokenExpression({ expression: ' +VAT' })
+    ]);
+    expect(result.expression).toEqual(`{$:foo('bar')} +VAT`);
+    expect(result.tokens[1].start).toEqual(14);
+
+    result = FormatString.fromTokens([
+      new FormatShorthandTokenExpression({ expression: 'person.name', format: '.2f' })
+    ]);
+    expect(result.expression).toEqual('{person.name:.2f}');
   });
 
   describe('should compile FunctionTokenExpressions', () => {
