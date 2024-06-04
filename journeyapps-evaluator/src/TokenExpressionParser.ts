@@ -18,6 +18,7 @@ import {
   NodeType,
   ObjectExpressionParserFactory
 } from './parsers';
+import { ArrayExpressionParserFactory } from './parsers/ArrayExpressionParser';
 import { TokenExpression } from './token-expressions';
 
 export interface TokenExpressionParseEvent {
@@ -47,6 +48,7 @@ export class TokenExpressionParser {
 
     // Parser factories
     this.parserFactories = [];
+    this.registerParserFactory(new ArrayExpressionParserFactory());
     this.registerParserFactory(new BlockStatementParserFactory());
     this.registerParserFactory(new CallExpressionParserFactory());
     this.registerParserFactory(new ConditionalExpressionParserFactory());

@@ -6,7 +6,7 @@ import { ConstantTokenExpression } from '../constant/ConstantTokenExpression';
 import { FormatStringScope } from '../../definitions/FormatStringScope';
 
 export class LegacyFunctionTokenExpression extends TokenExpression {
-  static TYPE = 'legacy-function-expression';
+  static readonly TYPE = 'legacy-function-expression';
   constructor(options: TokenExpressionOptions) {
     super(LegacyFunctionTokenExpression.TYPE, { ...options, isFunction: true });
   }

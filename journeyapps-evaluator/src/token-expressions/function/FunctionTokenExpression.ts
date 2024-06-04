@@ -81,15 +81,16 @@ export class FunctionTokenExpression extends TokenExpression<FunctionTokenExpres
     if (this.isShorthand()) {
       return this.functionName();
     }
-    return `${FunctionTokenExpression.PREFIX}${this.functionName()}(${this.arguments
-      .map((arg) => {
-        const res = arg.stringify();
-        if (arg.isFunction()) {
-          return FunctionTokenExpression.trimPrefix(res);
-        }
-        return res;
-      })
-      .join(', ')})`;
+
+    const argStrings = this.arguments.map((arg) => {
+      const res = arg.stringify();
+      if (arg.isFunction()) {
+        return FunctionTokenExpression.trimPrefix(res);
+      }
+      return res;
+    });
+
+    return `${FunctionTokenExpression.PREFIX}${this.functionName()}(${argStrings.join(', ')})`;
   }
 
   static trimPrefix(expression: string): string {

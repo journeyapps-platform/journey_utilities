@@ -1,5 +1,8 @@
 export * from './TokenExpression';
-export * from './ObjectTokenExpression';
+
+export * from './object/ObjectTokenExpression';
+export * from './object/ArrayTokenExpression';
+
 export * from './shorthand/ShorthandTokenExpression';
 export * from './shorthand/FormatShorthandTokenExpression';
 

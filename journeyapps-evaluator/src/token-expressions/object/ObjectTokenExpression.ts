@@ -1,5 +1,5 @@
-import { FormatStringScope } from '../definitions/FormatStringScope';
-import { TokenExpression, TokenExpressionOptions } from './TokenExpression';
+import { FormatStringScope } from '../../definitions/FormatStringScope';
+import { TokenExpression, TokenExpressionOptions } from '../TokenExpression';
 
 export interface ObjectExpressionTokenOptions extends TokenExpressionOptions {
   properties: Record<string, TokenExpression>;
@@ -10,7 +10,7 @@ export interface ObjectExpressionTokenOptions extends TokenExpressionOptions {
  * Example {a: user.name, b: "foo"}
  */
 export class ObjectTokenExpression extends TokenExpression<ObjectExpressionTokenOptions, object> {
-  static TYPE = 'object-expression';
+  static readonly TYPE = 'object-expression';
   constructor(options: ObjectExpressionTokenOptions) {
     super(ObjectTokenExpression.TYPE, options);
   }

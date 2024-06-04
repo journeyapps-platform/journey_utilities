@@ -9,7 +9,7 @@ export interface PrimitiveConstantTokenExpressionOptions extends TokenExpression
 }
 
 export class PrimitiveConstantTokenExpression extends ConstantTokenExpression {
-  static TYPE = 'primitive-constant-expression';
+  static readonly TYPE = 'primitive-constant-expression';
 
   static isInstanceOf(obj: any): obj is PrimitiveConstantTokenExpression {
     return obj?.type === PrimitiveConstantTokenExpression.TYPE;

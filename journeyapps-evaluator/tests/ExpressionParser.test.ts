@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import {
+  ArrayTokenExpression,
   ConstantTokenExpression,
   FormatShorthandTokenExpression,
   FunctionTokenExpression,
@@ -101,6 +102,21 @@ describe('Expression Parsing ', () => {
     result = parser.parse<FunctionTokenExpression>({ source: 'foo(user.name.first)' });
     expect(result.functionName()).toEqual('foo');
     expect(result.arguments).toEqual([new ShorthandTokenExpression({ expression: 'user.name.first' })]);
+
+    result = parser.parse<FunctionTokenExpression>({ source: 'foo([true, "bar", user.name])' });
+    expect(result.functionName()).toEqual('foo');
+    const arrayTokenExpression = result.arguments[0];
+    expect(arrayTokenExpression).toEqual(
+      new ArrayTokenExpression({
+        expression: '[true, "bar", user.name]',
+        elements: [
+          new PrimitiveConstantTokenExpression({ expression: true }),
+          new ConstantTokenExpression({ expression: 'bar' }),
+          new ShorthandTokenExpression({ expression: 'user.name' })
+        ]
+      })
+    );
+    expect(arrayTokenExpression.stringify()).toEqual('[true, "bar", user.name]');
   });
 
   it('should parse in-line expression to FunctionTokenExpression', ({ parser }) => {
