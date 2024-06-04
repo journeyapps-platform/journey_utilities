@@ -7,6 +7,7 @@ import { FunctionExpressionContextFactory } from './context/FunctionExpressionCo
 import { ParseContext, ParseContextFactory } from './context/ParseContext';
 import {
   AbstractExpressionParser,
+  ArrayExpressionParserFactory,
   BlockStatementParserFactory,
   CallExpressionParserFactory,
   ConditionalExpressionParserFactory,
@@ -14,11 +15,11 @@ import {
   ExpressionParserFactory,
   IdentifierExpressionParserFactory,
   LiteralExpressionParserFactory,
+  LogicalExpressionParserFactory,
   MemberExpressionParserFactory,
   NodeType,
   ObjectExpressionParserFactory
 } from './parsers';
-import { ArrayExpressionParserFactory } from './parsers/ArrayExpressionParser';
 import { TokenExpression } from './token-expressions';
 
 export interface TokenExpressionParseEvent {
@@ -54,6 +55,7 @@ export class TokenExpressionParser {
     this.registerParserFactory(new ConditionalExpressionParserFactory());
     this.registerParserFactory(new IdentifierExpressionParserFactory());
     this.registerParserFactory(new ExpressionNodeParserFactory());
+    this.registerParserFactory(new LogicalExpressionParserFactory());
     this.registerParserFactory(new LiteralExpressionParserFactory());
     this.registerParserFactory(new MemberExpressionParserFactory());
     this.registerParserFactory(new ObjectExpressionParserFactory());

@@ -91,6 +91,11 @@ describe('Expression Parsing ', () => {
     result = parser.parse({ source: '$:true' });
     expect(result).toBeInstanceOf(FunctionTokenExpression);
     expect(result.expression).toEqual('true');
+
+    result = parser.parse({ source: '$:(showIf() || false)' });
+    expect(result).toBeInstanceOf(FunctionTokenExpression);
+    expect(result.expression).toEqual('showIf() || false');
+    expect(result.stringify()).toEqual('$:(function(left, right) { return left || right; })(showIf(), false)');
   });
 
   it('should parse FunctionTokenExpression with arguments', ({ parser }) => {
@@ -129,9 +134,7 @@ describe('Expression Parsing ', () => {
 
   it('should parse in-line expression to FunctionTokenExpression', ({ parser }) => {
     let result = parser.parse<FunctionTokenExpression>({ source: '$: user ? "Yes" : "No"' });
-    expect(result.expression).toEqual(
-      '(function(test, consequent, alternate) { return test ? consequent : alternate; })(user, "Yes", "No")'
-    );
+    expect(result.expression).toEqual('user ? "Yes" : "No"');
     expect(result.arguments).toEqual([
       new ShorthandTokenExpression({ expression: 'user' }),
       new ConstantTokenExpression({ expression: 'Yes' }),

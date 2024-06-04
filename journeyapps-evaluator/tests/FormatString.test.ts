@@ -89,7 +89,9 @@ describe('FormatString', () => {
 
   describe('should compile FunctionTokenExpressions', () => {
     it('with no arguments', () => {
-      expect(FormatString.compile('{foo()}')).toEqual([new FunctionTokenExpression({ expression: 'foo()', start: 0 })]);
+      expect(FormatString.compile('{foo()}')).toEqual([
+        new FunctionTokenExpression({ expression: 'foo()', arguments: [], start: 0 })
+      ]);
     });
 
     it('with an primitive argument', () => {
@@ -208,12 +210,12 @@ describe('FormatString', () => {
       expect(FormatString.compile('{person.name} {$:foo()}')).toEqual([
         new ShorthandTokenExpression({ expression: 'person.name', start: 0 }),
         new ConstantTokenExpression({ expression: ' ', start: 13 }),
-        new FunctionTokenExpression({ expression: 'foo()', start: 14 })
+        new FunctionTokenExpression({ expression: 'foo()', arguments: [], start: 14 })
       ]);
 
       expect(FormatString.compile('A B C {$:foo()} X Y Z')).toEqual([
         new ConstantTokenExpression({ expression: 'A B C ', start: 0 }),
-        new FunctionTokenExpression({ expression: 'foo()', start: 6 }),
+        new FunctionTokenExpression({ expression: 'foo()', arguments: [], start: 6 }),
         new ConstantTokenExpression({ expression: ' X Y Z', start: 15 })
       ]);
     });

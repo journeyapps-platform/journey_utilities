@@ -22,34 +22,23 @@ export class FunctionTokenExpression extends TokenExpression<FunctionTokenExpres
   static PREFIX = '$:';
 
   static parse(source: string) {
-    const token = TokenExpressionParser.get().parse<FunctionTokenExpression>({
+    return TokenExpressionParser.get().parse<FunctionTokenExpression>({
       source,
       context: new FunctionExpressionContext()
     });
-    if (token == null) {
-      console.error(`Failed to parse function token expression: ${source}`);
-      return null;
-    }
-    token.rawExpression = source.trim();
-    return token;
   }
-
-  rawExpression: string;
 
   constructor(options: FunctionTokenExpressionOptions) {
     super(FunctionTokenExpression.TYPE, { ...options, isFunction: true });
-    this.rawExpression = this.expression?.trim();
     this.expression = FunctionTokenExpression.trimPrefix(this.expression);
 
     if (!this.options.name) {
       const startBracket = this.expression.indexOf('(');
       this.setFunctionName(this.expression.slice(0, startBracket > 0 ? startBracket : this.expression.length));
     }
-
-    this.options.arguments = this.options.arguments ?? [];
   }
 
-  get arguments() {
+  get arguments(): TokenExpression[] | null {
     return this.options.arguments;
   }
 
@@ -86,6 +75,9 @@ export class FunctionTokenExpression extends TokenExpression<FunctionTokenExpres
       return this.functionName();
     }
 
+    if (this.arguments == null) {
+      return `${FunctionTokenExpression.PREFIX}${this.expression}`;
+    }
     const argStrings = this.arguments.map((arg) => {
       const res = arg.stringify();
       if (arg.isFunction()) {
