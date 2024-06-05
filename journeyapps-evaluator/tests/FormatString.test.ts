@@ -60,6 +60,12 @@ describe('FormatString', () => {
     ]);
   });
 
+  it('should compile null value', () => {
+    expect(FormatString.compile('{null}')).toEqual([
+      new PrimitiveConstantTokenExpression({ expression: null, isNullLiteral: true, start: 0 })
+    ]);
+  });
+
   it('should compile from Tokens', () => {
     let result = FormatString.fromTokens([new ConstantTokenExpression({ expression: 'Plain text' })]);
     expect(result.expression).toEqual('Plain text');

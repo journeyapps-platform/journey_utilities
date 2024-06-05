@@ -1,12 +1,6 @@
 import { FormatStringScope } from './FormatStringScope';
 import { TypeInterface } from './TypeInterface';
-
-export type VariableScope = Record<string, any> & {
-  type: TypeInterface;
-  _display?(): Promise<string>;
-  _cached?(field: string): any;
-  _get?(field: string): Promise<any>;
-};
+import { VariableScope } from './VariableScope';
 
 export class VariableFormatStringScope implements FormatStringScope {
   variableScope: VariableScope;

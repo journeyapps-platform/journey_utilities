@@ -1,4 +1,5 @@
 import { DirectiveLiteral, isDirectiveLiteral, isStringLiteral, isNullLiteral, Literal } from '@babel/types';
+import { FormatStringContext } from '../context/FormatStringContext';
 import { FunctionExpressionContext } from '../context/FunctionExpressionContext';
 
 import {
@@ -33,7 +34,7 @@ export class LiteralExpressionParser extends AbstractExpressionParser<LiteralExp
       if (inFunctionContext) {
         return new FunctionTokenExpression({ expression: 'null' });
       }
-      return new ConstantTokenExpression({ expression: 'null' });
+      return new PrimitiveConstantTokenExpression({ expression: null, isNullLiteral: true });
     }
     if ('value' in node) {
       if (inFunctionContext) {

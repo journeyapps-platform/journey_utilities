@@ -4,14 +4,16 @@
 import { TokenExpression, TokenExpressionOptions } from '../TokenExpression';
 import { FormatStringScope } from '../../definitions/FormatStringScope';
 
-export class ConstantTokenExpression extends TokenExpression {
+export class ConstantTokenExpression<
+  O extends TokenExpressionOptions = TokenExpressionOptions
+> extends TokenExpression<O> {
   static TYPE = 'constant-expression';
 
   static isInstanceOf(obj: any): obj is ConstantTokenExpression {
     return obj?.type === ConstantTokenExpression.TYPE;
   }
 
-  constructor(options: TokenExpressionOptions) {
+  constructor(options: O) {
     super(ConstantTokenExpression.TYPE, { ...options, isConstant: true });
   }
 

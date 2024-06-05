@@ -3,7 +3,12 @@ import { FormatStringContext } from './context/FormatStringContext';
 import { FunctionExpressionContext } from './context/FunctionExpressionContext';
 import { FormatStringScope } from './definitions/FormatStringScope';
 import { TypeInterface } from './definitions/TypeInterface';
-import { ConstantTokenExpression, FunctionTokenExpression, TokenExpression } from './token-expressions';
+import {
+  ConstantTokenExpression,
+  FunctionTokenExpression,
+  PrimitiveConstantTokenExpression,
+  TokenExpression
+} from './token-expressions';
 import { TokenExpressionParser } from './TokenExpressionParser';
 import { extract, formatValue } from './tools';
 
@@ -283,7 +288,7 @@ export class FormatString {
     let result = '';
     for (let i = 0; i < tokens.length; i++) {
       const token = tokens[i];
-      if (token.isConstant()) {
+      if (token.isConstant() && !(PrimitiveConstantTokenExpression.isInstanceOf(token) && token.isNullLiteral())) {
         result += `${token.valueOf()}`;
       } else if (token.isFunction()) {
         // Not supported - return the original expression

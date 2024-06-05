@@ -6,9 +6,10 @@ import { TokenExpressionOptions } from '../TokenExpression';
 
 export interface PrimitiveConstantTokenExpressionOptions extends TokenExpressionOptions {
   expression: any;
+  isNullLiteral?: boolean;
 }
 
-export class PrimitiveConstantTokenExpression extends ConstantTokenExpression {
+export class PrimitiveConstantTokenExpression extends ConstantTokenExpression<PrimitiveConstantTokenExpressionOptions> {
   static readonly TYPE = 'primitive-constant-expression';
 
   static isInstanceOf(obj: any): obj is PrimitiveConstantTokenExpression {
@@ -17,6 +18,10 @@ export class PrimitiveConstantTokenExpression extends ConstantTokenExpression {
 
   constructor(options: PrimitiveConstantTokenExpressionOptions) {
     super({ ...options, isPrimitive: true });
+  }
+
+  isNullLiteral(): boolean {
+    return this.options.isNullLiteral ?? false;
   }
 
   /**
