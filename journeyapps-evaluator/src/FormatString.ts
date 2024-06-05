@@ -294,7 +294,7 @@ export class FormatString {
         // Not supported - return the original expression
         result += (token as FunctionTokenExpression).toConstant(true).valueOf();
       } else {
-        let expression = token.expression;
+        let expression = `${token.expression}`;
         if (expression.length > 0 && expression[0] == '?') {
           expression = expression.substring(1);
         }
