@@ -18,6 +18,7 @@ export class PrimitiveConstantTokenExpression extends ConstantTokenExpression<Pr
 
   constructor(options: PrimitiveConstantTokenExpressionOptions) {
     super({ ...options, isPrimitive: true });
+    this.type = PrimitiveConstantTokenExpression.TYPE;
   }
 
   isNullLiteral(): boolean {
