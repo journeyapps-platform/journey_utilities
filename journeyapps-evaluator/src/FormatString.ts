@@ -1,5 +1,6 @@
 import { AttributeValidationError } from '@journeyapps/core-xml';
 import { FormatStringContext } from './context/FormatStringContext';
+import { FunctionExpressionContext } from './context/FunctionExpressionContext';
 import { FormatStringScope } from './definitions/FormatStringScope';
 import { TypeInterface } from './definitions/TypeInterface';
 import { ConstantTokenExpression, FunctionTokenExpression, TokenExpression } from './token-expressions';
@@ -39,7 +40,11 @@ export class FormatString {
         result.expression += token.expression;
         start += token.expression.length;
       } else {
-        const exp = `{${token.stringify()}}`;
+        let exp = '{';
+        if (FunctionTokenExpression.isInstanceOf(token)) {
+          exp += FunctionTokenExpression.PREFIX;
+        }
+        exp += `${token.stringify()}}`;
         result.expression += exp;
         start += exp.length;
       }
@@ -91,13 +96,16 @@ export class FormatString {
       start = i + parsedBraces.length + 1;
 
       // `spec` is everything between the curly braces "{" and "}".
-      const spec = expression.substring(i + 1, i + parsedBraces.length);
+      const spec = expression.substring(i + 1, i + parsedBraces.length).trim();
 
       if (spec.indexOf('?') === 0) {
         throw new Error('Usage of ? in expressions is not supported.');
       }
 
-      const parsedToken = parser.parse({ source: spec, context: new FormatStringContext() });
+      const context = FunctionTokenExpression.hasPrefix(spec)
+        ? new FunctionExpressionContext()
+        : new FormatStringContext();
+      const parsedToken = parser.parse({ source: spec, context: context });
       if (parsedToken) {
         parsedToken.start = i;
         tokens.push(parsedToken);

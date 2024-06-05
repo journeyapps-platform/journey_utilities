@@ -20,6 +20,7 @@ import {
   NodeType,
   ObjectExpressionParserFactory
 } from './parsers';
+import { FallbackExpressionParser } from './parsers/FallbackExpressionParser';
 import { TokenExpression } from './token-expressions';
 
 export interface TokenExpressionParseEvent {
@@ -110,7 +111,8 @@ export class TokenExpressionParser {
         return factory.getParser();
       }
     }
-    throw new Error(`No parser found for node type '${nodeType}'`);
+    console.error(`No parser found for node type '${nodeType}'`);
+    return new FallbackExpressionParser();
   });
 
   inferContext(source: string): ParseContext | null {

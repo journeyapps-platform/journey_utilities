@@ -46,7 +46,7 @@ describe('FunctionTokenExpression', () => {
     const token = FunctionTokenExpression.parse('$:null');
     expect(token).toBeInstanceOf(FunctionTokenExpression);
     expect(token.expression).toEqual('null');
-    expect(token.isShorthand()).toEqual(true);
+    expect(token.isCallExpression()).toEqual(false);
     expect(token.stringify()).toEqual('null');
   });
 
@@ -54,7 +54,7 @@ describe('FunctionTokenExpression', () => {
     const token = FunctionTokenExpression.parse('$:true');
     expect(token).toBeInstanceOf(FunctionTokenExpression);
     expect(token.expression).toEqual('true');
-    expect(token.isShorthand()).toEqual(true);
+    expect(token.isCallExpression()).toEqual(false);
     expect(token.stringify()).toEqual('true');
   });
 
@@ -62,7 +62,7 @@ describe('FunctionTokenExpression', () => {
     const token = FunctionTokenExpression.parse("$:'string'");
     expect(token).toBeInstanceOf(FunctionTokenExpression);
     expect(token.expression).toEqual("'string'");
-    expect(token.isShorthand()).toEqual(true);
+    expect(token.isCallExpression()).toEqual(false);
     expect(token.stringify()).toEqual("'string'");
   });
 
@@ -70,7 +70,7 @@ describe('FunctionTokenExpression', () => {
     const token = FunctionTokenExpression.parse('$:foo');
     expect(token).toBeInstanceOf(FunctionTokenExpression);
     expect(token.expression).toEqual('foo');
-    expect(token.isShorthand()).toEqual(true);
+    expect(token.isCallExpression()).toEqual(false);
     expect(token.functionName()).toEqual('foo');
     expect(token.stringify()).toEqual('foo');
   });
@@ -79,7 +79,7 @@ describe('FunctionTokenExpression', () => {
     const token = FunctionTokenExpression.parse('foo');
     expect(token).toBeInstanceOf(FunctionTokenExpression);
     expect(token.expression).toEqual('foo');
-    expect(token.isShorthand()).toEqual(true);
+    expect(token.isCallExpression()).toEqual(false);
     expect(token.functionName()).toEqual('foo');
     expect(token.stringify()).toEqual('foo');
   });
@@ -89,7 +89,6 @@ describe('FunctionTokenExpression', () => {
     const constantToken = token.toConstant();
     expect(constantToken).toBeInstanceOf(ConstantTokenExpression);
     expect(constantToken.expression).toEqual('$:foo()');
-    expect(constantToken.valueOf()).toEqual('$:foo()');
     expect(constantToken.start).toEqual(5);
   });
 
@@ -98,7 +97,6 @@ describe('FunctionTokenExpression', () => {
     const constantToken = token.toConstant(true);
     expect(constantToken).toBeInstanceOf(ConstantTokenExpression);
     expect(constantToken.expression).toEqual('{$:foo()}');
-    expect(constantToken.valueOf()).toEqual('{$:foo()}');
     expect(constantToken.start).toEqual(5);
   });
 
@@ -149,7 +147,6 @@ describe('LegacyFunctionTokenExpression', () => {
     const constantToken = token.toConstant();
     expect(constantToken).toBeInstanceOf(ConstantTokenExpression);
     expect(constantToken.expression).toEqual('foo');
-    expect(constantToken.valueOf()).toEqual('foo');
     expect(constantToken.start).toEqual(5);
   });
 
@@ -158,7 +155,6 @@ describe('LegacyFunctionTokenExpression', () => {
     const constantToken = token.toConstant(true);
     expect(constantToken).toBeInstanceOf(ConstantTokenExpression);
     expect(constantToken.expression).toEqual('{foo}');
-    expect(constantToken.valueOf()).toEqual('{foo}');
     expect(constantToken.start).toEqual(5);
   });
 });

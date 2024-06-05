@@ -87,14 +87,23 @@ describe('FormatString', () => {
     expect(result.expression).toEqual('{person.name:.2f}');
   });
 
-  describe('should compile FunctionTokenExpressions', () => {
-    it('with no arguments', () => {
+  describe('should compile FunctionTokenExpression', () => {
+    it('from JS/TS member expression ', () => {
+      let result = FormatString.compile('{$:journey.runtime.version}');
+      expect(result).toEqual([new FunctionTokenExpression({ expression: 'journey.runtime.version', start: 0 })]);
+
+      expect(result[0].isShorthand()).toEqual(false);
+
+      expect(FormatString.compile('{$:true}')).toEqual([new FunctionTokenExpression({ expression: 'true', start: 0 })]);
+    });
+
+    it('function call with no arguments', () => {
       expect(FormatString.compile('{foo()}')).toEqual([
         new FunctionTokenExpression({ expression: 'foo()', arguments: [], start: 0 })
       ]);
     });
 
-    it('with an primitive argument', () => {
+    it('function call with a primitive argument', () => {
       expect(FormatString.compile('{$:foo(2)}')).toEqual([
         new FunctionTokenExpression({
           expression: 'foo(2)',
@@ -104,7 +113,7 @@ describe('FormatString', () => {
       ]);
     });
 
-    it('with an object argument', () => {
+    it('function call with an object argument', () => {
       expect(FormatString.compile('{ $:foo({myObject: 2}) }')).toEqual([
         new FunctionTokenExpression({
           expression: 'foo({myObject: 2})',
@@ -166,7 +175,7 @@ describe('FormatString', () => {
       ]);
     });
 
-    it('with a "{" argument', () => {
+    it('function call with a "{" argument', () => {
       // Ignore brackets in strings
       expect(FormatString.compile('{ $:foo("{") }')).toEqual([
         new FunctionTokenExpression({
@@ -185,7 +194,7 @@ describe('FormatString', () => {
       ]);
     });
 
-    it('with multiple arguments', () => {
+    it('function call with multiple arguments', () => {
       const [result] = FormatString.compile('{ $:foo(3, "xyz") }');
       expect(result).toBeInstanceOf(FunctionTokenExpression);
       expect(result.expression).toEqual('foo(3, "xyz")');
@@ -200,8 +209,8 @@ describe('FormatString', () => {
       expect(FormatString.compile('{$:foo(2)} {b}')).toEqual([
         new FunctionTokenExpression({
           expression: 'foo(2)',
-          start: 0,
-          arguments: [new PrimitiveConstantTokenExpression({ expression: 2 })]
+          arguments: [new PrimitiveConstantTokenExpression({ expression: 2 })],
+          start: 0
         }),
         new ConstantTokenExpression({ expression: ' ', start: 10 }),
         new ShorthandTokenExpression({ expression: 'b', start: 11 })

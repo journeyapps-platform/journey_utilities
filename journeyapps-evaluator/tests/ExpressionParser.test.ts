@@ -95,7 +95,7 @@ describe('Expression Parsing ', () => {
     result = parser.parse({ source: '$:(showIf() || false)' });
     expect(result).toBeInstanceOf(FunctionTokenExpression);
     expect(result.expression).toEqual('showIf() || false');
-    expect(result.stringify()).toEqual('$:(function(left, right) { return left || right; })(showIf(), false)');
+    expect(result.stringify()).toEqual('(function(left, right) { return left || right; })(showIf(), false)');
   });
 
   it('should parse FunctionTokenExpression with arguments', ({ parser }) => {
@@ -141,7 +141,7 @@ describe('Expression Parsing ', () => {
       new ConstantTokenExpression({ expression: 'No' })
     ]);
     expect(result.stringify()).toEqual(
-      `$:(function(test, consequent, alternate) { return test ? consequent : alternate; })(user, 'Yes', 'No')`
+      `(function(test, consequent, alternate) { return test ? consequent : alternate; })(user, 'Yes', 'No')`
     );
   });
 

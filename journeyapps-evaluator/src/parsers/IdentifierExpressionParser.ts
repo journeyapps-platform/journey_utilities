@@ -25,8 +25,7 @@ export class IdentifierExpressionParser extends AbstractExpressionParser<Identif
     const { name: expression } = node;
     if (FunctionExpressionContext.isInstanceOf(context)) {
       return new FunctionTokenExpression({
-        expression: expression,
-        isShorthand: true
+        expression: expression
       });
     }
     const format = node.extra?.format as string;

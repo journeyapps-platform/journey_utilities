@@ -50,8 +50,8 @@ export class FunctionTokenExpression extends TokenExpression<FunctionTokenExpres
     this.options.name = name;
   }
 
-  isShorthand(): boolean {
-    return this.options.isShorthand;
+  isCallExpression(): boolean {
+    return this.arguments != null;
   }
 
   async tokenEvaluatePromise(scope: FormatStringScope) {
@@ -71,22 +71,11 @@ export class FunctionTokenExpression extends TokenExpression<FunctionTokenExpres
   }
 
   stringify() {
-    if (this.isShorthand()) {
-      return this.functionName();
+    if (!this.isCallExpression()) {
+      return this.expression;
     }
-
-    if (this.arguments == null) {
-      return `${FunctionTokenExpression.PREFIX}${this.expression}`;
-    }
-    const argStrings = this.arguments.map((arg) => {
-      const res = arg.stringify();
-      if (arg.isFunction()) {
-        return FunctionTokenExpression.trimPrefix(res);
-      }
-      return res;
-    });
-
-    return `${FunctionTokenExpression.PREFIX}${this.functionName()}(${argStrings.join(', ')})`;
+    const argStrings = this.arguments.map((arg) => arg.stringify());
+    return `${this.functionName()}(${argStrings.join(', ')})`;
   }
 
   static trimPrefix(expression: string): string {

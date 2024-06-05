@@ -25,19 +25,19 @@ export class LiteralExpressionParser extends AbstractExpressionParser<LiteralExp
     const inFunctionContext = FunctionExpressionContext.isInstanceOf(context);
     if (isStringLiteral(node) || isDirectiveLiteral(node)) {
       if (inFunctionContext) {
-        return new FunctionTokenExpression({ expression: `'${node.value}'`, isShorthand: true });
+        return new FunctionTokenExpression({ expression: `'${node.value}'` });
       }
       return new ConstantTokenExpression({ expression: node.value });
     }
     if (isNullLiteral(node)) {
       if (inFunctionContext) {
-        return new FunctionTokenExpression({ expression: 'null', isShorthand: true });
+        return new FunctionTokenExpression({ expression: 'null' });
       }
       return new ConstantTokenExpression({ expression: 'null' });
     }
     if ('value' in node) {
       if (inFunctionContext) {
-        return new FunctionTokenExpression({ expression: `${node.value}`, isShorthand: true });
+        return new FunctionTokenExpression({ expression: `${node.value}` });
       }
       return new PrimitiveConstantTokenExpression({ expression: node.value });
     }
