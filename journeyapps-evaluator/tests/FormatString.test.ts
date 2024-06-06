@@ -60,7 +60,7 @@ describe('FormatString', () => {
     ]);
   });
 
-  it('should compile null value', () => {
+  it('should compile null literal', () => {
     expect(FormatString.compile('{null}')).toEqual([
       new PrimitiveConstantTokenExpression({ expression: null, isNullLiteral: true, start: 0 })
     ]);

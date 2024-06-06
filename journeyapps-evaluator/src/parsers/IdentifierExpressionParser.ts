@@ -29,9 +29,10 @@ export class IdentifierExpressionParser extends AbstractExpressionParser<Identif
       });
     }
     const format = node.extra?.format as string;
-    return format != null
-      ? new FormatShorthandTokenExpression({ expression: expression, format: format })
-      : new ShorthandTokenExpression({ expression: expression });
+    if (format != null) {
+      return new FormatShorthandTokenExpression({ expression: expression, format: format });
+    }
+    return new ShorthandTokenExpression({ expression: expression });
   }
 }
 
