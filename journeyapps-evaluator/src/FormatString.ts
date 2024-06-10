@@ -122,7 +122,7 @@ export class FormatString {
     let last: ConstantTokenExpression = null;
     for (let j = 0; j < tokens.length; j++) {
       const token = tokens[j];
-      if (ConstantTokenExpression.isInstanceOf(token)) {
+      if (ConstantTokenExpression.isInstanceOf(token) || PrimitiveConstantTokenExpression.isInstanceOf(token)) {
         if (last == null) {
           last = token;
         } else {
