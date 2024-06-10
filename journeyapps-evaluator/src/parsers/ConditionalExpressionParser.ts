@@ -1,5 +1,5 @@
 import { ConditionalExpression } from '@babel/types';
-import { FunctionTokenExpression } from '../token-expressions';
+import { FunctionTokenExpression, TernaryFunctionTokenExpression } from '../token-expressions';
 import {
   AbstractExpressionParser,
   ExpressionParserFactory,
@@ -13,12 +13,13 @@ export class ConditionalExpressionParser extends AbstractExpressionParser<
   parse(event: ExpressionNodeParseEvent<ConditionalExpression>): FunctionTokenExpression {
     const { node, source, parseNode } = event;
     const { test, consequent, alternate } = node;
+
     const args = [test, consequent, alternate].map((arg) => parseNode({ node: arg, source }));
-    const fnName = `(function(test, consequent, alternate) { return test ? consequent : alternate; })`;
-    return new FunctionTokenExpression({
+    return new TernaryFunctionTokenExpression({
       expression: source.slice(node.start, node.end),
-      name: fnName,
-      arguments: args
+      test: args[0],
+      consequent: args[1],
+      alternate: args[2]
     });
   }
 }

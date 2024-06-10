@@ -140,9 +140,7 @@ describe('Expression Parsing ', () => {
       new ConstantTokenExpression({ expression: 'Yes' }),
       new ConstantTokenExpression({ expression: 'No' })
     ]);
-    expect(result.stringify()).toEqual(
-      `(function(test, consequent, alternate) { return test ? consequent : alternate; })(user, 'Yes', 'No')`
-    );
+    expect(result.stringify()).toEqual(`user ? 'Yes' : 'No'`);
   });
 
   it('should parse format specifiers', ({ parser }) => {

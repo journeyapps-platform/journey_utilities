@@ -10,4 +10,5 @@ export * from './constant/PrimitiveConstantTokenExpression';
 export * from './constant/ConstantTokenExpression';
 
 export * from './function/FunctionTokenExpression';
+export * from './function/TernaryFunctionTokenExpression';
 export * from './function/LegacyFunctionTokenExpression';
