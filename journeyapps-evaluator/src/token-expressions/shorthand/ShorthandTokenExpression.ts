@@ -23,6 +23,10 @@ export class ShorthandTokenExpression<
     const type = scope.getExpressionType(expression);
     return formatValueAsync(value, type, this.format);
   }
+
+  clone(): this {
+    return new ShorthandTokenExpression(this.options) as this;
+  }
 }
 
 export async function formatValueAsync(value: any, type: TypeInterface, format: string): Promise<string> {

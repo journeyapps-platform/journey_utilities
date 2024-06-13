@@ -22,4 +22,9 @@ export class ObjectTokenExpression extends TokenExpression<ObjectExpressionToken
   async tokenEvaluatePromise(scope: FormatStringScope) {
     return scope.evaluateFunctionExpression(this.expression);
   }
+
+  clone(): this {
+    const cloneProps = Object.fromEntries(Object.entries(this.properties).map(([key, value]) => [key, value.clone()]));
+    return new ObjectTokenExpression({ ...this.options, properties: cloneProps }) as this;
+  }
 }

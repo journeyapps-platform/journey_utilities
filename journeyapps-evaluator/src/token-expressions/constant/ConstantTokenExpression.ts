@@ -39,4 +39,8 @@ export class ConstantTokenExpression<
   stringify(): string {
     return `'${this.expression}'`;
   }
+
+  clone(): this {
+    return new ConstantTokenExpression(this.options) as this;
+  }
 }

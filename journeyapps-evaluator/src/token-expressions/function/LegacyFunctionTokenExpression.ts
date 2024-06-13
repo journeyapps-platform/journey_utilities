@@ -26,4 +26,8 @@ export class LegacyFunctionTokenExpression extends TokenExpression {
   tokenEvaluatePromise(scope: FormatStringScope): Promise<string> {
     throw new Error('not implemented');
   }
+
+  clone(): this {
+    return new LegacyFunctionTokenExpression(this.options) as this;
+  }
 }

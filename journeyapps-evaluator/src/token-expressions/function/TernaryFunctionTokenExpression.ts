@@ -3,19 +3,25 @@ import { FunctionTokenExpression, FunctionTokenExpressionOptions } from './Funct
 
 export interface TernaryFunctionTokenExpressionOptions
   extends Omit<FunctionTokenExpressionOptions, 'name' | 'arguments'> {
-  test: TokenExpression;
-  consequent: TokenExpression;
-  alternate: TokenExpression;
+  // Expects exactly 3; test ? consequent : alternate
+  arguments: TokenExpression[];
 }
 
-export class TernaryFunctionTokenExpression extends FunctionTokenExpression {
+export class TernaryFunctionTokenExpression extends FunctionTokenExpression<TernaryFunctionTokenExpressionOptions> {
   constructor(options: TernaryFunctionTokenExpressionOptions) {
-    super({ ...options, arguments: [options.test, options.consequent, options.alternate] });
+    super({ ...options });
     this.setFunctionName('');
   }
 
   stringify(): string {
     const [test, consequent, alternate] = this.arguments;
     return `${test.stringify()} ? ${consequent.stringify()} : ${alternate.stringify()}`;
+  }
+
+  clone(): this {
+    return new TernaryFunctionTokenExpression({
+      ...this.options,
+      arguments: this.arguments.map((arg) => arg.clone())
+    }) as this;
   }
 }

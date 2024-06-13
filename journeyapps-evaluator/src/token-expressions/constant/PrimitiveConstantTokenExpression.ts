@@ -39,4 +39,8 @@ export class PrimitiveConstantTokenExpression extends ConstantTokenExpression<Pr
   stringify(): string {
     return `${this.expression}`;
   }
+
+  clone(): this {
+    return new PrimitiveConstantTokenExpression(this.options) as this;
+  }
 }

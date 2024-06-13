@@ -32,6 +32,8 @@ export abstract class TokenExpression<O extends TokenExpressionOptions = TokenEx
 
   abstract tokenEvaluatePromise(scope: FormatStringScope): Promise<V>;
 
+  abstract clone(): this;
+
   get start(): number | null {
     return this.options.start;
   }

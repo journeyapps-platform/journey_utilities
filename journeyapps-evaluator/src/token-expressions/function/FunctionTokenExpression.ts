@@ -9,7 +9,9 @@ export interface FunctionTokenExpressionOptions extends TokenExpressionOptions {
   arguments?: TokenExpression[];
 }
 
-export class FunctionTokenExpression extends TokenExpression<FunctionTokenExpressionOptions> {
+export class FunctionTokenExpression<
+  T extends FunctionTokenExpressionOptions = FunctionTokenExpressionOptions
+> extends TokenExpression<T> {
   static TYPE = 'function-token-expression';
 
   static isInstanceOf(obj: any): obj is FunctionTokenExpression {
@@ -28,7 +30,7 @@ export class FunctionTokenExpression extends TokenExpression<FunctionTokenExpres
     });
   }
 
-  constructor(options: FunctionTokenExpressionOptions) {
+  constructor(options: T) {
     super(FunctionTokenExpression.TYPE, { ...options, isFunction: true });
     this.expression = FunctionTokenExpression.trimPrefix(this.expression);
 
@@ -76,6 +78,13 @@ export class FunctionTokenExpression extends TokenExpression<FunctionTokenExpres
     }
     const argStrings = this.arguments.map((arg) => arg.stringify());
     return `${this.functionName()}(${argStrings.join(', ')})`;
+  }
+
+  clone(): this {
+    return new FunctionTokenExpression({
+      ...this.options,
+      arguments: this.arguments != null ? [...this.arguments.map((a) => a.clone())] : undefined
+    }) as this;
   }
 
   static trimPrefix(expression: string): string {

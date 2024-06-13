@@ -17,9 +17,7 @@ export class ConditionalExpressionParser extends AbstractExpressionParser<
     const args = [test, consequent, alternate].map((arg) => parseNode({ node: arg, source }));
     return new TernaryFunctionTokenExpression({
       expression: source.slice(node.start, node.end),
-      test: args[0],
-      consequent: args[1],
-      alternate: args[2]
+      arguments: [args[0], args[1], args[2]]
     });
   }
 }
