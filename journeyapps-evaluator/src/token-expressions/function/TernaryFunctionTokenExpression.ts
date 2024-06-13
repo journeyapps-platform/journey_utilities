@@ -11,6 +11,7 @@ export interface TernaryFunctionTokenExpressionOptions
 export class TernaryFunctionTokenExpression extends FunctionTokenExpression {
   constructor(options: TernaryFunctionTokenExpressionOptions) {
     super({ ...options, arguments: [options.test, options.consequent, options.alternate] });
+    this.setFunctionName('');
   }
 
   stringify(): string {

@@ -1,6 +1,10 @@
 export * from './parsers';
 export * from './TokenExpressionParser';
 
+export * from './context/ParseContext';
+export * from './context/FormatStringContext';
+export * from './context/FunctionExpressionContext';
+
 export * from './FormatString';
 export * from './token-expressions';
 

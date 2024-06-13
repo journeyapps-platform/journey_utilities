@@ -69,10 +69,14 @@ export class TokenExpressionParser {
 
   // TODO: Better lifecycle control and dispose it afterwards
   parse<T extends TokenExpression = TokenExpression>(event: TokenExpressionParseEvent): T | null {
+    if (event.source.trim() === '') {
+      return null;
+    }
     if (!event.context) {
       event.context = this.inferContext(event.source);
     }
     const source = this.transformSource(event);
+
     if (this.cache.has(source)) {
       return this.cache.get(source) as T;
     }
