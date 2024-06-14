@@ -1,5 +1,14 @@
 # journeyapps
 
+## 7.3.9
+
+### Patch Changes
+
+- fe96da7: Repo upgrade - bump node version, migrate unit test to `vitest` and improve consistancy with `tsconfig`
+- Updated dependencies [fe96da7]
+  - @journeyapps/core-date@5.3.2
+  - @journeyapps/db@8.0.8
+
 ## 7.3.8
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @journeyapps/core-xml
 
+## 5.0.4
+
+### Patch Changes
+
+- fe96da7: Repo upgrade - bump node version, migrate unit test to `vitest` and improve consistancy with `tsconfig`
+
 ## 5.0.3
 
 ### Patch Changes
