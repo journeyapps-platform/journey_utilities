@@ -1,5 +1,19 @@
 # @journeyapps/db
 
+## 8.0.8
+
+### Patch Changes
+
+- fe96da7: Repo upgrade - bump node version, migrate unit test to `vitest` and improve consistancy with `tsconfig`
+- Updated dependencies [2260401]
+- Updated dependencies [fe96da7]
+- Updated dependencies [2260401]
+  - @journeyapps/evaluator@7.0.0
+  - @journeyapps/parser-common@8.0.2
+  - @journeyapps/parser-schema@8.1.0
+  - @journeyapps/core-date@5.3.2
+  - @journeyapps/core-xml@5.0.4
+
 ## 8.0.7
 
 ### Patch Changes

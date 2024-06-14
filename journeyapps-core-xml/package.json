@@ -1,6 +1,6 @@
 {
   "name": "@journeyapps/core-xml",
-  "version": "5.0.3",
+  "version": "5.0.4",
   "description": "Journey XML library",
   "main": "./dist/node.js",
   "browser": "./dist/index.js",
