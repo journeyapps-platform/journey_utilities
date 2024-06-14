@@ -2,6 +2,8 @@
 // Parser for v2 and v3 of the schema XML.
 import { FormatString, FunctionTokenExpression } from '@journeyapps/evaluator';
 import * as xml from '@journeyapps/core-xml';
+import { FunctionType } from '../types/FunctionType';
+import { Param } from '../types/Param';
 import { Schema } from './Schema';
 import { ObjectType } from '../types/ObjectType';
 import { Type } from '../types/Type';
@@ -113,6 +115,11 @@ const v3VariableDef = {
   minValue: deprecationWarning,
   maxValue: deprecationWarning,
   _required: ['name', 'type']
+};
+
+const v5ParamArgDef = {
+  name: xml.attribute.name,
+  type: xml.attribute.notBlank
 };
 
 const v3ParameterDef = {
@@ -408,7 +415,7 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
         fmtString = displayElement.textContent;
         attribute = false;
       }
-      object.displayFormat = new FormatString(fmtString);
+      object.displayFormat = new FormatString({ expression: fmtString });
       if (options.recordSource) {
         object.displaySource = displayElement;
       }
@@ -430,7 +437,7 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
       });
     } else if (displayElements.length === 0) {
       errorHandler.pushError(element, '<display> is required');
-      object.displayFormat = new FormatString('');
+      object.displayFormat = new FormatString({ expression: '' });
     } else {
       errorHandler.pushError(displayElements[1], 'Only one <display> element is allowed', 'warning');
     }
@@ -702,7 +709,7 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
       parseElement(notificationElement, syntax, errorHandler);
 
       const notifyUserObject = {
-        message: new FormatString(getAttribute(notificationElement, 'message')),
+        message: new FormatString({ expression: getAttribute(notificationElement, 'message') }),
         recipient: getAttribute(notificationElement, 'recipient-field'),
         received: getAttribute(notificationElement, 'received-field'),
         badgeCount: getAttribute(notificationElement, 'badge-count-field')
@@ -849,7 +856,7 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
   function parseField(element: XMLElement, isVariable: boolean) {
     const isParam = element.tagName == 'param';
 
-    const variable = schema.variable();
+    const variable: Variable | Param = isParam ? schema.param() : schema.variable();
 
     recordSource(variable, element);
 
@@ -878,8 +885,8 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
 
     if (isParam) {
       const requiredAttr = getAttribute(element, 'required');
-      variable.required = requiredAttr != null ? requiredAttr !== 'false' : true;
-      variable.provideValue = getAttribute(element, 'transform-value');
+      (variable as Param).required = requiredAttr != null ? requiredAttr !== 'false' : true;
+      (variable as Param).provideValue = getAttribute(element, 'transform-value');
     }
 
     const originalTypeName = getAttribute(element, 'type');
@@ -949,21 +956,30 @@ export function parser(schema: Schema, options?: { version?: ParseVersion; recor
     ) {
       errorHandler.pushErrors(xml.validateChildren(element, { option: 1 }));
     } else {
-      errorHandler.pushErrors(xml.validateChildren(element, {}));
+      errorHandler.pushErrors(xml.validateChildren(element, { arg: 1 }));
     }
 
     if (primitiveType == null && isVariable) {
       const objectType = schema.getType(typeName);
       if (objectType != null) {
         if (query) {
-          const queryType = schema.queryType(objectType);
-          variable.type = queryType;
+          variable.type = schema.queryType(objectType);
         } else if (array) {
-          const arrayType = schema.arrayType(objectType);
-          variable.type = arrayType;
+          variable.type = schema.arrayType(objectType);
         } else {
           variable.type = objectType;
         }
+      } else if (isParam && typeName == FunctionType.TYPE) {
+        const functionType = schema.functionType();
+        xml.children(element, FunctionType.ARG_TAG).forEach((child) => {
+          const result = parseElement(child, { arg: v5ParamArgDef }, errorHandler);
+          if (result.errors.length == 0) {
+            functionType.addArgument(
+              schema.variable(getAttribute(child, 'name'), schema.getType(getAttribute(child, 'type')))
+            );
+          }
+        });
+        variable.type = functionType;
       }
     } else if (primitiveType != null) {
       variable.type = primitiveType;
@@ -1072,10 +1088,10 @@ export function parseJsonVariable(schema: Schema, attributeName: string, attribu
   } else {
     const variable = schema.variable(attributeName, attributeData.type);
     if (attributeData.required != null) {
-      variable.required = attributeData.required;
+      (variable as Param).required = attributeData.required;
     }
     if (attributeData.provideValue != null) {
-      variable.provideValue = attributeData.provideValue;
+      (variable as Param).provideValue = attributeData.provideValue;
     }
     return partialParseJsonVariable(variable, attributeData);
   }
@@ -1126,7 +1142,7 @@ export function jsonParser(schema: Schema) {
       const object = schema.newObjectType();
       object.name = name;
       object.label = objectData.label;
-      object.displayFormat = new FormatString(objectData.display);
+      object.displayFormat = new FormatString({ expression: objectData.display });
 
       Object.keys(objectData.attributes).forEach(function (attributeName) {
         const attributeData = objectData.attributes[attributeName];

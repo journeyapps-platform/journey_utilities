@@ -2,22 +2,28 @@
   "name": "@journeyapps/evaluator",
   "version": "6.2.4",
   "description": "Journey Evaluator library",
-  "main": "./dist/src/index.js",
-  "typings": "./dist/@types/src/index",
+  "main": "./dist/index.js",
+  "typings": "./dist/@types/index.d.ts",
   "scripts": {
     "build": "tsc --build",
+    "watch": "tsc -b --watch",
     "clean": "tsc -b --clean && rm -rf dist",
     "test": "pnpm build && pnpm test:node && pnpm test:browser",
-    "test:browser": "vitest --run --config vitest.config.browser.ts ",
+    "test:browser": "vitest --run --config vitest.config.browser.ts",
     "test:node": "vitest --run --config vitest.config.unit.ts"
   },
   "files": [
-    "dist/src",
-    "dist/@types"
+    "dist"
   ],
   "dependencies": {
-    "@journeyapps/core-xml": "workspace:*"
+    "@babel/types": "^7.24.5",
+    "@babel/parser": "^7.24.5",
+    "@journeyapps/core-xml": "workspace:*",
+    "lru-cache": "^7.18.3",
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
+    "@types/lodash": "^4.17.4",
+    "@types/babel__traverse": "^7.20.5"
   }
 }

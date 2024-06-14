@@ -1,6 +1,8 @@
 import { ArrayType } from '../types/collections/ArrayType';
 import { QueryType } from '../types/collections/QueryType';
+import { FunctionType } from '../types/FunctionType';
 import { ObjectType } from '../types/ObjectType';
+import { Param } from '../types/Param';
 import { PrimitiveTypeInstance, PrimitiveTypeMap, PrimitiveTypeName } from '../types/primitives';
 import { Relationship } from '../types/Relationship';
 import { Variable } from '../types/Variable';
@@ -15,10 +17,19 @@ export interface GenerateTypeEvent {
   schema: Schema;
 }
 
-export type ObjectTypeInstance = Variable<any> | ObjectType | ArrayType | QueryType | Relationship;
+export type ObjectTypeInstance =
+  | Variable<any>
+  | Param
+  | FunctionType
+  | ObjectType
+  | ArrayType
+  | QueryType
+  | Relationship;
 
 export type ObjectTypeName =
+  | typeof Param.TYPE
   | typeof Variable.TYPE
+  | typeof FunctionType.TYPE
   | typeof ObjectType.TYPE
   | typeof ArrayType.TYPE
   | typeof QueryType.TYPE

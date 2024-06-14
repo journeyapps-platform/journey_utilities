@@ -2,7 +2,7 @@ import { TypeInterface } from './TypeInterface';
 
 export interface FormatStringScope {
   /**
-   * Get the type of an expression.
+   * Get the type of expression.
    *
    * @param expression An expression that may be chained, e.g. some.value.here.
    * @return The type, or null if not found.

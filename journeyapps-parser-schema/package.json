@@ -2,8 +2,8 @@
   "name": "@journeyapps/parser-schema",
   "version": "8.0.4",
   "description": "Journey Parser Schema library",
-  "main": "./dist/src/index.js",
-  "typings": "./dist/@types/src/index",
+  "main": "./dist/index.js",
+  "typings": "./dist/@types/index.d.ts",
   "scripts": {
     "build": "tsc --build",
     "clean": "tsc -b --clean && rm -rf ./dist",
@@ -12,8 +12,7 @@
     "test:node": "vitest --run --config vitest.config.unit.ts"
   },
   "files": [
-    "dist/src",
-    "dist/@types"
+    "dist"
   ],
   "dependencies": {
     "@journeyapps/core-xml": "workspace:*",

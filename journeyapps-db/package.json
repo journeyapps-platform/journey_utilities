@@ -4,27 +4,19 @@
   "description": "Journey DB library",
   "main": "./dist/index.js",
   "browser": "./dist/browser.js",
-  "typings": "./dist/index",
-  "appTypings": "./dist/app",
-  "exports": {
-    ".": {
-      "types": "./dist/@types/index.d.ts",
-      "default": "./dist/index.js"
-    },
-    "./browser": {
-      "types": "./dist/@types/browser.d.ts",
-      "default": "./dist/browser.js"
-    },
-    "./appTypings": {
-      "types": "./dist/@types/app.d.ts",
-      "default": "./dist/app.js"
-    }
-  },
+  "typings": "./dist/@types/index.d.ts",
+  "appTypings": "./dist/@types/app.d.ts",
   "scripts": {
     "build": "tsc --build",
     "clean": "tsc -b --clean && rm -rf dist",
     "test": "pnpm test:node",
     "test:node": "vitest --run --config vitest.config.unit.ts"
+  },
+  "devDependencies": {
+    "@types/node-fetch": "^2.6.4",
+    "fetch-mock": "^9.11.0",
+    "sqlite3": "^5.1.6",
+    "websql": "^2.0.3"
   },
   "dependencies": {
     "@journeyapps/core-date": "workspace:*",
@@ -32,17 +24,11 @@
     "@journeyapps/evaluator": "workspace:*",
     "@journeyapps/parser-common": "workspace:*",
     "@journeyapps/parser-schema": "workspace:*",
-    "@types/node-fetch": "^2.6.4",
     "isomorphic-fetch": "^3.0.0",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
     "uuid": "^9.0.0",
     "xmldom": "^0.6.0"
-  },
-  "devDependencies": {
-    "fetch-mock": "^9.11.0",
-    "sqlite3": "^5.1.6",
-    "websql": "^2.0.3"
   },
   "files": [
     "dist"

@@ -1,4 +1,6 @@
 import { Version, DEFAULT as DEFAULT_VERSION } from '@journeyapps/parser-common';
+import { FunctionType, FunctionTypeFactory } from '../types/FunctionType';
+import { Param, ParamFactory } from '../types/Param';
 import * as parser from './schemaParser';
 import { Variable, VariableFactory } from '../types/Variable';
 import { QueryType, QueryTypeFactory } from '../types/collections/QueryType';
@@ -35,6 +37,8 @@ export class Schema {
     this.errors = [];
 
     this.registerTypeFactory(new VariableFactory());
+    this.registerTypeFactory(new ParamFactory());
+    this.registerTypeFactory(new FunctionTypeFactory());
     this.registerTypeFactory(new ObjectTypeFactory());
     this.registerTypeFactory(new ArrayTypeFactory());
     this.registerTypeFactory(new QueryTypeFactory());
@@ -60,6 +64,13 @@ export class Schema {
   variable<T extends TypeInterface = Type>(name?: string, type?: T | string): Variable<T> {
     const _type = typeof type === 'string' ? this.getType(type) : type;
     return this.getFactory(Variable.TYPE).generate<T>({ schema: this, name, type: _type });
+  }
+
+  param<T extends TypeInterface = Type>(name?: string, type?: string): Param<T>;
+  param<T extends TypeInterface = Type>(name?: string, type?: T): Param<T>;
+  param<T extends TypeInterface = Type>(name?: string, type?: T | string): Param<T> {
+    const _type = typeof type === 'string' ? this.getType(type) : type;
+    return this.getFactory(Param.TYPE).generate<T>({ schema: this, name, type: _type });
   }
 
   /** Helper function to assist in creating query variables */
@@ -90,6 +101,10 @@ export class Schema {
 
   newRelationship() {
     return this.getFactory(Relationship.TYPE).generate({ schema: this }) as Relationship;
+  }
+
+  functionType() {
+    return this.getFactory(FunctionType.TYPE).generate({ schema: this }) as FunctionType;
   }
 
   // Given a type name, return the specified type. Returns `undefined` if the type is not found.

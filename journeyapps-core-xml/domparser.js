@@ -1,1 +1,1 @@
-require('./dist/src/domparser');
+require('./dist/domparser');
