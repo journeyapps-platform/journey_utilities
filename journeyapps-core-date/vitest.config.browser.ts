@@ -8,7 +8,7 @@ export default defineConfig({
     browser: {
       name: 'chrome',
       enabled: true
-      // headless: true
+      headless: true
     }
   }
 });
