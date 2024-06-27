@@ -1,26 +1,27 @@
 {
   "name": "@journeyapps/core-xml",
-  "version": "5.0.3",
+  "version": "5.0.4",
   "description": "Journey XML library",
-  "main": "./dist/src/node.js",
-  "browser": "./dist/src/index.js",
-  "typings": "./dist/@types/src/index",
+  "main": "./dist/node.js",
+  "browser": "./dist/index.js",
+  "typings": "./dist/@types/index.d.ts",
   "scripts": {
     "build": "../node_modules/.bin/tsc --build",
+    "clean": "tsc -b --clean && rm -rf ./dist",
     "test": "pnpm build && pnpm test:node && pnpm test:browser",
-    "test:browser": "karma start karma.conf.js --single-run",
-    "test:node": "jasmine dist/test/unit/all.js"
+    "test:browser": "vitest --run --config vitest.config.browser.ts ",
+    "test:node": "vitest --run --config vitest.config.unit.ts"
   },
+  "files": [
+    "dist",
+    "domparser.js"
+  ],
   "dependencies": {
     "@journeyapps/domparser": "^0.4.1",
     "xmldom": "^0.6.0"
   },
   "devDependencies": {
-    "@journeyapps/core-test-helpers": "^4.1.2"
-  },
-  "files": [
-    "dist/src",
-    "dist/@types",
-    "domparser.js"
-  ]
+    "jsdom": "^24.0.0",
+    "stream-browserify": "^3.0.0"
+  }
 }

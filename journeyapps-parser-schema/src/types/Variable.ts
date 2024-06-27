@@ -13,7 +13,7 @@ export interface VariableJsonType {
 
 // Variable constructor. A variable is simply a name and a type (can be null).
 export class Variable<T extends Type | TypeInterface = Type> {
-  static readonly TYPE = 'variable';
+  static TYPE = 'variable';
 
   static isInstanceOf(obj: any): obj is Variable {
     return obj instanceof Variable || 'name' in obj;
@@ -28,10 +28,6 @@ export class Variable<T extends Type | TypeInterface = Type> {
   isBelongsToId?: boolean;
   sourceTypeName?: string;
   sourceElement: XMLElement;
-
-  // Param specific attributes
-  required?: boolean;
-  provideValue?: string;
 
   constructor(name: string, type: T | null) {
     this.name = name;
@@ -59,13 +55,6 @@ export class Variable<T extends Type | TypeInterface = Type> {
     if (this.relationship != null) {
       result.relationship = this.relationship;
       result.isRelationshipId = this.isRelationshipId;
-    }
-
-    if (this.required != null) {
-      result.required = this.required;
-    }
-    if (this.provideValue != null) {
-      result.provideValue = this.provideValue;
     }
 
     return result;

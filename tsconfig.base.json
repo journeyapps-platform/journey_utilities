@@ -6,9 +6,11 @@
       "moduleResolution": "node",
       "module": "commonjs",
       "sourceMap": true,
+      "skipLibCheck": true,
       "stripInternal": true,
       "incremental": true,
-      "inlineSources": true
+      "inlineSources": true,
+      "esModuleInterop": true
     }
-  }
+}
   

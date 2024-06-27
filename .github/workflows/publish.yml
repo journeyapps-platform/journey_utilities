@@ -10,18 +10,19 @@ on:
 env:
   SECRETS: ${{ toJSON(secrets) }}
   GITHUB_TOKEN: ${{ secrets.GH_SHARED_TOKEN_2 }}
+  PNPM_VERSION: 8
 
 jobs:
   build:
     name: Publish
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           ref: ${{github.event.pull_request.head.sha}}
           fetch-depth: 0
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           repository: journeyapps-platform/ci-actions
           token: ${{ secrets.GH_SHARED_TOKEN_2 }}
@@ -29,12 +30,12 @@ jobs:
           ref: v1
 
       - name: Setup NodeJS
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
-          node-version: 18.16.0
+          node-version: 20
 
       - name: Install PNPM
-        run: npm i pnpm@8 -g
+        run: npm i pnpm@$PNPM_VERSION -g
 
       - name: Install Dependencies
         uses: ./.github/ci/actions/npm-install

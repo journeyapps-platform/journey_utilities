@@ -1,5 +1,5 @@
-import { XMLElement, XMLPosition, XMLDocument } from '@journeyapps/domparser/types';
-import { XMLDOMParser, XMLSerializer, DOMImplementation } from '@journeyapps/domparser/types';
+import { XMLSerializer } from '@journeyapps/domparser';
+import { DOMImplementation, XMLDocument, XMLDOMParser, XMLElement, XMLPosition } from '@journeyapps/domparser/types';
 import { AttributeNode, isAttribute, isElement, TEXT_NODE } from './utils';
 
 export interface ConfiguredParser {

@@ -4,12 +4,11 @@
   "private": true,
   "workspaces": [
     "journeyapps",
-    "journeyapps-*",
-    "test-helpers"
+    "journeyapps-*"
   ],
   "scripts": {
     "build": "pnpm -r build",
-    "clean": "rm -rf */dist */tsconfig.tsbuildinfo",
+    "clean": "pnpm -r clean",
     "ncu": "ncu -u && pnpm recursive exec -- ncu -u",
     "test": "pnpm -r test",
     "watch": "tsc -b -w",
@@ -18,36 +17,14 @@
     "ci:version": "changeset version && pnpm install --no-frozen-lockfile"
   },
   "devDependencies": {
+    "@changesets/read": "^0.6.0",
     "@changesets/cli": "^2.26.2",
     "@journeyapps-platform/lerno": "2.0.7",
     "@journeyapps/domparser": "^0.4.1",
-    "@types/jasmine": "^4.3.5",
     "@types/node": "^20.5.7",
-    "imports-loader": "^4.0.1",
-    "jasmine": "^5.1.0",
-    "jasmine-diff": "^0.1.3",
-    "karma": "^6.4.2",
-    "karma-chrome-launcher": "^3.2.0",
-    "karma-jasmine": "^5.1.0",
-    "karma-mocha-reporter": "^2.2.5",
-    "karma-script-launcher": "^1.0.0",
-    "karma-sourcemap-loader": "^0.4.0",
-    "karma-webpack": "^5.0.0",
-    "node-libs-browser": "^2.2.1",
-    "raw-loader": "^4.0.2",
-    "run-sequence": "^2.2.1",
-    "source-map-loader": "^4.0.1",
-    "source-map-support": "^0.5.21",
-    "ts-loader": "^9.4.4",
+    "@vitest/browser": "^1.6.0",
     "typescript": "^5.2.2",
-    "webpack": "^5.88.2",
-    "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^4.15.1",
-    "webpack-node-externals": "^3.0.0"
-  },
-  "pnpm": {
-    "overrides": {
-      "@journeyapps/core-test-helpers": "link:./test-helpers"
-    }
+    "vitest": "^1.6.0",
+    "webdriverio": "^8.39.0"
   }
 }

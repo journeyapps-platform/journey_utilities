@@ -1,12 +1,20 @@
-import { TokenExpression } from './token-expressions/TokenExpression';
-import { extract, formatValue } from './tools';
 import { AttributeValidationError } from '@journeyapps/core-xml';
-import { TypeInterface } from './TypeInterface';
-import { FormatStringScope } from './FormatStringScope';
-import { FunctionTokenExpression } from './token-expressions/FunctionTokenExpression';
-import { ConstantTokenExpression } from './token-expressions/ConstantTokenExpression';
-import { ShorthandTokenExpression } from './token-expressions/ShorthandTokenExpression';
-import { FormatShorthandTokenExpression } from './token-expressions/FormatShorthandTokenExpression';
+import { FormatStringContext } from './context/FormatStringContext';
+import { FunctionExpressionContext } from './context/FunctionExpressionContext';
+import { FormatStringScope } from './definitions/FormatStringScope';
+import { TypeInterface } from './definitions/TypeInterface';
+import {
+  ConstantTokenExpression,
+  FunctionTokenExpression,
+  PrimitiveConstantTokenExpression,
+  TokenExpression
+} from './token-expressions';
+import { TokenExpressionParser } from './TokenExpressionParser';
+import { extract, formatValue } from './tools';
+
+export interface FormatStringOptions {
+  expression: string;
+}
 
 /**
  * Construct a new format string expression.
@@ -17,45 +25,75 @@ export class FormatString {
   expression: string;
   tokens: TokenExpression[];
 
-  constructor(expression: string) {
-    this.expression = expression || '';
+  static isInstanceOf(val: any): val is FormatString {
+    return val?.type === FormatString.TYPE;
+  }
+
+  constructor(options: FormatStringOptions) {
+    this.expression = options.expression || '';
     this.tokens = FormatString.compile(this.expression);
     this.type = FormatString.TYPE;
   }
 
-  static isInstanceOf(val: any): val is FormatString {
-    return val?.type === FormatString.TYPE;
+  static fromTokens(tokens: TokenExpression[]): FormatString {
+    const result = new FormatString({ expression: '' });
+    result.tokens = [];
+    let start = 0;
+    tokens.forEach((token) => {
+      token.start = start;
+      if (token.isConstant() && !token.isPrimitive) {
+        result.expression += token.expression;
+        start += token.expression.length;
+      } else {
+        let exp = '{';
+        if (FunctionTokenExpression.isInstanceOf(token)) {
+          exp += FunctionTokenExpression.PREFIX;
+        }
+        exp += `${token.stringify()}}`;
+        result.expression += exp;
+        start += exp.length;
+      }
+      result.tokens.push(token);
+    });
+    return result;
   }
 
   /**
    * Compile a format string expression into tokens.
    */
-  static compile(format: string): TokenExpression[] {
+  static compile(expression: string): TokenExpression[] {
+    const parser = TokenExpressionParser.get();
+
     let start = 0;
+    const tokens: TokenExpression[] = [];
+    const len = expression.length;
 
-    let tokens: TokenExpression[] = [];
-
-    let len = format.length;
     while (true) {
-      const i = format.indexOf('{', start);
+      const i = expression.indexOf('{', start);
       if (i < 0 || i == len - 1) {
         // end of string - everything is normal text
-        tokens.push(new ConstantTokenExpression(FormatString.unescape(format.substring(start)), start));
+        const rest = FormatString.unescape(expression.substring(start));
+        if (rest.length > 0) {
+          tokens.push(new ConstantTokenExpression({ expression: rest, start }));
+        }
         break;
       }
       // normal text in the gaps between curly braces
-      tokens.push(new ConstantTokenExpression(FormatString.unescape(format.substring(start, i)), start));
-      if (format[i + 1] == '{') {
+      const betweenText = FormatString.unescape(expression.substring(start, i));
+      if (betweenText.length > 0) {
+        tokens.push(new ConstantTokenExpression({ expression: betweenText, start }));
+      }
+      if (expression[i + 1] == '{') {
         // Double left brace - escape and continue
-        tokens.push(new ConstantTokenExpression('{', start));
+        tokens.push(new ConstantTokenExpression({ expression: '{', start }));
         start = i + 2;
         continue;
       }
 
-      const parsedBraces = FormatString.parseEnclosingBraces(format.substring(i));
+      const parsedBraces = FormatString.parseEnclosingBraces(expression.substring(i));
       if (!parsedBraces) {
         // Brace pair faulty (no closing brace), return as a constant
-        tokens.push(new ConstantTokenExpression(format.substring(i), start));
+        tokens.push(new ConstantTokenExpression({ expression: expression.substring(i), start }));
         break;
       }
 
@@ -63,33 +101,30 @@ export class FormatString {
       start = i + parsedBraces.length + 1;
 
       // `spec` is everything between the curly braces "{" and "}".
-      const spec = format.substring(i + 1, i + parsedBraces.length);
+      const spec = expression.substring(i + 1, i + parsedBraces.length).trim();
 
-      // test for function token prefix
-      if (spec.trim().indexOf(FunctionTokenExpression.PREFIX) === 0) {
-        // function token because the function name has "$:" as prefix (leading whitespace is ignored)
-        tokens.push(new FunctionTokenExpression(spec, i));
-      } else {
-        // shorthand token
-        const colon = spec.indexOf(':');
-        if (colon == -1) {
-          tokens.push(new ShorthandTokenExpression(spec, i));
-        } else {
-          tokens.push(new FormatShorthandTokenExpression(spec.substring(0, colon), spec.substring(colon + 1), i));
-        }
+      if (spec.indexOf('?') === 0) {
+        throw new Error('Usage of ? in expressions is not supported.');
+      }
+
+      const context = FunctionTokenExpression.hasPrefix(spec)
+        ? new FunctionExpressionContext()
+        : new FormatStringContext();
+      const parsedToken = parser.parse({ source: spec, context: context });
+      if (parsedToken) {
+        parsedToken.start = i;
+        tokens.push(parsedToken);
       }
     }
 
     // concatenate any neighbouring constant token expressions
-    let result: TokenExpression[] = [];
+    const result: TokenExpression[] = [];
     let last: ConstantTokenExpression = null;
-    for (var j = 0; j < tokens.length; j++) {
-      var token = tokens[j];
-      if (token instanceof ConstantTokenExpression) {
+    for (let j = 0; j < tokens.length; j++) {
+      const token = tokens[j];
+      if (ConstantTokenExpression.isInstanceOf(token) || PrimitiveConstantTokenExpression.isInstanceOf(token)) {
         if (last == null) {
-          if (token.expression.length > 0) {
-            last = token;
-          }
+          last = token;
         } else {
           last = last.concat(token);
         }
@@ -106,10 +141,6 @@ export class FormatString {
     }
 
     return result;
-  }
-
-  toString(): string {
-    return this.expression;
   }
 
   /**
@@ -130,14 +161,14 @@ export class FormatString {
       return {};
     }
 
-    var result = into || {};
+    const result = into || {};
 
-    var tokens = this.tokens;
+    const tokens = this.tokens;
 
-    for (var i = 0; i < tokens.length; i++) {
-      var token = tokens[i];
+    for (let i = 0; i < tokens.length; i++) {
+      const token = tokens[i];
       if (token.isShorthand()) {
-        var expression = token.expression;
+        const expression = token.expression;
         extract(type, expression, result, depth);
       }
     }
@@ -145,22 +176,22 @@ export class FormatString {
   }
 
   validate(scopeType: TypeInterface): AttributeValidationError[] {
-    var tokens = this.tokens;
+    const tokens = this.tokens;
 
-    var results: AttributeValidationError[] = [];
+    const results: AttributeValidationError[] = [];
 
-    for (var i = 0; i < tokens.length; i++) {
+    for (let i = 0; i < tokens.length; i++) {
       // validate all shorthand and function token expressions (ignore constant token expressions)
-      var token = tokens[i];
-      var expression = token.expression;
+      const token = tokens[i];
+      let expression = token.expression;
       if (token.isShorthand()) {
-        var warnQuestionMark = false;
+        let warnQuestionMark = false;
         if (expression.length > 0 && expression[0] == '?') {
           expression = expression.substring(1);
           warnQuestionMark = true;
         }
 
-        var type = scopeType.getType(expression);
+        const type = scopeType.getType(expression);
         if (type == null) {
           results.push({
             start: token.start + 1,
@@ -185,8 +216,8 @@ export class FormatString {
   }
 
   validateAndReturnRecordings(scopeType: TypeInterface) {
-    var tokens = this.tokens;
-    var recordings: {
+    const tokens = this.tokens;
+    const recordings: {
       type: string;
       isPrimitiveType: boolean;
       name: string;
@@ -220,13 +251,7 @@ export class FormatString {
     return this.tokens[0].valueOf();
   }
 
-  // This helps speed up dirty-checking.
-  // With this, we can use "by reference" checking in watches.
-  valueOf() {
-    return this.expression;
-  }
-
-  evaluatePromise(scope: FormatStringScope): Promise<string> {
+  async evaluatePromise(scope: FormatStringScope): Promise<string> {
     const tokens = this.tokens;
     let promises = [];
     for (let i = 0; i < tokens.length; i++) {
@@ -239,21 +264,19 @@ export class FormatString {
       }
     }
 
-    return Promise.all(promises).then(function (results) {
-      let result = '';
-      let promiseIndex = 0;
-
-      for (let i = 0; i < tokens.length; i++) {
-        const token = tokens[i];
-        if (token.isConstant()) {
-          result += token.valueOf();
-        } else {
-          result += results[promiseIndex];
-          promiseIndex += 1;
-        }
+    let results = await Promise.all(promises);
+    let result = '';
+    let promiseIndex = 0;
+    for (let i = 0; i < tokens.length; i++) {
+      const token = tokens[i];
+      if (token.isConstant()) {
+        result += token.valueOf();
+      } else {
+        result += results[promiseIndex];
+        promiseIndex += 1;
       }
-      return result;
-    });
+    }
+    return result;
   }
 
   /**
@@ -265,13 +288,13 @@ export class FormatString {
     let result = '';
     for (let i = 0; i < tokens.length; i++) {
       const token = tokens[i];
-      if (token.isConstant()) {
-        result += token.valueOf();
+      if (token.isConstant() && !(PrimitiveConstantTokenExpression.isInstanceOf(token) && token.isNullLiteral())) {
+        result += `${token.valueOf()}`;
       } else if (token.isFunction()) {
         // Not supported - return the original expression
         result += (token as FunctionTokenExpression).toConstant(true).valueOf();
       } else {
-        let expression = token.expression;
+        let expression = `${token.expression}`;
         if (expression.length > 0 && expression[0] == '?') {
           expression = expression.substring(1);
         }
@@ -287,6 +310,16 @@ export class FormatString {
       }
     }
     return result;
+  }
+
+  // This helps speed up dirty-checking.
+  // With this, we can use "by reference" checking in watches.
+  valueOf() {
+    return this.expression;
+  }
+
+  toString(): string {
+    return this.expression;
   }
 
   static parseEnclosingBraces(format: string) {
@@ -334,6 +367,10 @@ export class FormatString {
     return null;
   }
 
+  /**
+   * Removes one set of curly braces from the string.
+   * Example {{foo}} -> {foo}
+   */
   static unescape(s: string) {
     let start = 0;
     let result = '';
@@ -352,6 +389,4 @@ export class FormatString {
   }
 }
 
-// Expose internal functions for tests
-export const _compile = FormatString.compile;
 export const parseEnclosingBraces = FormatString.parseEnclosingBraces;

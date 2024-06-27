@@ -1,5 +1,20 @@
 # @journeyapps/parser-schema
 
+## 8.1.0
+
+### Minor Changes
+
+- 2260401: Feature: Add `Param` and `Function` types used for view and template-def paramaters
+
+### Patch Changes
+
+- fe96da7: Repo upgrade - bump node version, migrate unit test to `vitest` and improve consistancy with `tsconfig`
+- Updated dependencies [2260401]
+- Updated dependencies [fe96da7]
+  - @journeyapps/evaluator@7.0.0
+  - @journeyapps/parser-common@8.0.2
+  - @journeyapps/core-xml@5.0.4
+
 ## 8.0.4
 
 ### Patch Changes

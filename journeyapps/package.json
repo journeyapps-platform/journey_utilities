@@ -1,14 +1,14 @@
 {
   "name": "journeyapps",
-  "version": "7.3.8",
+  "version": "7.3.9",
   "description": "Journey JS library",
-  "main": "./lib/index.js",
+  "main": "./dist/index.js",
   "scripts": {
-    "build": "tsc --build"
+    "build": "tsc --build",
+    "clean": "tsc --build --clean && rm -rf ./dist"
   },
   "dependencies": {
     "@journeyapps/core-date": "workspace:*",
     "@journeyapps/db": "workspace:*"
-  },
-  "gitHead": "ce2941d006fe4fd9d212e64c58ac49b9990f361c"
+  }
 }
