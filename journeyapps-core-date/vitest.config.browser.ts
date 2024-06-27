@@ -7,7 +7,7 @@ export default defineConfig({
     reporters: 'verbose',
     browser: {
       name: 'chrome',
-      enabled: true
+      enabled: true,
       headless: true
     }
   }
