@@ -1,6 +1,6 @@
 {
   "name": "@journeyapps/db",
-  "version": "8.0.8",
+  "version": "8.0.9",
   "description": "Journey DB library",
   "main": "./dist/index.js",
   "browser": "./dist/browser.js",
