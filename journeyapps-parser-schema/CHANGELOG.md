@@ -1,5 +1,11 @@
 # @journeyapps/parser-schema
 
+## 8.0.5
+
+### Patch Changes
+
+- 9207856: Add custom mimetype for .exp files
+
 ## 8.0.4
 
 ### Patch Changes
