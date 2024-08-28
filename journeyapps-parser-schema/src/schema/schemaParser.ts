@@ -49,6 +49,7 @@ export const ATTACHMENT_MEDIA_TYPES = [
   'application/vnd.ms-excel',
   'application/msword',
   'application/vnd.anritsu',
+  'application/vnd.valvelink',
   'application/xml',
   'text/plain',
   'text/csv',
