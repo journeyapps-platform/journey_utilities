@@ -18,6 +18,13 @@ export type MemberExpressionParsedType =
   | ShorthandTokenExpression
   | FormatShorthandTokenExpression;
 
+/**
+ * Parses member expressions like:
+ *
+ * object.property1
+ * object[param].property2
+ * object['property1'].property2
+ */
 export class MemberExpressionParser extends AbstractExpressionParser<MemberExpression, MemberExpressionParsedType> {
   parse(event: ExpressionNodeParseEvent<MemberExpression>) {
     const { node, source, context } = event;

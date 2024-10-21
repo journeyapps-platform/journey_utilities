@@ -5,6 +5,14 @@ import { TokenExpression, TokenExpressionOptions } from '../TokenExpression';
 
 /**
  * Shorthand token expression.
+ *
+ * <var name="my_user" type="user">
+ *
+ * <info value="{my_user.name}" />
+ *
+ * Above is a shorthand for
+ *
+ * <info value="{$:view.my_user.name}" />
  */
 
 export interface ShorthandTokenExpressionOptions extends TokenExpressionOptions {
