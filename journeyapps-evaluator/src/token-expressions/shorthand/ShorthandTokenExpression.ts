@@ -6,12 +6,18 @@ import { TokenExpression, TokenExpressionOptions } from '../TokenExpression';
 /**
  * Shorthand token expression.
  */
+
+export interface ShorthandTokenExpressionOptions extends TokenExpressionOptions {
+  name?: string;
+  properties?: TokenExpression[];
+}
+
 export class ShorthandTokenExpression<
-  O extends TokenExpressionOptions = TokenExpressionOptions
+  O extends ShorthandTokenExpressionOptions = ShorthandTokenExpressionOptions
 > extends TokenExpression<O> {
   static TYPE = 'shorthand-expression';
   constructor(options: O) {
-    super(ShorthandTokenExpression.TYPE, { ...options, isShorthand: true });
+    super(ShorthandTokenExpression.TYPE, { ...options, isShorthand: true, name: options.name ?? options.expression });
   }
 
   async tokenEvaluatePromise(scope: FormatStringScope) {
