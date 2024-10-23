@@ -75,6 +75,15 @@ describe('Expression Parsing ', () => {
       new ShorthandTokenExpression({ expression: 'field', isComputed: true })
     ]);
 
+    result = parser.parse<ShorthandTokenExpression>({ source: 'user.roles[field]' });
+    expect(result).toBeInstanceOf(ShorthandTokenExpression);
+    expect(result.expression).toEqual('user.roles[field]');
+    expect(result.options.name).toEqual('user');
+    expect(result.options.properties).toEqual([
+      new ShorthandTokenExpression({ expression: 'roles' }),
+      new ShorthandTokenExpression({ expression: 'field', isComputed: true })
+    ]);
+
     result = parser.parse<ShorthandTokenExpression>({ source: "user['name'].length" });
     expect(result).toBeInstanceOf(ShorthandTokenExpression);
     expect(result.expression).toEqual("user['name'].length");
@@ -82,6 +91,15 @@ describe('Expression Parsing ', () => {
     expect(result.options.properties).toEqual([
       new ConstantTokenExpression({ expression: 'name', isComputed: true }),
       new ShorthandTokenExpression({ expression: 'length' })
+    ]);
+
+    result = parser.parse<ShorthandTokenExpression>({ source: "user['roles']['admin']" });
+    expect(result).toBeInstanceOf(ShorthandTokenExpression);
+    expect(result.expression).toEqual("user['roles']['admin']");
+    expect(result.options.name).toEqual('user');
+    expect(result.options.properties).toEqual([
+      new ConstantTokenExpression({ expression: 'roles', isComputed: true }),
+      new ConstantTokenExpression({ expression: 'admin', isComputed: true })
     ]);
 
     result = parser.parse<ShorthandTokenExpression>({ source: "user.files['image'].filename.length" });

@@ -70,9 +70,12 @@ export class MemberExpressionParser extends AbstractExpressionParser<MemberExpre
     }
 
     const result = MemberExpressionParser.parseMember({ ...event, node: node.object as MemberExpression }, properties);
-    result.properties.push(
-      parseNode({ node: node.property, source: source.slice(node.property.start, node.property.end) })
-    );
+    const propertyExpr = parseNode({
+      node: node.property,
+      source: source.slice(node.property.start, node.property.end)
+    });
+    propertyExpr.options.isComputed = node.computed;
+    result.properties.push(propertyExpr);
     return result;
   }
 }
