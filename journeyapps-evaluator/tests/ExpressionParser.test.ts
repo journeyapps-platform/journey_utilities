@@ -108,54 +108,61 @@ describe('Expression Parsing ', () => {
   });
 
   it('should parse FunctionTokenExpression', ({ parser }) => {
-    const result1: any = parser.parse({ source: 'foo()' });
-    expect(result1).toBeInstanceOf(FunctionTokenExpression);
-    expect(result1.expression).toEqual('foo()');
+    let result: any = parser.parse({ source: 'foo()' });
+    expect(result).toBeInstanceOf(FunctionTokenExpression);
+    expect(result.expression).toEqual('foo()');
 
-    const result2 = parser.parse({ source: '$:foo()' });
-    expect(result2).toBeInstanceOf(FunctionTokenExpression);
-    expect(result2.expression).toEqual('foo()');
+    result = parser.parse({ source: '$:foo()' });
+    expect(result).toBeInstanceOf(FunctionTokenExpression);
+    expect(result.expression).toEqual('foo()');
 
-    const result3 = parser.parse({ source: '{$:foo()}' });
-    expect(result3).toBeInstanceOf(FunctionTokenExpression);
-    expect(result3.expression).toEqual('foo()');
+    result = parser.parse({ source: '{$:foo()}' });
+    expect(result).toBeInstanceOf(FunctionTokenExpression);
+    expect(result.expression).toEqual('foo()');
 
-    const result4 = parser.parse({ source: '$:myVar.foo()' });
-    expect(result4).toBeInstanceOf(FunctionTokenExpression);
-    expect(result4.expression).toEqual('myVar.foo()');
+    result = parser.parse({ source: '$:myVar.foo()' });
+    expect(result).toBeInstanceOf(FunctionTokenExpression);
+    expect(result.expression).toEqual('myVar.foo()');
 
-    const result5 = parser.parse({ source: '$:myVar' });
-    expect(result5).toBeInstanceOf(FunctionTokenExpression);
-    expect(result5.expression).toEqual('myVar');
+    result = parser.parse({ source: '$:myVar' });
+    expect(result).toBeInstanceOf(FunctionTokenExpression);
+    expect(result.expression).toEqual('myVar');
 
-    const result6 = parser.parse<ShorthandTokenExpression>({ source: '$:journey.version' });
-    expect(result6).toBeInstanceOf(ShorthandTokenExpression);
-    expect(result6.expression).toEqual('$:journey.version');
-    expect(result6.options.name).toEqual('journey');
-    expect(result6.options.properties).toEqual([new ShorthandTokenExpression({ expression: 'version' })]);
-    expect(result6.stringify()).toEqual('$:journey.version');
+    result = parser.parse({ source: '{$:myVar}' });
+    expect(result).toBeInstanceOf(FunctionTokenExpression);
+    expect(result.expression).toEqual('myVar');
 
-    const result7 = parser.parse<ShorthandTokenExpression>({ source: "$:user['name'].length" });
-    expect(result6).toBeInstanceOf(ShorthandTokenExpression);
-    expect(result7.expression).toEqual("$:user['name'].length");
-    expect(result7.options.name).toEqual('user');
-    expect(result7.options.properties).toEqual([
+    result = parser.parse<FunctionTokenExpression>({ source: '$:journey.version' });
+    expect(result).toBeInstanceOf(FunctionTokenExpression);
+    expect(result.expression).toEqual('journey.version');
+    expect(result.isFunction()).toEqual(true);
+    expect(result.stringify()).toEqual('journey.version');
+    expect(result.options.name).toEqual('journey');
+    expect(result.options.properties).toEqual([new ShorthandTokenExpression({ expression: 'version' })]);
+
+    result = parser.parse<FunctionTokenExpression>({ source: "$:user['name'].length" });
+    expect(result).toBeInstanceOf(FunctionTokenExpression);
+    expect(result.expression).toEqual("user['name'].length");
+    expect(result.isFunction()).toEqual(true);
+    expect(result.stringify()).toEqual("user['name'].length");
+    expect(result.options.name).toEqual('user');
+    expect(result.options.properties).toEqual([
       new ConstantTokenExpression({ expression: 'name', isComputed: true }),
       new ShorthandTokenExpression({ expression: 'length' })
     ]);
 
-    const result8 = parser.parse({ source: '$:null' });
-    expect(result8).toBeInstanceOf(FunctionTokenExpression);
-    expect(result8.expression).toEqual('null');
+    result = parser.parse({ source: '$:null' });
+    expect(result).toBeInstanceOf(FunctionTokenExpression);
+    expect(result.expression).toEqual('null');
 
-    const result9 = parser.parse({ source: '$:true' });
-    expect(result9).toBeInstanceOf(FunctionTokenExpression);
-    expect(result9.expression).toEqual('true');
+    result = parser.parse({ source: '$:true' });
+    expect(result).toBeInstanceOf(FunctionTokenExpression);
+    expect(result.expression).toEqual('true');
 
-    const result10 = parser.parse({ source: '$:(showIf() || false)' });
-    expect(result10).toBeInstanceOf(FunctionTokenExpression);
-    expect(result10.expression).toEqual('showIf() || false');
-    expect(result10.stringify()).toEqual('(function(left, right) { return left || right; })(showIf(), false)');
+    result = parser.parse({ source: '$:(showIf() || false)' });
+    expect(result).toBeInstanceOf(FunctionTokenExpression);
+    expect(result.expression).toEqual('showIf() || false');
+    expect(result.stringify()).toEqual('(function(left, right) { return left || right; })(showIf(), false)');
   });
 
   it('should parse FunctionTokenExpression with arguments', ({ parser }) => {

@@ -89,6 +89,16 @@ describe('FormatString', () => {
     expect(result.tokens[1].start).toEqual(6);
 
     result = FormatString.fromTokens([
+      new ConstantTokenExpression({ expression: 'Hello ' }),
+      new FunctionTokenExpression({
+        name: 'js_variable',
+        expression: 'js_variable.property',
+        properties: [new ShorthandTokenExpression({ expression: 'property' })]
+      })
+    ]);
+    expect(result.expression).toEqual('Hello {$:js_variable.property}');
+
+    result = FormatString.fromTokens([
       new FunctionTokenExpression({
         expression: "foo('bar')",
         arguments: [new ConstantTokenExpression({ expression: 'bar' })]
@@ -108,14 +118,13 @@ describe('FormatString', () => {
     it('from JS/TS member expression ', () => {
       let result = FormatString.compile('{$:journey.runtime.version}');
       expect(result).toEqual([
-        new ShorthandTokenExpression({
-          expression: '$:journey.runtime.version',
+        new FunctionTokenExpression({
+          expression: 'journey.runtime.version',
           name: 'journey',
           properties: [
             new ShorthandTokenExpression({ expression: 'runtime' }),
             new ShorthandTokenExpression({ expression: 'version' })
           ],
-          isFunction: true,
           start: 0
         })
       ]);
