@@ -1,5 +1,11 @@
 # @journeyapps/evaluator
 
+## 7.0.1
+
+### Patch Changes
+
+- 30aa390: Improve `ShorthandTokenExpression` to also parse properties, i.e. object.property1, object['property2']. Added `isComputed` to `TokenExpression` options
+
 ## 7.0.0
 
 ### Major Changes

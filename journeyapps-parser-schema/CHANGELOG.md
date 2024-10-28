@@ -1,5 +1,13 @@
 # @journeyapps/parser-schema
 
+## 8.2.1
+
+### Patch Changes
+
+- Updated dependencies [30aa390]
+  - @journeyapps/evaluator@7.0.1
+  - @journeyapps/parser-common@8.0.3
+
 ## 8.2.0
 
 ### Minor Changes
