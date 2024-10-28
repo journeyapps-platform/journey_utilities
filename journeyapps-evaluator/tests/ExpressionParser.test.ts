@@ -130,14 +130,14 @@ describe('Expression Parsing ', () => {
 
     const result6 = parser.parse<ShorthandTokenExpression>({ source: '$:journey.version' });
     expect(result6).toBeInstanceOf(ShorthandTokenExpression);
-    expect(result6.expression).toEqual('journey.version');
+    expect(result6.expression).toEqual('$:journey.version');
     expect(result6.options.name).toEqual('journey');
     expect(result6.options.properties).toEqual([new ShorthandTokenExpression({ expression: 'version' })]);
-    expect(result6.stringify()).toEqual('journey.version');
+    expect(result6.stringify()).toEqual('$:journey.version');
 
     const result7 = parser.parse<ShorthandTokenExpression>({ source: "$:user['name'].length" });
     expect(result6).toBeInstanceOf(ShorthandTokenExpression);
-    expect(result7.expression).toEqual("user['name'].length");
+    expect(result7.expression).toEqual("$:user['name'].length");
     expect(result7.options.name).toEqual('user');
     expect(result7.options.properties).toEqual([
       new ConstantTokenExpression({ expression: 'name', isComputed: true }),

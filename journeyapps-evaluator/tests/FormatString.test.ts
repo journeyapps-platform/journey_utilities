@@ -109,7 +109,7 @@ describe('FormatString', () => {
       let result = FormatString.compile('{$:journey.runtime.version}');
       expect(result).toEqual([
         new ShorthandTokenExpression({
-          expression: 'journey.runtime.version',
+          expression: '$:journey.runtime.version',
           name: 'journey',
           properties: [
             new ShorthandTokenExpression({ expression: 'runtime' }),

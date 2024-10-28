@@ -39,7 +39,10 @@ export class MemberExpressionParser extends AbstractExpressionParser<MemberExpre
     };
 
     if (FunctionExpressionContext.isInstanceOf(context)) {
-      return new ShorthandTokenExpression({ ...options, isFunction: true });
+      const newExpression = !FunctionTokenExpression.hasPrefix(expr)
+        ? `${FunctionTokenExpression.PREFIX}${expr}`
+        : expr;
+      return new ShorthandTokenExpression({ ...options, expression: newExpression, isFunction: true });
     }
 
     const format: string = node.extra?.format as string;
