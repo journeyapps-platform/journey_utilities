@@ -1,5 +1,6 @@
 import { Node, BlockStatement, isLabeledStatement, isExpressionStatement, isBlockStatement } from '@babel/types';
 import { FormatStringContext } from '../context/FormatStringContext';
+import { FunctionExpressionContext } from '../context/FunctionExpressionContext';
 import { ConstantTokenExpression } from '../token-expressions';
 import {
   AbstractExpressionParser,
@@ -23,7 +24,7 @@ export class BlockStatementParser extends AbstractExpressionParser<BlockStatemen
     if (isLabeledStatement(body)) {
       const { body: child } = body;
       child.extra = { ...child.extra, parent: node };
-      return parseNode({ ...event, node: child });
+      return parseNode({ ...event, node: child, context: new FunctionExpressionContext() });
     }
     // Example `{item.price}`
     if (isExpressionStatement(body)) {

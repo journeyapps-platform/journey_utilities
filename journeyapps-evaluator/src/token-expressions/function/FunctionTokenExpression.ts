@@ -7,6 +7,12 @@ import { FormatStringScope } from '../../definitions/FormatStringScope';
 export interface FunctionTokenExpressionOptions extends TokenExpressionOptions {
   name?: string;
   arguments?: TokenExpression[];
+
+  /**
+   * Used for non-call expressions to store properties.
+   * Example: `$:object.property` or `$:view.user['name']`
+   */
+  properties?: TokenExpression[];
 }
 
 export class FunctionTokenExpression<
@@ -73,11 +79,11 @@ export class FunctionTokenExpression<
   }
 
   stringify() {
-    if (!this.isCallExpression()) {
-      return this.expression;
+    if (this.isCallExpression()) {
+      const argStrings = this.arguments.map((arg) => arg.stringify());
+      return `${this.functionName()}(${argStrings.join(', ')})`;
     }
-    const argStrings = this.arguments.map((arg) => arg.stringify());
-    return `${this.functionName()}(${argStrings.join(', ')})`;
+    return this.expression;
   }
 
   clone(): this {
