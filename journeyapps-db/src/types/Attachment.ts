@@ -143,8 +143,15 @@ export class Attachment {
       throw new Error('Attachment fetch failed: ' + response.statusText);
     }
 
-    // buffer() is present on node-fetch Response, but not the standard fetch Response.
-    this.data = (response as any).buffer();
+    if(typeof (response as any).buffer == 'function'){
+      // buffer() is present on node-fetch Response, but not the standard fetch Response.
+      this.data = (response as any).buffer();
+      return this.data;
+    }
+
+    const arrayBuffer = await response.arrayBuffer();
+    this.data = Buffer.from(arrayBuffer);
+
     return this.data;
   }
 
